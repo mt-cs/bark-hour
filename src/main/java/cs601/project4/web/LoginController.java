@@ -4,25 +4,38 @@ import cs601.project4.constant.LoginConstant;
 import cs601.project4.login.LoginServerConstants;
 import cs601.project4.login.utilities.Config;
 import cs601.project4.login.utilities.LoginUtilities;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class LandingController {
+public class LoginController {
+  private final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
-  @GetMapping("/")
+  @Value("${slack.config.redirect_uri}")
+  private String redirect_uri;
+
+  @Value("${slack.config.client_id}")
+  private String client_id;
+
+  @GetMapping(value={"/", "/login"})
   public String index(Model model, HttpServletRequest request) {
+
     // retrieve the ID of this session
     String sessionId = request.getSession(true).getId();
     Object clientInfoObj =
         request.getSession().getAttribute(LoginConstant.CLIENT_INFO_KEY);
-//    if(clientInfoObj != null) {
-//      // already authed, no need to log in
-//      System.out.println("Client with session ID %s already exists.\n");
-//      return "redirect:/home";
-//    }
+    if(clientInfoObj != null) {
+      // already authed, no need to log in
+      System.out.println("Client with session ID %s already exists.\n");
+      return "redirect:/home";
+    }
     /** From the OpenID spec:
      * state
      * RECOMMENDED. Opaque value used to maintain state between the request and the callback.
@@ -34,7 +47,7 @@ public class LandingController {
     String state = sessionId;
 
     // retrieve the config info from the context
-    Config config = (Config) request.getServletContext().getAttribute(LoginServerConstants.CONFIG_KEY);
+    //Config config = (Config) request.getServletContext().getAttribute(LoginServerConstants.CONFIG_KEY);
 
     /** From the Open ID spec:
      * nonce
@@ -47,15 +60,28 @@ public class LandingController {
 
     // Generate url for request to Slack
     String url = LoginUtilities.generateSlackAuthorizeURL(
+        client_id,
 //        config.getClient_id(),
-        "2464212157.2674770528882",
+//        "2464212157.2674770528882",
         state,
         nonce,
-        "https://0f6a-2601-646-202-27d0-8d2f-58a1-98c8-987f.ngrok.io/login");
+//        "https://0f6a-2601-646-202-27d0-8d2f-58a1-98c8-987f.ngrok.io/home");
 //        config.getRedirect_url());
-    System.out.println(url);
+        redirect_uri);
+    logger.info(url);
 
     model.addAttribute("url", url);
     return "index";
+  }
+
+  /**
+   * Handles a request to sign out
+   */
+  @GetMapping(value={"/logout"})
+  public String logout(Model model, HttpServletRequest request) {
+    request.getSession().invalidate();
+
+    model.addAttribute("name", "Marisa");
+    return "logout";
   }
 }
