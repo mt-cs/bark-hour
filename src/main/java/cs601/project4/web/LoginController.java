@@ -1,14 +1,10 @@
 package cs601.project4.web;
 
 import cs601.project4.constant.LoginConstant;
-import cs601.project4.login.LoginServerConstants;
-import cs601.project4.login.utilities.Config;
 import cs601.project4.login.utilities.LoginUtilities;
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -59,5 +55,14 @@ public class LoginController {
 
     model.addAttribute("name", "Marisa");
     return "logout";
+  }
+
+  /**
+   * Handles a request to sign out
+   */
+  @GetMapping(value={"/loginerror"})
+  public String loginError(HttpServletRequest request) {
+    request.getSession().invalidate();
+    return "loginerror";
   }
 }

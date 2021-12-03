@@ -6,7 +6,12 @@
   <title>BarkHour</title>
 </head>
 <body>
-  <h1>Woof! Welcome <span th:text="${name}"></span>!</h1>
-  <a href="/logout">Signout</a>
+  <div th:if = "${name} == null">
+    <h1>Woof! Welcome to BarkHour.</h1>
+  </div>
+  <div th:unless = "${name} == null">
+    <h1>Woof! Welcome <span th:text="${name}"></span>!</h1>
+    <a href="/logout">Signout</a>
+  </div>
 </body>
 </html>

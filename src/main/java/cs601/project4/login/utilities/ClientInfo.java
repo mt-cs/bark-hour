@@ -6,6 +6,7 @@ package cs601.project4.login.utilities;
 public class ClientInfo {
 
   private String name;
+  private String token;
 
   // TODO add token
 

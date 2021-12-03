@@ -154,8 +154,4 @@ public class LoginUtilities {
     Map<String, Object> payloadMap = gson.fromJson(new StringReader(payload), Map.class);
     return payloadMap;
   }
-
-  public static void main(String[] args) {
-    System.out.println(generateSlackAuthorizeURL("abc", "123", "def", "url"));
-  }
 }
