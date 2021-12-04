@@ -10,6 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+/**
+ * Controller for login
+ *
+ * @author marisatania
+ */
 @Controller
 public class LoginController {
   private final Logger logger = LoggerFactory.getLogger(LoginController.class);
@@ -20,9 +25,15 @@ public class LoginController {
   @Value("${slack.config.client_id}")
   private String client_id;
 
+  /**
+   * Handles login page
+   *
+   * @param model   Model ui
+   * @param request HttpServletRequest
+   * @return index
+   */
   @GetMapping(value={"/", "/login"})
   public String index(Model model, HttpServletRequest request) {
-
     // retrieve the ID of this session
     String sessionId = request.getSession(true).getId();
     Object clientInfoObj =
@@ -30,8 +41,9 @@ public class LoginController {
     if(clientInfoObj != null) {
       // already authed, no need to log in
       System.out.println("Client with session ID %s already exists.\n");
-      return "redirect:/home";
+      return "redirect:/internaluser";
     }
+
     String nonce = LoginUtilities.generateNonce(sessionId);
 
     // determine whether the user is already authenticated
@@ -46,9 +58,11 @@ public class LoginController {
     return "index";
   }
 
-
   /**
    * Handles login error
+   *
+   * @param request HttpServletRequest
+   * @return loginerror
    */
   @GetMapping(value={"/loginerror"})
   public String loginError(HttpServletRequest request) {

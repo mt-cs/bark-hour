@@ -1,4 +1,5 @@
 package cs601.project4.web;
+import com.google.gson.Gson;
 import cs601.project4.constant.LoginConstant;
 import cs601.project4.constant.LoginServerConstants;
 import model.ClientInfo;
@@ -6,13 +7,21 @@ import cs601.project4.login.HTTPFetcher;
 import cs601.project4.login.LoginUtilities;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+/**
+ * Controller for landing page
+ *
+ * @author marisatania
+ */
 @Controller
 public class HomeController {
+  private final Logger logger = LoggerFactory.getLogger(HomeController.class);
   @Value("${slack.config.redirect_uri}")
   private String redirect_uri;
 
@@ -31,7 +40,7 @@ public class HomeController {
     if(clientInfoObj != null) {
       // already authed, no need to log in
       System.out.println("Client with session ID %s already exists.\n");
-      return "redirect:/home";
+      return "redirect:/internaluser";
     }
     // retrieve the code provided by Slack
     String code = request.getParameter(LoginServerConstants.CODE_KEY);
@@ -52,9 +61,17 @@ public class HomeController {
     if(clientInfo == null) {
       return "redirect:/loginerror";
     }
-    request.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, clientInfo.getName());
+    request.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, new Gson().toJson(clientInfo));
     model.addAttribute("name", clientInfo.getName());
     return "home";
+  }
+
+  /**
+   * Handles users that are already being authenticated
+   */
+  @GetMapping(value={"/internaluser"})
+  public String internaluser(HttpServletRequest request) {
+    return "internaluser";
   }
 
   /**
