@@ -1,7 +1,12 @@
 package cs601.project4.web;
 import com.google.gson.Gson;
+import cs601.project4.JDBC.DBCPDataSource;
+import cs601.project4.JDBC.DatabaseManager;
 import cs601.project4.constant.LoginConstant;
 import cs601.project4.constant.LoginServerConstants;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import model.ClientInfo;
 import cs601.project4.login.HTTPFetcher;
 import cs601.project4.login.LoginUtilities;
@@ -23,13 +28,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
   private final Logger logger = LoggerFactory.getLogger(HomeController.class);
   @Value("${slack.config.redirect_uri}")
-  private String redirect_uri;
+  private String redirectURI;
 
   @Value("${slack.config.client_id}")
-  private String client_id;
+  private String clientID;
 
   @Value("${slack.config.client_secret}")
-  private String client_secret;
+  private String clientSecret;
 
   @GetMapping("/home")
   public String home(Model model, HttpServletRequest request) {
@@ -50,7 +55,7 @@ public class HomeController {
     // they'll be redirected back to your service along with the typical code that signifies
     // a temporary access code. Exchange that code for a real access token using the
     // /openid.connect.token method.
-    String url = LoginUtilities.generateSlackTokenURL(client_id, client_secret, code, redirect_uri);
+    String url = LoginUtilities.generateSlackTokenURL(clientID, clientSecret, code, redirectURI);
 
     // Make the request to the token API
     String responseString = HTTPFetcher.doGet(url, null);
@@ -61,6 +66,13 @@ public class HomeController {
     if(clientInfo == null) {
       return "redirect:/loginerror";
     }
+
+    try (Connection con = DBCPDataSource.getConnection()) {
+      DatabaseManager.insertUser(con, clientInfo.getName());
+    } catch (SQLException sqlException) {
+      sqlException.printStackTrace();
+    }
+
     request.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, new Gson().toJson(clientInfo));
     model.addAttribute("name", clientInfo.getName());
     return "home";
@@ -70,7 +82,7 @@ public class HomeController {
    * Handles users that are already being authenticated
    */
   @GetMapping(value={"/internaluser"})
-  public String internaluser(HttpServletRequest request) {
+  public String internaluser() {
     return "internaluser";
   }
 
@@ -78,7 +90,7 @@ public class HomeController {
    * Handles a request to sign out
    */
   @GetMapping(value={"/logout"})
-  public String logout(Model model, HttpServletRequest request) {
+  public String logout(HttpServletRequest request) {
     request.getSession().invalidate();
     return "logout";
   }

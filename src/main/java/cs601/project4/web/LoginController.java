@@ -52,7 +52,7 @@ public class LoginController {
         sessionId,
         nonce,
         redirect_uri);
-    logger.info(url);
+    logger.info("Slack Authorize URL: " , url);
 
     model.addAttribute("url", url);
     return "index";
