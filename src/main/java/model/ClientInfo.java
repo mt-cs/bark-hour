@@ -1,4 +1,4 @@
-package cs601.project4.login.utilities;
+package model;
 
 /**
  * A class to maintain info about each client.
@@ -25,4 +25,6 @@ public class ClientInfo {
   public String getName() {
     return name;
   }
+
+
 }

@@ -1,7 +1,7 @@
 package cs601.project4.web;
 
 import cs601.project4.constant.LoginConstant;
-import cs601.project4.login.utilities.LoginUtilities;
+import cs601.project4.login.LoginUtilities;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,19 +46,9 @@ public class LoginController {
     return "index";
   }
 
-  /**
-   * Handles a request to sign out
-   */
-  @GetMapping(value={"/logout"})
-  public String logout(Model model, HttpServletRequest request) {
-    request.getSession().invalidate();
-
-    model.addAttribute("name", "Marisa");
-    return "logout";
-  }
 
   /**
-   * Handles a request to sign out
+   * Handles login error
    */
   @GetMapping(value={"/loginerror"})
   public String loginError(HttpServletRequest request) {

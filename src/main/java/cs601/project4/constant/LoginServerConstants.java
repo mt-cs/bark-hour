@@ -1,4 +1,4 @@
-package cs601.project4.login;
+package cs601.project4.constant;
 
 /**
  * A helper class to maintain constants used for the LoginServer example.

@@ -1,7 +1,8 @@
-package cs601.project4.login.utilities;
+package cs601.project4.login;
 
 import com.google.gson.Gson;
-import cs601.project4.login.LoginServerConstants;
+import cs601.project4.constant.LoginServerConstants;
+import model.ClientInfo;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.StringReader;

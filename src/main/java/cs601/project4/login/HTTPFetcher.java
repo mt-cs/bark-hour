@@ -1,4 +1,4 @@
-package cs601.project4.login.utilities;
+package cs601.project4.login;
 
 import java.io.IOException;
 import java.net.URI;

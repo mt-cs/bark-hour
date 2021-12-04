@@ -1,4 +1,4 @@
-package cs601.project4.login.utilities;
+package cs601.project4.login;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -17,12 +17,6 @@ public class Config {
   private String redirect_uri;
   private String client_id;
   private String client_secret;
-
-//  public Config(String redirect_uri, String client_id, String client_secret) {
-//    this.redirect_uri = redirect_uri;
-//    this.client_id = client_id;
-//    this.client_secret = client_secret;
-//  }
 
   // return redirect_url
   public String getRedirect_url() {

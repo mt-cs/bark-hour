@@ -1,10 +1,9 @@
 package cs601.project4.web;
 import cs601.project4.constant.LoginConstant;
-//import jakarta.servlet.http.HttpServletRequest;
-import cs601.project4.login.LoginServerConstants;
-import cs601.project4.login.utilities.ClientInfo;
-import cs601.project4.login.utilities.HTTPFetcher;
-import cs601.project4.login.utilities.LoginUtilities;
+import cs601.project4.constant.LoginServerConstants;
+import model.ClientInfo;
+import cs601.project4.login.HTTPFetcher;
+import cs601.project4.login.LoginUtilities;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +19,7 @@ public class HomeController {
   @Value("${slack.config.client_id}")
   private String client_id;
 
-  @Value("${slack.config.client_id}")
+  @Value("${slack.config.client_secret}")
   private String client_secret;
 
   @GetMapping("/home")
@@ -32,7 +31,7 @@ public class HomeController {
     if(clientInfoObj != null) {
       // already authed, no need to log in
       System.out.println("Client with session ID %s already exists.\n");
-      return "redirect:/";
+      return "redirect:/home";
     }
     // retrieve the code provided by Slack
     String code = request.getParameter(LoginServerConstants.CODE_KEY);
@@ -51,9 +50,19 @@ public class HomeController {
     ClientInfo clientInfo = LoginUtilities.verifyTokenResponse(response, sessionId);
 
     if(clientInfo == null) {
-
+      return "redirect:/loginerror";
     }
-    model.addAttribute("name", "Marisa");
+    request.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, clientInfo.getName());
+    model.addAttribute("name", clientInfo.getName());
     return "home";
+  }
+
+  /**
+   * Handles a request to sign out
+   */
+  @GetMapping(value={"/logout"})
+  public String logout(Model model, HttpServletRequest request) {
+    request.getSession().invalidate();
+    return "logout";
   }
 }
