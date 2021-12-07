@@ -116,7 +116,7 @@ public class DatabaseManager {
    * @throws SQLException
    */
   public static ResultSet selectUser(Connection con, String sessionId) throws SQLException {
-    String selectUserSql = "SELECT * FROM SPRING_SESSION WHERE SESSION_ID=(sessionId) VALUES (?);";
+    String selectUserSql = "SELECT * FROM users NATURAL JOIN users_session_id WHERE session_id = ?;";
     PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
     selectUserStmt.setString(1, sessionId);
     ResultSet results = selectUserStmt.executeQuery();
