@@ -67,9 +67,11 @@ public class HomeController {
 
     // Add to database
     try (Connection con = DatabaseManager.getConnection()) {
-      DatabaseManager.insertUser(con, clientInfo.getName(), clientInfo.getEmail());
+      if (!DatabaseManager.insertUser(con, clientInfo.getName(), clientInfo.getEmail())) {
+        logger.info("User already exists in database.");
+      }
     } catch (SQLException sqlException) {
-      sqlException.printStackTrace();
+      logger.error(sqlException.getMessage());
     }
 
     request.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, new Gson().toJson(clientInfo));

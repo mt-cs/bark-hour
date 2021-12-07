@@ -64,9 +64,13 @@ public class DatabaseManager {
    *
    * @param username User object
    * @param email    User email
-   * @return User object or null
+   * @return true if successful
    */
-  public static void insertUser(Connection con, String username, String email) {
+  public static boolean insertUser(Connection con, String username, String email) {
+    String query = "SELECT * FROM users WHERE email='" + email + "';";
+    if (!Utilities.checkDB(query)) {
+      return false;
+    }
     String insertUserSql = "INSERT IGNORE INTO users (username, email) VALUES (?, ?)";
     try {
       PreparedStatement insertUserStmt = con.prepareStatement(insertUserSql, Statement.RETURN_GENERATED_KEYS);
@@ -76,7 +80,9 @@ public class DatabaseManager {
     } catch (SQLException e) {
       logger.error(e.getMessage());
     }
+    return true;
   }
+
 //
 //  /**
 //   * delete user by user id in users table
