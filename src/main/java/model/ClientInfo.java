@@ -7,7 +7,7 @@ public class ClientInfo {
   private String username;
   String email;
   String location;
-  String timestamp;
+  String registrationDate;
   public int userid;
 
   /**
@@ -19,7 +19,7 @@ public class ClientInfo {
     this.username = name;
     this.email = email;
     this.location = "";
-    this.timestamp = "";
+    this.registrationDate = "";
   }
 
   /**
@@ -68,11 +68,11 @@ public class ClientInfo {
     this.location = location;
   }
 
-  public String getTimestamp() {
-    return timestamp;
+  public String getRegistrationDate() {
+    return registrationDate;
   }
 
-  public void setTimestamp(String timestamp) {
-    this.timestamp = timestamp;
+  public void setRegistrationDate(String timestamp) {
+    this.registrationDate = timestamp;
   }
 }

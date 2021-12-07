@@ -1,11 +1,9 @@
 package cs601.project4.web;
 import com.google.gson.Gson;
-import cs601.project4.JDBC.DBCPDataSource;
 import cs601.project4.JDBC.DatabaseManager;
 import cs601.project4.constant.LoginConstant;
 import cs601.project4.constant.LoginServerConstants;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import model.ClientInfo;
 import cs601.project4.login.HTTPFetcher;
@@ -46,7 +44,7 @@ public class HomeController {
     // Check if already authenticate
     if (clientInfoObj != null) {
       System.out.println("Client with session ID %s already exists.\n");
-      return "redirect:/internaluser";
+      return "redirect:/internal-user";
     }
 
     // Retrieve the code provided by Slack
@@ -62,7 +60,7 @@ public class HomeController {
     ClientInfo clientInfo = LoginUtilities.verifyTokenResponse(response, sessionId);
 
     if (clientInfo == null) {
-      return "redirect:/loginerror";
+      return "redirect:/login-error";
     }
 
     // Add to database
@@ -82,9 +80,9 @@ public class HomeController {
   /**
    * Handles users that are already being authenticated
    */
-  @GetMapping(value={"/internaluser"})
+  @GetMapping(value={"/internal-user"})
   public String internalUser() {
-    return "internaluser";
+    return "internal-user";
   }
 
   /**

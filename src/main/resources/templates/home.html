@@ -11,6 +11,7 @@
   </div>
   <div th:unless = "${name} == null">
     <h1>Woof! Welcome <span th:text="${name}"></span>!</h1>
+    <a href="/user-account">User Account</a>
     <a href="/logout">Signout</a>
   </div>
 </body>

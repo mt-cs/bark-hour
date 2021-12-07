@@ -42,7 +42,7 @@ public class LoginController {
     // already authenticated
     if(clientInfoObj != null) {
       System.out.println("Client with session ID %s already exists.\n");
-      return "redirect:/internaluser";
+      return "redirect:/internal-user";
     }
 
     String nonce = LoginUtilities.generateNonce(sessionId);
@@ -63,11 +63,11 @@ public class LoginController {
    * Handles login error
    *
    * @param request HttpServletRequest
-   * @return        loginerror
+   * @return        login-error
    */
-  @GetMapping(value={"/loginerror"})
+  @GetMapping(value={"/login-error"})
   public String loginError(HttpServletRequest request) {
     request.getSession().invalidate();
-    return "loginerror";
+    return "login-error";
   }
 }
