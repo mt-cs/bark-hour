@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="https://www.thymeleaf.org">>
+      xmlns:th="https://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>User Account</title>
@@ -11,5 +11,8 @@
   <p>Email: <span th:text="${email}"></span></p>
   <p>Location: <span th:text="${location}"></span></p>
   <p>Registered since: <span th:text="${reg_date}"></span></p>
+  <br>
+  <a href="/home">Home</a>
+  <a href="/logout">Logout</a>
 </body>
 </html>

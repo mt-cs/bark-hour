@@ -35,6 +35,7 @@ public class DatabaseManager {
   /* This code inside the static block is executed only once: the first time the class is loaded into memory.
      -- https://www.geeksforgeeks.org/static-blocks-in-java/
    */
+    // TODO: Get url from application property
 //    ds.setUrl(url);
 //    ds.setUsername(username);
 //    ds.setPassword(password);
@@ -67,7 +68,7 @@ public class DatabaseManager {
    * @return true if successful
    */
   public static boolean insertUser(Connection con, String username, String email) {
-    String query = "SELECT * FROM users WHERE email='" + email + "';";
+    String query = "SELECT * FROM users WHERE email='" + email + "';"; // TODO: Change to prepared
     if (!Utilities.checkDB(query)) {
       return false;
     }
@@ -81,6 +82,51 @@ public class DatabaseManager {
       logger.error(e.getMessage());
     }
     return true;
+  }
+
+  /**
+   * Performs SQL insert user to users table
+   * if SQL query is successful, return User object with userid
+   * otherwise return null
+   *
+   * @param username  User object
+   * @param sessionID Login info
+   * @return true if successful
+   */
+  public static void insertUserSessionID(Connection con, String username, String sessionID) throws SQLException {
+    String insertContactSql = "REPLACE INTO users_session_id (session_id, username) VALUES (?, ?);";
+    PreparedStatement insertContactStmt = con.prepareStatement(insertContactSql);
+    insertContactStmt.setString(1, sessionID);
+    insertContactStmt.setString(2, username);
+    insertContactStmt.executeUpdate();
+  }
+
+
+  public static void deleteUserSessionID(Connection con, String sessionID) throws SQLException {
+    String deleteUserSessionIdSql = "DELETE FROM users_session_id WHERE session_id = ?;";
+    PreparedStatement insertContactStmt = con.prepareStatement(deleteUserSessionIdSql);
+    insertContactStmt.setString(1, sessionID);
+    insertContactStmt.executeUpdate();
+  }
+
+
+  /**
+   * A method to demonstrate using a PrepareStatement to execute a database select
+   * @param con
+   * @throws SQLException
+   */
+  public static ResultSet selectUser(Connection con, String sessionId) throws SQLException {
+    String selectUserSql = "SELECT * FROM SPRING_SESSION WHERE SESSION_ID=(sessionId) VALUES (?);";
+    PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
+    selectUserStmt.setString(1, sessionId);
+    ResultSet results = selectUserStmt.executeQuery();
+//    while(results.next()) {
+//      System.out.printf("Name: %s\n", results.getString("name"));
+//      System.out.printf("Extension: %s\n", results.getInt("extension"));
+//      System.out.printf("Email: %s\n", results.getString("email"));
+//      System.out.printf("Start Date: %s\n", results.getString("startdate"));
+//    }
+    return results;
   }
 
 //

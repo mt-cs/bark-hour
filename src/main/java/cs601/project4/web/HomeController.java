@@ -68,10 +68,11 @@ public class HomeController {
       if (!DatabaseManager.insertUser(con, clientInfo.getName(), clientInfo.getEmail())) {
         logger.info("User already exists in database.");
       }
+      DatabaseManager.insertUserSessionID(con, clientInfo.getName(), sessionId);
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
-
+//    request.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, clientInfo.getName());
     request.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, new Gson().toJson(clientInfo));
     model.addAttribute("name", clientInfo.getName());
     return "home";
@@ -90,6 +91,12 @@ public class HomeController {
    */
   @GetMapping(value={"/logout"})
   public String logout(HttpServletRequest request) {
+    String sessionId = request.getSession(true).getId();
+    try (Connection con = DatabaseManager.getConnection()) {
+      DatabaseManager.deleteUserSessionID(con, sessionId);
+    } catch (SQLException sqlException) {
+      logger.error(sqlException.getMessage());
+    }
     request.getSession().invalidate();
     return "logout";
   }
