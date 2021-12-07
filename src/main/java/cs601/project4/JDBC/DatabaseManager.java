@@ -169,23 +169,23 @@ public class DatabaseManager {
    *
    * @return true if successful
    */
-  public static boolean createEvent(Connection con, int userId, String eventName, String about, String location, int numTickets) throws SQLException{
+  public static boolean createEvent(Connection con, int userId, String eventName, String about, String location, String date, String time, int numTickets) throws SQLException{
   //public static boolean createEvent(Connection con, int userId, String eventName, String about, String location, Date date, Time time, int numTickets) throws SQLException{
     String query = "SELECT * FROM events WHERE event_name='" + eventName + "';"; // TODO: Change to prepared
     if (!Utilities.checkDB(query)) {
       return false;
     }
-    String insertEventSql = "INSERT IGNORE INTO events (userid, event_name, location, about, num_ticket_avail) VALUES (?, ?, ?, ?, ?)";
-//    String insertEventSql = "INSERT IGNORE INTO events (userid, event_name, location, about, event_date, event_time, num_tickets_available) VALUES (?, ?, ?, ?, ?, ?)";
+    String insertEventSql = "INSERT IGNORE INTO events (userid, event_name, location, about,  event_date, event_time, num_ticket_avail) VALUES (?, ?, ?, ?, ?, ?, ?)";
+//    String insertEventSql = "INSERT IGNORE INTO events (userid, event_name, location, about, event_date, event_time, num_tickets_available) VALUES (?, ?, ?, ?, ?, ?, ?)";
     PreparedStatement insertUserStmt = con.prepareStatement(insertEventSql, Statement.RETURN_GENERATED_KEYS);
     insertUserStmt.setInt(1, userId);
     insertUserStmt.setString(2, eventName);
     insertUserStmt.setString(3, location);
     insertUserStmt.setString(4, about);
-    insertUserStmt.setInt(5, numTickets);
-//    insertUserStmt.setDate(5, date);
-//    insertUserStmt.setTime(6, time);
-//    insertUserStmt.setInt(7, numTickets);
+//    insertUserStmt.setInt(5, numTickets);
+    insertUserStmt.setString(5, date);
+    insertUserStmt.setString(6, time);
+    insertUserStmt.setInt(7, numTickets);
     insertUserStmt.executeUpdate();
     return true;
   }

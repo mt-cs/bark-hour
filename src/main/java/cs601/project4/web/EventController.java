@@ -57,10 +57,9 @@ public class EventController {
     String sessionId = request.getSession(true).getId();
     try (Connection con = DatabaseManager.getConnection()) {
       int userId = DatabaseManager.getUserId(con, sessionId);
-//      Date sqlDate = java.sql.Date.valueOf(date);
-//      Time sqlTime = java.sql.Time.valueOf(time);
-      DatabaseManager.createEvent(con, userId, eventName, about, location, numTickets);
-      //DatabaseManager.createEvent(con, userId, eventName, about, location, sqlDate, sqlTime, numTickets);
+      if (!DatabaseManager.createEvent(con, userId, eventName, about, location, date, time, numTickets)) {
+        logger.info("Event already exists.");
+      }
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
