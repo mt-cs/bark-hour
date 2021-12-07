@@ -196,4 +196,18 @@ public class DatabaseManager {
     ResultSet results = selectAllContactsStmt.executeQuery();
     return results;
   }
+
+  /**
+   * Perform select events by name
+   *
+   * @param con       Connection
+   * @throws SQLException database access error
+   */
+  public static ResultSet selectEvent(Connection con, String eventName) throws SQLException {
+    String selectUserSql = "SELECT * FROM events WHERE event_name = ?;";
+    PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
+    selectUserStmt.setString(1, eventName);
+    ResultSet results = selectUserStmt.executeQuery();
+    return results;
+  }
 }

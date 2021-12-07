@@ -36,11 +36,10 @@ public class EventController {
   /**
    * Display events
    *
-   * @param request HttpServletRequest
    * @return        login-error
    */
   @GetMapping(value={"/events"})
-  public String displayEvents(Model model, HttpServletRequest request) {
+  public String displayEvents(Model model) {
     List<String> headers = Arrays.asList("Event Name", "About", "Location", "Date", "Time");
     List<List<String>> events = new ArrayList<>();
 
@@ -109,6 +108,23 @@ public class EventController {
   @GetMapping(value={"/event-status"})
   public String getEventStatus() {
     return "event-status";
+  }
+
+  @GetMapping(value={"/event"})
+  public String getEvent(Model model, String eventName) {
+    try (Connection con = DatabaseManager.getConnection()) {
+      ResultSet results = DatabaseManager.selectEvent(con,eventName);
+      while(results.next()) {
+        model.addAttribute("event_name", results.getString("event_name"));
+        model.addAttribute("about", results.getString("about"));
+        model.addAttribute("location", results.getString("location"));
+        model.addAttribute("event_date", results.getString("event_date"));
+        model.addAttribute("event_time", results.getString("event_time"));
+      }
+    } catch (SQLException sqlException) {
+      logger.error(sqlException.getMessage());
+    }
+    return "event";
   }
 
 }

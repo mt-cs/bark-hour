@@ -5,6 +5,14 @@
   <title>Events</title>
 </head>
 <body>
+
+  <div class="search-container">
+    <form action="/event">
+      <input type="text" placeholder="Search event name.." name="search">
+      <button type="submit">Search</button>
+    </form>
+  </div>
+
   <table>
     <thead>
     <tr class="headings">
@@ -17,7 +25,9 @@
 <!--      <td th:text="${user.name}">...</td>-->
       <td th:each="r: ${row}" th:text="${r}" />
 <!--      <td th:each="header: ${headers}" th:text="${row.get(header)}" />-->
+      <td><a href="/event"><button>View</button></a> </td>
     </tr>
+
     </tbody>
   </table>
   <a href="/home"><button>Home</button></a>
