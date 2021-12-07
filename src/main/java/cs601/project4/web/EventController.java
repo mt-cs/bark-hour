@@ -120,6 +120,7 @@ public class EventController {
         model.addAttribute("location", results.getString("location"));
         model.addAttribute("event_date", results.getString("event_date"));
         model.addAttribute("event_time", results.getString("event_time"));
+        model.addAttribute("num_ticket_avail", results.getString("num_ticket_avail"));
       }
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());

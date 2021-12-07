@@ -206,7 +206,8 @@ public class DatabaseManager {
   public static ResultSet selectEvent(Connection con, String eventName) throws SQLException {
     String selectUserSql = "SELECT * FROM events WHERE event_name = ?;";
     PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
-    selectUserStmt.setString(1, eventName);
+    selectUserStmt.setString(1, "Puppy Be Merry");
+//    selectUserStmt.setString(1, eventName);
     ResultSet results = selectUserStmt.executeQuery();
     return results;
   }
