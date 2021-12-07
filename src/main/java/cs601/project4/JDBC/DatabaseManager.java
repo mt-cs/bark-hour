@@ -132,22 +132,20 @@ public class DatabaseManager {
    * @param username String user name
    * @param email    String user email
    * @param location String location
-   * @return results
    * @throws SQLException database access error
    */
-  public static ResultSet updateUser(
+  public static void updateUser(
       Connection con,
       String username,
       String email,
       String location)
       throws SQLException {
-    String selectUserSql = "UPDATE users SET email = ? location = ? WHERE username = ?";
+    String selectUserSql = "UPDATE users SET email = ?, location = ? WHERE username = ?";
     PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
     selectUserStmt.setString(1, email);
     selectUserStmt.setString(2, location);
     selectUserStmt.setString(3, username);
-    ResultSet results = selectUserStmt.executeQuery();
-    return results;
+    selectUserStmt.executeUpdate();
   }
 
 }

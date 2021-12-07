@@ -7,7 +7,7 @@
 </head>
 <body>
   <h2>Edit Profile</h2>
-  <form action="/profile-update">
+  <form action="/profile-update" method="post">
     <label for="username">Name:</label><br>
     <input type="text" id="username" name="username" th:value="${username}" readonly><br><br>
     <label for="email">Email:</label><br>

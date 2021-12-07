@@ -86,5 +86,4 @@ public class UserController {
   public String updateProfileForm() {
     return "profile-update";
   }
-
 }
