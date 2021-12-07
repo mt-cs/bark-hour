@@ -7,6 +7,10 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,11 +40,36 @@ public class EventController {
    * @return        login-error
    */
   @GetMapping(value={"/events"})
-  public String displayEvents(HttpServletRequest request) {
+  public String displayEvents(Model model, HttpServletRequest request) {
+    List<String> headers = Arrays.asList("Event Name", "About", "Location", "Date", "Time");
+    List<List<String>> events = new ArrayList<>();
+
+    try (Connection con = DatabaseManager.getConnection()) {
+      ResultSet results = DatabaseManager.selectEvent(con);
+
+      while(results.next()) {
+        events.add(Arrays.asList(
+            results.getString("event_name"),
+            results.getString("about"),
+            results.getString("location"),
+            results.getString("event_date"),
+            results.getString("event_time")));
+
+//        events.add(Map.of("event_name", results.getString("event_name"),
+//            "about", results.getString("about"),
+//            "location", results.getString("location"),
+//            "date", results.getString("event_date"),
+//            "time", results.getString("event_time")));
+      }
+    } catch (SQLException sqlException) {
+      logger.error(sqlException.getMessage());
+    }
+    model.addAttribute("headers", headers);
+    model.addAttribute("rows", events);
     return "events";
   }
 
-
+  //TODO: Add start time end time
   /**
    * Handles create event post method
    */
@@ -70,7 +99,7 @@ public class EventController {
    * Handles create event get method
    */
   @GetMapping(value={"/new-event"})
-  public String createEventFormForm() {
+  public String createEventForm() {
     return "new-event";
   }
 
@@ -81,4 +110,5 @@ public class EventController {
   public String getEventStatus() {
     return "event-status";
   }
+
 }

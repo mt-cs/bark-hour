@@ -190,4 +190,10 @@ public class DatabaseManager {
     return true;
   }
 
+  public static ResultSet selectEvent(Connection con) throws SQLException{
+    String selectAllContactsSql = "SELECT * FROM events;";
+    PreparedStatement selectAllContactsStmt = con.prepareStatement(selectAllContactsSql);
+    ResultSet results = selectAllContactsStmt.executeQuery();
+    return results;
+  }
 }

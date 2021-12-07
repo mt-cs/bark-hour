@@ -10,8 +10,9 @@
     <h1>Woof! Welcome to BarkHour.</h1>
   </div>
   <div th:unless = "${name} == null">
-    <h1>Woof! Welcome <span th:text="${name}"></span>!</h1>
+    <h2>Woof, welcome <span th:text="${name}"></span>!</h2>
     <a href="/account"><button>My Account</button></a>
+    <a href="/events"><button>All Events</button></a>
     <a href="/new-event"><button>Create Event</button></a>
     <a href="/logout"><button>Signout</button></a>
   </div>

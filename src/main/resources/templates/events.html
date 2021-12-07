@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Events</title>
+</head>
+<body>
+  <table>
+    <thead>
+    <tr class="headings">
+      <th th:each="header: ${headers}" class="column-title" th:text="${header}" />
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="row: ${rows}">
+<!--      <td th:text="${row.login}">...</td>-->
+<!--      <td th:text="${user.name}">...</td>-->
+      <td th:each="r: ${row}" th:text="${r}" />
+<!--      <td th:each="header: ${headers}" th:text="${row.get(header)}" />-->
+    </tr>
+    </tbody>
+  </table>
+  <a href="/home"><button>Home</button></a>
+  <a href="/events"><button>All Events</button></a>
+  <a href="/new-event"><button>Create Event</button></a>
+  <a href="/logout"><button>Logout</button></a>
+</body>
+</html>

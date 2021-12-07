@@ -28,7 +28,6 @@ public class UserController {
     // Retrieve the ID of this session
     String sessionId = request.getSession(true).getId();
 
-    // Add to database
     try (Connection con = DatabaseManager.getConnection()) {
       ResultSet results = DatabaseManager.selectUser(con, sessionId);
       while(results.next()) {
