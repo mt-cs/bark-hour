@@ -30,7 +30,7 @@ public class LoginController {
    *
    * @param model   Model ui
    * @param request HttpServletRequest
-   * @return index
+   * @return        index
    */
   @GetMapping(value={"/", "/login"})
   public String index(Model model, HttpServletRequest request) {
@@ -38,8 +38,9 @@ public class LoginController {
     String sessionId = request.getSession(true).getId();
     Object clientInfoObj =
         request.getSession().getAttribute(LoginConstant.CLIENT_INFO_KEY);
+
+    // already authenticated
     if(clientInfoObj != null) {
-      // already authed, no need to log in
       System.out.println("Client with session ID %s already exists.\n");
       return "redirect:/internaluser";
     }
@@ -52,7 +53,7 @@ public class LoginController {
         sessionId,
         nonce,
         redirect_uri);
-    logger.info("Slack Authorize URL: " , url);
+    logger.info("Slack Authorize URL: " + url);
 
     model.addAttribute("url", url);
     return "index";
@@ -62,7 +63,7 @@ public class LoginController {
    * Handles login error
    *
    * @param request HttpServletRequest
-   * @return loginerror
+   * @return        loginerror
    */
   @GetMapping(value={"/loginerror"})
   public String loginError(HttpServletRequest request) {

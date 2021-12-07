@@ -21,25 +21,31 @@ public class LoginUtilities {
    * Hash the session ID to generate a nonce.
    * Uses Apache Commons Codec
    * See https://www.baeldung.com/sha-256-hashing-java
-   * @param sessionId
-   * @return
+   *
+   * @param  sessionId cookie
+   * @return sha256hex
    */
   public static String generateNonce(String sessionId) {
-    String sha256hex = DigestUtils.sha256Hex(sessionId);
-    return sha256hex;
+    return DigestUtils.sha256Hex(sessionId);
   }
 
   /**
    * Generates the URL to make the initial request to the authorize API.
-   * @param clientId
-   * @param state
-   * @param nonce
-   * @param redirectURI
-   * @return
+   *
+   * @param clientId    String client id
+   * @param state       String state
+   * @param nonce       String nonce
+   * @param redirectURI String redirect URI
+   * @return url
    */
-  public static String generateSlackAuthorizeURL(String clientId, String state, String nonce, String redirectURI) {
+  public static String generateSlackAuthorizeURL(
+      String clientId,
+      String state,
+      String nonce,
+      String redirectURI
+  ) {
 
-    String url = String.format("https://%s/%s?%s=%s&%s=%s&%s=%s&%s=%s&%s=%s&%s=%s",
+    return String.format("https://%s/%s?%s=%s&%s=%s&%s=%s&%s=%s&%s=%s&%s=%s",
         LoginServerConstants.HOST,
         LoginServerConstants.AUTH_PATH,
         LoginServerConstants.RESPONSE_TYPE_KEY,
@@ -55,20 +61,19 @@ public class LoginUtilities {
         LoginServerConstants.REDIRECT_URI_KEY,
         redirectURI
     );
-    return url;
   }
 
   /**
    * Generates the URL to exchange the initial auth for a token.
-   * @param clientId
-   * @param clientSecret
-   * @param code
-   * @param redirectURI
-   * @return
+   *
+   * @param clientId     String client id
+   * @param clientSecret String client secret
+   * @param code         String code
+   * @param redirectURI  String redirect URI
+   * @return url
    */
   public static String generateSlackTokenURL(String clientId, String clientSecret, String code, String redirectURI) {
-
-    String url = String.format("https://%s/%s?%s=%s&%s=%s&%s=%s&%s=%s",
+    return String.format("https://%s/%s?%s=%s&%s=%s&%s=%s&%s=%s",
         LoginServerConstants.HOST,
         LoginServerConstants.TOKEN_PATH,
         LoginServerConstants.CLIENT_ID_KEY,
@@ -80,17 +85,16 @@ public class LoginUtilities {
         LoginServerConstants.REDIRECT_URI_KEY,
         redirectURI
     );
-    return url;
   }
 
   /**
    * Convert a JSON-formatted String to a Map.
-   * @param jsonString
-   * @return
+   *
+   * @param jsonString String json
+   * @return map
    */
   public static Map<String, Object> jsonStrToMap(String jsonString) {
-    Map<String, Object> map = gson.fromJson(new StringReader(jsonString), Map.class);
-    return map;
+    return gson.fromJson(new StringReader(jsonString), Map.class);
   }
 
   /**
@@ -102,14 +106,15 @@ public class LoginUtilities {
    * @return
    */
   public static ClientInfo verifyTokenResponse(Map<String, Object> map, String sessionId) {
-
     // verify ok: true
-    if(!map.containsKey(LoginServerConstants.OK_KEY) || !(boolean)map.get(LoginServerConstants.OK_KEY)) {
+    if(!map.containsKey(LoginServerConstants.OK_KEY) ||
+        !(boolean)map.get(LoginServerConstants.OK_KEY)) {
       return null;
     }
 
     // verify state is the users session cookie id
-    if(!map.containsKey(LoginServerConstants.STATE_KEY) || !map.get(LoginServerConstants.STATE_KEY).equals(sessionId)) {
+    if(!map.containsKey(LoginServerConstants.STATE_KEY) ||
+        !map.get(LoginServerConstants.STATE_KEY).equals(sessionId)) {
       System.out.println(map.get(LoginServerConstants.STATE_KEY));
       System.out.println(sessionId);
       return null;
@@ -126,9 +131,10 @@ public class LoginUtilities {
       return null;
     }
 
-    // extract name from response
+    // extract data from response
     String username = (String) payloadMap.get(LoginServerConstants.NAME_KEY);
-    return new ClientInfo(username);
+    String email = (String) payloadMap.get(LoginServerConstants.EMAIL_KEY);
+    return new ClientInfo(username, email);
   }
 
   /**

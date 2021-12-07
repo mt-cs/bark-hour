@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * A class to store the JDBC properties
+ *
  * @author marisatania
  */
 @Configuration

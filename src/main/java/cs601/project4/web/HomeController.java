@@ -38,23 +38,21 @@ public class HomeController {
 
   @GetMapping("/home")
   public String home(Model model, HttpServletRequest request) {
-    // retrieve the ID of this session
+    // Retrieve the ID of this session
     String sessionId = request.getSession(true).getId();
     Object clientInfoObj =
         request.getSession().getAttribute(LoginConstant.CLIENT_INFO_KEY);
-    if(clientInfoObj != null) {
-      // already authed, no need to log in
+
+    // Check if already authenticate
+    if (clientInfoObj != null) {
       System.out.println("Client with session ID %s already exists.\n");
       return "redirect:/internaluser";
     }
-    // retrieve the code provided by Slack
+
+    // Retrieve the code provided by Slack
     String code = request.getParameter(LoginServerConstants.CODE_KEY);
 
-    // generate the url to use to exchange the code for a token:
-    // After the user successfully grants your app permission to access their Slack profile,
-    // they'll be redirected back to your service along with the typical code that signifies
-    // a temporary access code. Exchange that code for a real access token using the
-    // /openid.connect.token method.
+    // Generate the url to use to exchange the code for a token:
     String url = LoginUtilities.generateSlackTokenURL(clientID, clientSecret, code, redirectURI);
 
     // Make the request to the token API
@@ -63,12 +61,13 @@ public class HomeController {
 
     ClientInfo clientInfo = LoginUtilities.verifyTokenResponse(response, sessionId);
 
-    if(clientInfo == null) {
+    if (clientInfo == null) {
       return "redirect:/loginerror";
     }
 
-    try (Connection con = DBCPDataSource.getConnection()) {
-      DatabaseManager.insertUser(con, clientInfo.getName());
+    // Add to database
+    try (Connection con = DatabaseManager.getConnection()) {
+      DatabaseManager.insertUser(con, clientInfo.getName(), clientInfo.getEmail());
     } catch (SQLException sqlException) {
       sqlException.printStackTrace();
     }
@@ -82,7 +81,7 @@ public class HomeController {
    * Handles users that are already being authenticated
    */
   @GetMapping(value={"/internaluser"})
-  public String internaluser() {
+  public String internalUser() {
     return "internaluser";
   }
 

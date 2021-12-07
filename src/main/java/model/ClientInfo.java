@@ -5,16 +5,21 @@ package model;
  */
 public class ClientInfo {
   private String username;
-  public int userid = 0;
+  String email;
+  String location;
+  String timestamp;
+  public int userid;
 
   /**
    * Constructor
    *
    * @param name client name
    */
-  public ClientInfo(String name) {
+  public ClientInfo(String name, String email) {
     this.username = name;
-    this.userid++;
+    this.email = email;
+    this.location = "";
+    this.timestamp = "";
   }
 
   /**
@@ -47,5 +52,27 @@ public class ClientInfo {
     this.username = username;
   }
 
+  public String getEmail() {
+    return email;
+  }
 
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public String getLocation() {
+    return location;
+  }
+
+  public void setLocation(String location) {
+    this.location = location;
+  }
+
+  public String getTimestamp() {
+    return timestamp;
+  }
+
+  public void setTimestamp(String timestamp) {
+    this.timestamp = timestamp;
+  }
 }

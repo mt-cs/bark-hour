@@ -25,6 +25,7 @@ public class DatabaseManager {
 
   private static final int MIN_IDLE = 5;
   private static final int MAX_IDLE = 10;
+
   // Apache commons connection pool implementation
   private static final BasicDataSource ds = new BasicDataSource();
 
@@ -34,36 +35,43 @@ public class DatabaseManager {
   /* This code inside the static block is executed only once: the first time the class is loaded into memory.
      -- https://www.geeksforgeeks.org/static-blocks-in-java/
    */
-    ds.setUrl(url);
-    ds.setUsername(username);
-    ds.setPassword(password);
+//    ds.setUrl(url);
+//    ds.setUsername(username);
+//    ds.setPassword(password);
+    ds.setUrl("jdbc:mysql://localhost:3306/user026");
+    ds.setUsername("user026");
+    ds.setPassword("user026");
     ds.setMinIdle(MIN_IDLE);
     ds.setMaxIdle(MAX_IDLE);
   }
 
+  private DatabaseManager(){ }
+
   /**
    * Getter for Connection
    *
-   * @return a Connection from the pool.
-   * @throws SQLException on a database access error.
+   * @return  a Connection from the pool.
+   * @throws  SQLException on a database access error.
    */
   public static Connection getConnection() throws SQLException {
     return ds.getConnection();
   }
 
   /**
-   * performs SQL insert user to users table
+   * Performs SQL insert user to users table
    * if SQL query is successful, return User object with userid
    * otherwise return null
    *
-   * @param username - User object
+   * @param username User object
+   * @param email    User email
    * @return User object or null
    */
-  public static void insertUser(Connection con, String username) {
-    String insertUserSql = "INSERT IGNORE INTO users (username) VALUES (?)";
+  public static void insertUser(Connection con, String username, String email) {
+    String insertUserSql = "INSERT IGNORE INTO users (username, email) VALUES (?, ?)";
     try {
       PreparedStatement insertUserStmt = con.prepareStatement(insertUserSql, Statement.RETURN_GENERATED_KEYS);
       insertUserStmt.setString(1, username);
+      insertUserStmt.setString(2, email);
       insertUserStmt.executeUpdate();
     } catch (SQLException e) {
       logger.error(e.getMessage());
