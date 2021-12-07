@@ -6,7 +6,6 @@ import cs601.project4.JDBC.DatabaseManager;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>New Event</title>
+</head>
+<body>
+  <h2>Create Event</h2>
+  <form action="/event-status" method="post">
+    <label for="event_name">Event name:</label><br>
+    <input type="text" id="event_name" name="event_name" th:value="${event_name}"><br><br>
+    <label for="about">About:</label><br>
+    <input type="text" id="about" name="about" th:value="${about}"><br><br>
+    <label for="location">Location:</label><br>
+    <input type="text" id="location" name="location" th:value="${location}"><br><br>
+    <label for="event_date">Date:</label><br>
+    <input type="date" id="event_date" name="event_date" th:value="${date}"><br><br>
+    <label for="event_time">Time:</label><br>
+    <input type="time" id="event_time" name="event_time" th:value="${time}"><br><br>
+    <label for="num_tickets">Available seats:</label><br>
+    <input type="number" id="num_tickets" name="num_tickets" th:value="${num_tickets}"><br><br>
+    <input type="submit" value="Submit">
+  </form>
+</body>
+</html>

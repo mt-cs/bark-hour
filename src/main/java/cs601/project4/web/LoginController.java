@@ -17,13 +17,14 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 public class LoginController {
-  private final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
   @Value("${slack.config.redirect_uri}")
   private String redirect_uri;
 
   @Value("${slack.config.client_id}")
   private String client_id;
+
+  private final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
   /**
    * Handles login page
