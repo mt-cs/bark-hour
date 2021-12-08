@@ -34,6 +34,16 @@ public class HomeController {
   @Value("${slack.config.client_secret}")
   private String clientSecret;
 
+  /**
+   * Handles landing page
+   *
+   * @return index
+   */
+  @GetMapping(value={"/"})
+  public String getLandingPage() {
+    return "index";
+  }
+
   @GetMapping("/home")
   public String home(Model model, HttpServletRequest request) {
     // Retrieve the ID of this session
@@ -77,6 +87,9 @@ public class HomeController {
     model.addAttribute("name", clientInfo.getName());
     return "home";
   }
+
+
+
 
   /**
    * Handles users that are already being authenticated

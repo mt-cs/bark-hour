@@ -9,9 +9,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @author marisatania
  */
 @SpringBootApplication
-public class BarkHourApp {
+public class BarkourApp {
   public static void main(String[] args) {
-    SpringApplication.run(BarkHourApp.class, args);
+    SpringApplication.run(BarkourApp.class, args);
   }
 }
 

@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author marisatania
  */
 @Controller
-public class BarkHourErrorController implements ErrorController {
-  private final Logger logger = LoggerFactory.getLogger(BarkHourErrorController.class);
+public class BarkourErrorController implements ErrorController {
+  private final Logger logger = LoggerFactory.getLogger(BarkourErrorController.class);
 
   /**
    * Handle error path
