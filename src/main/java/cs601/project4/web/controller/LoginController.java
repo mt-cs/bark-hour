@@ -1,7 +1,10 @@
 package cs601.project4.web.controller;
 
-import cs601.project4.constant.LoginConstant;
+import cs601.project4.constant.LoginServerConstants;
+import cs601.project4.database.DatabaseManager;
 import cs601.project4.login.LoginUtilities;
+import java.sql.Connection;
+import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
- * Controller for login
+ * Controller for Login features
  *
  * @author marisatania
  */
@@ -35,20 +38,16 @@ public class LoginController {
    */
   @GetMapping(value={"/login"})
   public String getLogin(Model model, HttpServletRequest request) {
-    // retrieve the ID of this session
     String sessionId = request.getSession(true).getId();
     Object clientInfoObj =
-        request.getSession().getAttribute(LoginConstant.CLIENT_INFO_KEY);
+        request.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
 
-    // already authenticated
     if(clientInfoObj != null) {
       System.out.println("Client with session ID %s already exists.\n");
       return "redirect:/internal-user";
     }
 
     String nonce = LoginUtilities.generateNonce(sessionId);
-
-    // determine whether the user is already authenticated
     String url = LoginUtilities.generateSlackAuthorizeURL(
         client_id,
         sessionId,
@@ -70,5 +69,23 @@ public class LoginController {
   public String loginError(HttpServletRequest request) {
     request.getSession().invalidate();
     return "login-error";
+  }
+
+  /**
+   * Handles a request to sign out
+   *
+   * @param request HTTP Servlet Request
+   * @return logout
+   */
+  @GetMapping(value={"/logout"})
+  public String logout(HttpServletRequest request) {
+    String sessionId = request.getSession(true).getId();
+    try (Connection con = DatabaseManager.getConnection()) {
+      DatabaseManager.deleteUserSessionID(con, sessionId);
+    } catch (SQLException sqlException) {
+      logger.error(sqlException.getMessage());
+    }
+    request.getSession().invalidate();
+    return "logout";
   }
 }

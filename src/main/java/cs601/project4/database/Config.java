@@ -1,4 +1,4 @@
-package cs601.project4.JDBC;
+package cs601.project4.database;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -16,31 +16,4 @@ public class Config {
   private String url;
   private String username;
   private String password;
-
-  /**
-   * Getter for the database url
-   *
-   * @return url
-   */
-  public String getUrl() {
-    return url;
-  }
-
-  /**
-   * Getter for the username property
-   *
-   * @return username
-   */
-  public String getUsername() {
-    return username;
-  }
-
-  /**
-   * Getter for the password
-   *
-   * @return password
-   */
-  public String getPassword() {
-    return password;
-  }
 }

@@ -1,13 +1,10 @@
-package cs601.project4.JDBC;
+package cs601.project4.database;
 
-import cs601.project4.JDBC.util.Utilities;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Time;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +23,6 @@ public class DatabaseManager {
   private static final int MIN_IDLE = 5;
   private static final int MAX_IDLE = 10;
 
-  // Apache commons connection pool implementation
   private static final BasicDataSource ds = new BasicDataSource();
 
   private static final Logger logger = LoggerFactory.getLogger(DatabaseManager.class);
@@ -34,12 +30,12 @@ public class DatabaseManager {
   static {
     /* Source: https://www.geeksforgeeks.org/static-blocks-in-java/ */
     // TODO: Get url from application property
-//    ds.setUrl(url);
-//    ds.setUsername(username);
-//    ds.setPassword(password);
-    ds.setUrl("jdbc:mysql://localhost:3306/user026");
-    ds.setUsername("user026");
-    ds.setPassword("user026");
+    ds.setUrl(url);
+    ds.setUsername(username);
+    ds.setPassword(password);
+//    ds.setUrl("jdbc:mysql://localhost:3306/user026");
+//    ds.setUsername("user026");
+//    ds.setPassword("user026");
     ds.setMinIdle(MIN_IDLE);
     ds.setMaxIdle(MAX_IDLE);
   }

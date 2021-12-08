@@ -1,33 +1,14 @@
-package model;
+package cs601.project4.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.sql.Date;
 import java.sql.Time;
-import java.util.List;
-import javax.persistence.Entity;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * Event model
  *
  * @author marisatania
  */
-//@Entity
-//@Data
-//@NoArgsConstructor
-//@AllArgsConstructor
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class)
 public class Event {
-//  @Id
-//  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private int eventId;
   private String eventName;
   private String about;
@@ -38,9 +19,6 @@ public class Event {
   private int numTickets;
   private int numTicketAvail;
   private int numTicketPurchased;
-
-//  @OneToMany(mappedBy = "event")
-//  private List<Ticket> ticketList;
 
   public Event(int eventId, String eventName, int numTickets, int numTicketAvail, int numTicketPurchased) {
     this.eventId = eventId;

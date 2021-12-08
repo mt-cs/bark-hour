@@ -1,11 +1,10 @@
 package cs601.project4.web.controller;
 import com.google.gson.Gson;
-import cs601.project4.JDBC.DatabaseManager;
-import cs601.project4.constant.LoginConstant;
+import cs601.project4.database.DatabaseManager;
 import cs601.project4.constant.LoginServerConstants;
 import java.sql.Connection;
 import java.sql.SQLException;
-import model.ClientInfo;
+import cs601.project4.model.ClientInfo;
 import cs601.project4.login.HTTPFetcher;
 import cs601.project4.login.LoginUtilities;
 import java.util.Map;
@@ -44,26 +43,31 @@ public class HomeController {
     return "index";
   }
 
+  /**
+   * Handles homepage after login
+   *
+   * @return home
+   */
   @GetMapping("/home")
   public String home(Model model, HttpServletRequest request) {
-    // Retrieve the ID of this session
+    /* Retrieve the ID of this session */
     String sessionId = request.getSession(true).getId();
     Object clientInfoObj =
-        request.getSession().getAttribute(LoginConstant.CLIENT_INFO_KEY);
+        request.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
 
-    // Check if already authenticate
+    /* Check if already authenticated */
     if (clientInfoObj != null) {
       System.out.println("Client with session ID %s already exists.\n");
       return "redirect:/internal-user";
     }
 
-    // Retrieve the code provided by Slack
+    /* Retrieve the code provided by Slack */
     String code = request.getParameter(LoginServerConstants.CODE_KEY);
 
-    // Generate the url to use to exchange the code for a token:
+    /* Generate the url to use to exchange the code for a token: */
     String url = LoginUtilities.generateSlackTokenURL(clientID, clientSecret, code, redirectURI);
 
-    // Make the request to the token API
+    /* Make the request to the token API */
     String responseString = HTTPFetcher.doGet(url, null);
     Map<String, Object> response = LoginUtilities.jsonStrToMap(responseString);
 
@@ -73,7 +77,7 @@ public class HomeController {
       return "redirect:/login-error";
     }
 
-    // Add to database
+    /* Add to database */
     try (Connection con = DatabaseManager.getConnection()) {
       if (!DatabaseManager.insertUser(con, clientInfo.getName(), clientInfo.getEmail())) {
         logger.info("User already exists in database.");
@@ -82,35 +86,20 @@ public class HomeController {
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
-//    request.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, clientInfo.getName());
     request.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, new Gson().toJson(clientInfo));
     model.addAttribute("name", clientInfo.getName());
     return "home";
   }
 
-
-
-
   /**
    * Handles users that are already being authenticated
+   *
+   * @return internal-user
    */
   @GetMapping(value={"/internal-user"})
   public String internalUser() {
     return "internal-user";
   }
 
-  /**
-   * Handles a request to sign out
-   */
-  @GetMapping(value={"/logout"})
-  public String logout(HttpServletRequest request) {
-    String sessionId = request.getSession(true).getId();
-    try (Connection con = DatabaseManager.getConnection()) {
-      DatabaseManager.deleteUserSessionID(con, sessionId);
-    } catch (SQLException sqlException) {
-      logger.error(sqlException.getMessage());
-    }
-    request.getSession().invalidate();
-    return "logout";
-  }
+
 }

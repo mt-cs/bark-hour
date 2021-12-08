@@ -1,6 +1,6 @@
 package cs601.project4.web.controller;
 
-import cs601.project4.JDBC.DatabaseManager;
+import cs601.project4.database.DatabaseManager;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Controller for user
+ * Controller for user services
  *
  * @author marisatania
  */
@@ -24,8 +24,6 @@ public class UserController {
 
   @GetMapping(value={"/account"})
   public String userAccount(Model model, HttpServletRequest request) {
-
-    // Retrieve the ID of this session
     String sessionId = request.getSession(true).getId();
 
     try (Connection con = DatabaseManager.getConnection()) {
@@ -44,8 +42,6 @@ public class UserController {
 
   @GetMapping(value={"/profile"})
   public String editProfile(Model model, HttpServletRequest request) {
-
-    // Retrieve the ID of this session
     String sessionId = request.getSession(true).getId();
 
     try (Connection con = DatabaseManager.getConnection()) {

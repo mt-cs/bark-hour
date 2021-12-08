@@ -1,13 +1,13 @@
-package model;
+package cs601.project4.model;
 
 /**
  * A class to maintain info about each client.
  */
 public class ClientInfo {
   private String username;
-  String email;
-  String location;
-  String registrationDate;
+  private String email;
+  private String location;
+  private String registrationDate;
   public int userid;
 
   /**
