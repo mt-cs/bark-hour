@@ -1,4 +1,4 @@
-package cs601.project4.web;
+package cs601.project4.web.controller;
 
 import cs601.project4.constant.LoginConstant;
 import cs601.project4.login.LoginUtilities;
@@ -34,7 +34,7 @@ public class LoginController {
    * @return        index
    */
   @GetMapping(value={"/", "/login"})
-  public String index(Model model, HttpServletRequest request) {
+  public String getLogin(Model model, HttpServletRequest request) {
     // retrieve the ID of this session
     String sessionId = request.getSession(true).getId();
     Object clientInfoObj =
@@ -57,7 +57,7 @@ public class LoginController {
     logger.info("Slack Authorize URL: " + url);
 
     model.addAttribute("url", url);
-    return "index";
+    return "pages-login";
   }
 
   /**

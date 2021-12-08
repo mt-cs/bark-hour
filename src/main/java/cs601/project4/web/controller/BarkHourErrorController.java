@@ -1,4 +1,4 @@
-package cs601.project4.web;
+package cs601.project4.web.controller;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;

@@ -1,4 +1,4 @@
-package cs601.project4.web;
+package cs601.project4.web.controller;
 import com.google.gson.Gson;
 import cs601.project4.JDBC.DatabaseManager;
 import cs601.project4.constant.LoginConstant;
