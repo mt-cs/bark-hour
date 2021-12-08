@@ -30,9 +30,9 @@ public class BarkHourErrorController implements ErrorController {
     logger.error("ERROR: " + status.toString());
     int statusCode = Integer.parseInt(status.toString());
     if (statusCode == HttpStatus.NOT_FOUND.value()) {
-      return "pages-error-404";
+      return "error-404";
     } else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-      return "error500";
+      return "error-500";
     }
     return "error";
   }
