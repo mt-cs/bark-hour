@@ -1,6 +1,6 @@
 package cs601.project4.web.controller;
 
-import cs601.project4.JDBC.DatabaseManager;
+import cs601.project4.database.DatabaseManager;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
