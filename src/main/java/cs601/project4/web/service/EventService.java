@@ -1,8 +1,8 @@
-//package cs601.project4.service;
+//package cs601.project4.web.service;
 //
-//import Repository.EventRepository;
+//import cs601.project4.web.Repository.EventRepository;
 //import java.util.List;
-//import model.Event;
+//import cs601.project4.model.Event;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.stereotype.Service;
 //
