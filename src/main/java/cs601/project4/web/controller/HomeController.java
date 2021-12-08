@@ -5,7 +5,7 @@ import cs601.project4.constant.LoginConstant;
 import cs601.project4.constant.LoginServerConstants;
 import java.sql.Connection;
 import java.sql.SQLException;
-import model.ClientInfo;
+import cs601.project4.model.ClientInfo;
 import cs601.project4.login.HTTPFetcher;
 import cs601.project4.login.LoginUtilities;
 import java.util.Map;
