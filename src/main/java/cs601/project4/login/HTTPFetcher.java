@@ -16,8 +16,9 @@ public class HTTPFetcher {
   /**
    * Execute an HTTP GET for the specified URL and return the
    * body of the response as a String.
-   * @param url
-   * @return
+   *
+   * @param url input String URL
+   * @return String HTTP Response
    */
   public static String doGet(String url) {
     return doGet(url, null);
@@ -27,9 +28,10 @@ public class HTTPFetcher {
    * Execute an HTTP GET for the specified URL and return
    * the body of the response as a String. Allows request
    * headers to be set.
-   * @param url
-   * @param headers
-   * @return
+   *
+   * @param url     String URL
+   * @param headers Map headers
+   * @return String HTTP response body
    */
   public static String doGet(String url, Map<String, String> headers) {
     try {
@@ -52,10 +54,10 @@ public class HTTPFetcher {
    * Headers for the request are provided in the map headers.
    * The body of the request is provided as a String.
    *
-   * @param url
-   * @param headers
-   * @param body
-   * @return
+   * @param url     String URL
+   * @param headers Map headers
+   * @param body    String HTTP Request Body
+   * @return String HTTP response body
    */
   public static String doPost(String url, Map<String, String> headers, String body) {
 
@@ -79,9 +81,10 @@ public class HTTPFetcher {
 
   /**
    * Helper method to set the headers of any HttpRequest.Builder.
-   * @param builder
-   * @param headers
-   * @return
+   *
+   * @param builder HttpRequest.Builder
+   * @param headers Map headers
+   * @return String HTTP response body
    */
   private static HttpRequest.Builder setHeaders(HttpRequest.Builder builder, Map<String, String> headers) {
     if(headers != null) {

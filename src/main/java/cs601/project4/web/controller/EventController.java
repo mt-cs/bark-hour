@@ -1,5 +1,6 @@
 package cs601.project4.web.controller;
 
+import cs601.project4.database.DBEvent;
 import cs601.project4.database.DBManager;
 import cs601.project4.database.DBSessionId;
 import java.sql.Connection;
@@ -37,7 +38,7 @@ public class EventController {
     List<List<String>> events = new ArrayList<>();
 
     try (Connection con = DBManager.getConnection()) {
-      ResultSet results = DBManager.selectEvent(con);
+      ResultSet results = DBEvent.selectAllEvent(con);
 
       while(results.next()) {
         events.add(Arrays.asList(
@@ -46,12 +47,6 @@ public class EventController {
             results.getString("location"),
             results.getString("event_date"),
             results.getString("event_time")));
-
-//        events.add(Map.of("event_name", results.getString("event_name"),
-//            "about", results.getString("about"),
-//            "location", results.getString("location"),
-//            "date", results.getString("event_date"),
-//            "time", results.getString("event_time")));
       }
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
@@ -78,7 +73,7 @@ public class EventController {
     String sessionId = request.getSession(true).getId();
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
-      if (!DBManager.createEvent(con, userId, eventName, about, location, date, time, numTickets)) {
+      if (!DBEvent.createEvent(con, userId, eventName, about, location, date, time, numTickets)) {
         logger.info("Event already exists.");
       }
     } catch (SQLException sqlException) {
@@ -106,7 +101,7 @@ public class EventController {
   @GetMapping(value={"/event"})
   public String getEvent(Model model, String eventName) {
     try (Connection con = DBManager.getConnection()) {
-      ResultSet results = DBManager.selectEvent(con,eventName);
+      ResultSet results = DBEvent.selectEvent(con,eventName);
       while(results.next()) {
         model.addAttribute("event_name", results.getString("event_name"));
         model.addAttribute("about", results.getString("about"));
