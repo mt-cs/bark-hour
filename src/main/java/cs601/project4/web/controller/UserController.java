@@ -1,5 +1,6 @@
 package cs601.project4.web.controller;
 
+import cs601.project4.constant.UserConstants;
 import cs601.project4.database.DBManager;
 import cs601.project4.database.DBUser;
 import java.sql.Connection;
@@ -30,10 +31,10 @@ public class UserController {
     try (Connection con = DBManager.getConnection()) {
       ResultSet results = DBUser.selectUser(con, sessionId);
       while(results.next()) {
-        model.addAttribute("username", results.getString("username"));
-        model.addAttribute("email", results.getString("email"));
-        model.addAttribute("location", results.getString("location"));
-        model.addAttribute("reg_date", results.getString("reg_date"));
+        model.addAttribute(UserConstants.USERNAME, results.getString(UserConstants.USERNAME));
+        model.addAttribute(UserConstants.EMAIL, results.getString(UserConstants.EMAIL));
+        model.addAttribute(UserConstants.LOCATION, results.getString(UserConstants.LOCATION));
+        model.addAttribute(UserConstants.REG_DATE, results.getString(UserConstants.REG_DATE));
       }
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
@@ -48,10 +49,10 @@ public class UserController {
     try (Connection con = DBManager.getConnection()) {
       ResultSet results = DBUser.selectUser(con, sessionId);
       while(results.next()) {
-        model.addAttribute("username", results.getString("username"));
-        model.addAttribute("email", results.getString("email"));
-        model.addAttribute("location", results.getString("location"));
-        model.addAttribute("reg_date", results.getString("reg_date"));
+        model.addAttribute(UserConstants.USERNAME, results.getString(UserConstants.USERNAME));
+        model.addAttribute(UserConstants.EMAIL, results.getString(UserConstants.EMAIL));
+        model.addAttribute(UserConstants.LOCATION, results.getString(UserConstants.LOCATION));
+        model.addAttribute(UserConstants.REG_DATE, results.getString(UserConstants.REG_DATE));
       }
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
@@ -64,9 +65,9 @@ public class UserController {
    */
   @PostMapping(value={"/profile-update"})
   public String updateProfileSubmit(
-      @RequestParam("username") String userName ,
-      @RequestParam("email") String email,
-      @RequestParam("location") String location) {
+      @RequestParam(UserConstants.USERNAME) String userName ,
+      @RequestParam(UserConstants.EMAIL) String email,
+      @RequestParam(UserConstants.LOCATION) String location) {
 
     try (Connection con = DBManager.getConnection()) {
       DBUser.updateUser(con, userName, email, location);

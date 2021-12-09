@@ -19,4 +19,6 @@ public class EventConstants {
   public static final String EVENT_END = "event_end";
   public static final String NUM_TICKETS = "num_tickets";
   public static final String NUM_TICKETS_AVAIL = "num_tickets_avail";
+  public static final String NEW_LINE = "\n";
+  public static final String COMMA = ", ";
 }

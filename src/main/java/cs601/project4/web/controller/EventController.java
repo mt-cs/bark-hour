@@ -36,8 +36,9 @@ public class EventController {
    */
   @GetMapping(value={"/events"})
   public String displayEvents(Model model) {
-    List<String> headers = Arrays.asList("Event Name", "About", "Location", "Start", "End");
     List<List<String>> events = new ArrayList<>();
+    List<String> headers =
+        Arrays.asList("Event Name", "About", "Location", "Start", "End");
 
     try (Connection con = DBManager.getConnection()) {
       ResultSet results = DBEvent.selectAllEvent(con);
@@ -46,11 +47,15 @@ public class EventController {
         events.add(Arrays.asList(
             results.getString(EventConstants.EVENT_NAME),
             results.getString(EventConstants.ABOUT),
-            results.getString(EventConstants.VENUE) + "\n" +
-                results.getString(EventConstants.CITY) + ", " +
-                results.getString(EventConstants.STATE) + ", " +
-                results.getString(EventConstants.COUNTRY) + "\n" +
-                results.getString(EventConstants.ZIP),
+            results.getString(EventConstants.VENUE)
+                + EventConstants.NEW_LINE
+                + results.getString(EventConstants.CITY)
+                + EventConstants.COMMA
+                + results.getString(EventConstants.STATE)
+                + EventConstants.COMMA
+                + results.getString(EventConstants.COUNTRY)
+                + EventConstants.NEW_LINE
+                + results.getString(EventConstants.ZIP),
                 results.getString(EventConstants.EVENT_START),
             results.getString(EventConstants.EVENT_END)));
       }
