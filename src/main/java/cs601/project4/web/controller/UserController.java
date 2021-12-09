@@ -1,6 +1,7 @@
 package cs601.project4.web.controller;
 
 import cs601.project4.database.DBManager;
+import cs601.project4.database.DBUser;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -27,7 +28,7 @@ public class UserController {
     String sessionId = request.getSession(true).getId();
 
     try (Connection con = DBManager.getConnection()) {
-      ResultSet results = DBManager.selectUser(con, sessionId);
+      ResultSet results = DBUser.selectUser(con, sessionId);
       while(results.next()) {
         model.addAttribute("username", results.getString("username"));
         model.addAttribute("email", results.getString("email"));
@@ -45,7 +46,7 @@ public class UserController {
     String sessionId = request.getSession(true).getId();
 
     try (Connection con = DBManager.getConnection()) {
-      ResultSet results = DBManager.selectUser(con, sessionId);
+      ResultSet results = DBUser.selectUser(con, sessionId);
       while(results.next()) {
         model.addAttribute("username", results.getString("username"));
         model.addAttribute("email", results.getString("email"));
@@ -66,8 +67,9 @@ public class UserController {
       @RequestParam("username") String userName ,
       @RequestParam("email") String email,
       @RequestParam("location") String location) {
+
     try (Connection con = DBManager.getConnection()) {
-      DBManager.updateUser(con, userName, email, location);
+      DBUser.updateUser(con, userName, email, location);
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }

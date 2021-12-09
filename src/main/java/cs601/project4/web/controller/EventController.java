@@ -1,6 +1,7 @@
 package cs601.project4.web.controller;
 
 import cs601.project4.database.DBManager;
+import cs601.project4.database.DBSessionId;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -76,7 +77,7 @@ public class EventController {
     // Retrieve the ID of this session
     String sessionId = request.getSession(true).getId();
     try (Connection con = DBManager.getConnection()) {
-      int userId = DBManager.getUserId(con, sessionId);
+      int userId = DBSessionId.getUserId(con, sessionId);
       if (!DBManager.createEvent(con, userId, eventName, about, location, date, time, numTickets)) {
         logger.info("Event already exists.");
       }

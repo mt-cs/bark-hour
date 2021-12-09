@@ -2,7 +2,7 @@ package cs601.project4.login;
 
 import com.google.gson.Gson;
 import cs601.project4.constant.LoginServerConstants;
-import cs601.project4.model.ClientInfo;
+import cs601.project4.model.Users;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.StringReader;
@@ -104,7 +104,7 @@ public class LoginUtilities {
    * @param sessionId String cookie
    * @return ClientInfo object
    */
-  public static ClientInfo verifyTokenResponse(Map<String, Object> map, String sessionId) {
+  public static Users verifyTokenResponse(Map<String, Object> map, String sessionId) {
     /* verify ok: true */
     if(!map.containsKey(LoginServerConstants.OK_KEY) ||
         !(boolean)map.get(LoginServerConstants.OK_KEY)) {
@@ -133,7 +133,7 @@ public class LoginUtilities {
     /* extract data from response */
     String username = (String) payloadMap.get(LoginServerConstants.NAME_KEY);
     String email = (String) payloadMap.get(LoginServerConstants.EMAIL_KEY);
-    return new ClientInfo(username, email);
+    return new Users(username, email);
   }
 
   /**

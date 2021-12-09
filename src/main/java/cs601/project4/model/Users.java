@@ -3,7 +3,7 @@ package cs601.project4.model;
 /**
  * A class to maintain info about each client.
  */
-public class ClientInfo {
+public class Users {
   private String username;
   private String email;
   private String location;
@@ -15,7 +15,7 @@ public class ClientInfo {
    *
    * @param name client name
    */
-  public ClientInfo(String name, String email) {
+  public Users(String name, String email) {
     this.username = name;
     this.email = email;
     this.location = "";

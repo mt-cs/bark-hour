@@ -2,10 +2,11 @@ package cs601.project4.web.controller;
 import com.google.gson.Gson;
 import cs601.project4.database.DBManager;
 import cs601.project4.constant.LoginServerConstants;
+import cs601.project4.database.DBSessionId;
 import cs601.project4.database.DBUser;
 import java.sql.Connection;
 import java.sql.SQLException;
-import cs601.project4.model.ClientInfo;
+import cs601.project4.model.Users;
 import cs601.project4.login.HTTPFetcher;
 import cs601.project4.login.LoginUtilities;
 import java.util.Map;
@@ -16,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for landing page
@@ -59,7 +59,7 @@ public class HomeController {
 
     /* Check if already authenticated */
     if (clientInfoObj != null) {
-      System.out.println("Client with session ID %s already exists.\n");
+      logger.info("Client with session ID already exists.\n");
       return "redirect:/internal-user";
     }
 
@@ -73,7 +73,7 @@ public class HomeController {
     String responseString = HTTPFetcher.doGet(url, null);
     Map<String, Object> response = LoginUtilities.jsonStrToMap(responseString);
 
-    ClientInfo clientInfo = LoginUtilities.verifyTokenResponse(response, sessionId);
+    Users clientInfo = LoginUtilities.verifyTokenResponse(response, sessionId);
 
     if (clientInfo == null) {
       return "redirect:/login-error";
@@ -84,7 +84,7 @@ public class HomeController {
       if (!DBUser.insertUser(con, clientInfo.getName(), clientInfo.getEmail())) {
         logger.info("User already exists in database.");
       }
-      DBManager.insertUserSessionID(con, clientInfo.getName(), sessionId);
+      DBSessionId.insertUserSessionID(con, clientInfo.getName(), sessionId);
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }

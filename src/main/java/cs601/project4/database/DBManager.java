@@ -10,6 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
+/**
+ * Run JDBC connection
+ */
 public class DBManager {
   @Value("${spring.datasource.url}")
   private static String url;
@@ -50,86 +53,6 @@ public class DBManager {
    */
   public static Connection getConnection() throws SQLException {
     return ds.getConnection();
-  }
-
-  /**
-   * Performs SQL insert user to users table
-   * if SQL query is successful, return User object with userid
-   * otherwise return null
-   *
-   * @param username  User object
-   * @param sessionID Login info
-   * @return true if successful
-   */
-  public static void insertUserSessionID(Connection con, String username, String sessionID) throws SQLException {
-    String insertContactSql = "REPLACE INTO users_session_id (session_id, username) VALUES (?, ?);";
-    PreparedStatement insertContactStmt = con.prepareStatement(insertContactSql);
-    insertContactStmt.setString(1, sessionID);
-    insertContactStmt.setString(2, username);
-    insertContactStmt.executeUpdate();
-  }
-
-  /**
-   * Performs SQL Delete from users_session_id table
-   *
-   * @param con       Connection
-   * @param sessionID Login info
-   */
-  public static void deleteUserSessionID(Connection con, String sessionID) throws SQLException {
-    String deleteUserSessionIdSql = "DELETE FROM users_session_id WHERE session_id = ?;";
-    PreparedStatement insertContactStmt = con.prepareStatement(deleteUserSessionIdSql);
-    insertContactStmt.setString(1, sessionID);
-    insertContactStmt.executeUpdate();
-  }
-
-  /**
-   * Perform select user from users table.
-   *
-   * @param con       Connection
-   * @param sessionId Login info
-   * @throws SQLException database access error
-   */
-  public static ResultSet selectUser(Connection con, String sessionId) throws SQLException {
-    String selectUserSql = "SELECT * FROM users NATURAL JOIN users_session_id WHERE session_id = ?;";
-    PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
-    selectUserStmt.setString(1, sessionId);
-    ResultSet results = selectUserStmt.executeQuery();
-    return results;
-  }
-
-  /**
-   * Perform update user from users table.
-   *
-   * @param con      Connection
-   * @param username String user name
-   * @param email    String user email
-   * @param location String location
-   * @throws SQLException database access error
-   */
-  public static void updateUser(
-      Connection con,
-      String username,
-      String email,
-      String location)
-      throws SQLException {
-    String selectUserSql = "UPDATE users SET email = ?, location = ? WHERE username = ?";
-    PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
-    selectUserStmt.setString(1, email);
-    selectUserStmt.setString(2, location);
-    selectUserStmt.setString(3, username);
-    selectUserStmt.executeUpdate();
-  }
-
-  public static int getUserId(Connection con, String sessionId) throws SQLException {
-    String selectUserIdSql = "SELECT userid FROM users NATURAL JOIN users_session_id WHERE session_id = ?;";
-    PreparedStatement selectUserIdStmt = con.prepareStatement(selectUserIdSql);
-    selectUserIdStmt.setString(1, sessionId);
-    ResultSet results = selectUserIdStmt.executeQuery();
-    int userId = 0;
-    if(results.next()) {
-      userId = results.getInt("userid");
-    }
-    return userId;
   }
 
   /**

@@ -2,6 +2,7 @@ package cs601.project4.web.controller;
 
 import cs601.project4.constant.LoginServerConstants;
 import cs601.project4.database.DBManager;
+import cs601.project4.database.DBSessionId;
 import cs601.project4.login.LoginUtilities;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -81,7 +82,7 @@ public class LoginController {
   public String logout(HttpServletRequest request) {
     String sessionId = request.getSession(true).getId();
     try (Connection con = DBManager.getConnection()) {
-      DBManager.deleteUserSessionID(con, sessionId);
+      DBSessionId.deleteUserSessionID(con, sessionId);
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
