@@ -34,7 +34,7 @@ public class EventController {
    */
   @GetMapping(value={"/events"})
   public String displayEvents(Model model) {
-    List<String> headers = Arrays.asList("Event Name", "About", "Location", "Date", "Time");
+    List<String> headers = Arrays.asList("Event Name", "About", "Location", "Start", "End");
     List<List<String>> events = new ArrayList<>();
 
     try (Connection con = DBManager.getConnection()) {
@@ -45,8 +45,8 @@ public class EventController {
             results.getString("event_name"),
             results.getString("about"),
             results.getString("location"),
-            results.getString("event_date"),
-            results.getString("event_time")));
+            results.getString("event_start"),
+            results.getString("event_end")));
       }
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
@@ -56,7 +56,6 @@ public class EventController {
     return "events";
   }
 
-  //TODO: Add start time end time
   /**
    * Handles create event post method
    */
@@ -65,17 +64,18 @@ public class EventController {
       @RequestParam("event_name") String eventName,
       @RequestParam("about") String about,
       @RequestParam("location") String location,
-      @RequestParam("event_date") String date,
-      @RequestParam("event_time") String time,
+      @RequestParam("event_start") String start,
+      @RequestParam("event_start") String end,
       @RequestParam("num_tickets") int numTickets,
       HttpServletRequest request) {
-    // Retrieve the ID of this session
+
     String sessionId = request.getSession(true).getId();
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
-      if (!DBEvent.createEvent(con, userId, eventName, about, location, date, time, numTickets)) {
+      if (!DBEvent.checkEventExist(con, eventName)) {
         logger.info("Event already exists.");
       }
+      DBEvent.createEvent(con, userId, eventName, about, location, start, end, numTickets);
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }

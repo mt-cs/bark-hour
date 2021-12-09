@@ -1,7 +1,7 @@
 package cs601.project4.model;
 
-import java.sql.Date;
-import java.sql.Time;
+
+import java.sql.Timestamp;
 
 /**
  * Event model
@@ -13,14 +13,18 @@ public class Event {
   private String eventName;
   private String about;
   private String location;
-  private Date date;
-  private Time time;
+  private Timestamp eventStart;
+  private Timestamp eventEnd;
   private int userId;
   private int numTickets;
   private int numTicketAvail;
   private int numTicketPurchased;
 
-  public Event(int eventId, String eventName, int numTickets, int numTicketAvail, int numTicketPurchased) {
+  public Event(int eventId,
+               String eventName,
+               int numTickets,
+               int numTicketAvail,
+               int numTicketPurchased) {
     this.eventId = eventId;
     this.eventName = eventName;
     this.numTickets = numTickets;
@@ -28,15 +32,22 @@ public class Event {
     this.numTicketPurchased = numTicketPurchased;
   }
 
-  public Event(int eventId, String eventName, String about, String location, Date date, Time time,
-      int userId,
-      int numTickets, int numTicketAvail, int numTicketPurchased) {
+  public Event(int eventId,
+               String eventName,
+               String about,
+               String location,
+               Timestamp eventStart,
+               Timestamp eventEnd,
+               int userId,
+               int numTickets,
+               int numTicketAvail,
+               int numTicketPurchased) {
     this.eventId = eventId;
     this.eventName = eventName;
     this.about = about;
     this.location = location;
-    this.date = date;
-    this.time = time;
+    this.eventStart = eventStart;
+    this.eventEnd = eventEnd;
     this.userId = userId;
     this.numTickets = numTickets;
     this.numTicketAvail = numTicketAvail;
@@ -107,11 +118,19 @@ public class Event {
     this.location = location;
   }
 
-  public Time getTime() {
-    return time;
+  public Timestamp getEventStart() {
+    return eventStart;
   }
 
-  public void setTime(Time time) {
-    this.time = time;
+  public void setEventStart(Timestamp eventStart) {
+    this.eventStart = eventStart;
+  }
+
+  public Timestamp getEventEnd() {
+    return eventEnd;
+  }
+
+  public void setEventEnd(Timestamp eventEnd) {
+    this.eventEnd = eventEnd;
   }
 }

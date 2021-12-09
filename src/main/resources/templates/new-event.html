@@ -14,10 +14,10 @@
     <input type="text" id="about" name="about" th:value="${about}"><br><br>
     <label for="location">Location:</label><br>
     <input type="text" id="location" name="location" th:value="${location}"><br><br>
-    <label for="event_date">Date:</label><br>
-    <input type="date" id="event_date" name="event_date" th:value="${date}"><br><br>
-    <label for="event_time">Time:</label><br>
-    <input type="time" id="event_time" name="event_time" th:value="${time}"><br><br>
+    <label for="event_start">Start:</label><br>
+    <input type="datetime-local" id="event_start" name="event_start" th:value="${event_start}"><br><br>
+    <label for="event_end">End:</label><br>
+    <input type="datetime-local" id="event_end" name="event_end" th:value="${event_end}"><br><br>
     <label for="num_tickets">Available seats:</label><br>
     <input type="number" id="num_tickets" name="num_tickets" th:value="${num_tickets}"><br><br>
     <input type="submit" value="Submit">

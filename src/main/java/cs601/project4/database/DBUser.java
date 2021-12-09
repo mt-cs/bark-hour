@@ -63,7 +63,7 @@ public class DBUser {
       return false;
     }
     String insertUserSql = "INSERT IGNORE INTO users (username, email) VALUES (?, ?)";
-    try {
+    try { //TODO: remove try catch and throw exception
       PreparedStatement insertUserStmt = con.prepareStatement(insertUserSql, Statement.RETURN_GENERATED_KEYS);
       insertUserStmt.setString(1, username);
       insertUserStmt.setString(2, email);
