@@ -16,32 +16,32 @@ public class Event {
   private Timestamp eventStart;
   private Timestamp eventEnd;
   private int userId;
-  private int numTickets;
+  private int numTicket;
   private int numTicketAvail;
   private int numTicketPurchased;
 
-  public Event(int eventId,
-               String eventName,
-               int numTickets,
-               int numTicketAvail,
-               int numTicketPurchased) {
-    this.eventId = eventId;
-    this.eventName = eventName;
-    this.numTickets = numTickets;
-    this.numTicketAvail = numTicketAvail;
-    this.numTicketPurchased = numTicketPurchased;
-  }
+//  public Event(int eventId,
+//               String eventName,
+//               int numTickets,
+//               int numTicketAvail,
+//               int numTicketPurchased) {
+//    this.eventId = eventId;
+//    this.eventName = eventName;
+//    this.numTickets = numTickets;
+//    this.numTicketAvail = numTicketAvail;
+//    this.numTicketPurchased = numTicketPurchased;
+//  }
 
   public Event(int eventId,
-               String eventName,
-               String about,
-               String location,
-               Timestamp eventStart,
-               Timestamp eventEnd,
-               int userId,
-               int numTickets,
-               int numTicketAvail,
-               int numTicketPurchased) {
+      String eventName,
+      String about,
+      String location,
+      Timestamp eventStart,
+      Timestamp eventEnd,
+      int userId,
+      int numTicket,
+      int numTicketAvail,
+      int numTicketPurchased) {
     this.eventId = eventId;
     this.eventName = eventName;
     this.about = about;
@@ -49,10 +49,11 @@ public class Event {
     this.eventStart = eventStart;
     this.eventEnd = eventEnd;
     this.userId = userId;
-    this.numTickets = numTickets;
+    this.numTicket = numTicket;
     this.numTicketAvail = numTicketAvail;
     this.numTicketPurchased = numTicketPurchased;
   }
+
 
   public String getAbout() {
     return about;
@@ -87,11 +88,11 @@ public class Event {
   }
 
   public int getNumTickets() {
-    return numTickets;
+    return numTicket;
   }
 
   public void setNumTickets(int numTickets) {
-    this.numTickets = numTickets;
+    this.numTicket = numTickets;
   }
 
   public int getNumTicketAvail() {
@@ -132,5 +133,21 @@ public class Event {
 
   public void setEventEnd(Timestamp eventEnd) {
     this.eventEnd = eventEnd;
+  }
+
+  @Override
+  public String toString() {
+    return "Event{" +
+        "eventId=" + eventId +
+        ", eventName='" + eventName + '\'' +
+        ", about='" + about + '\'' +
+        ", location='" + location + '\'' +
+        ", eventStart=" + eventStart +
+        ", eventEnd=" + eventEnd +
+        ", userId=" + userId +
+        ", numTicket=" + numTicket +
+        ", numTicketAvail=" + numTicketAvail +
+        ", numTicketPurchased=" + numTicketPurchased +
+        '}';
   }
 }

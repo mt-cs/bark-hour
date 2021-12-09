@@ -5,4 +5,5 @@ public class UserConstants {
   public static final String EMAIL = "email";
   public static final String LOCATION = "location";
   public static final String REG_DATE = "reg_date";
+  public static final String USER_ID = "userid";
 }

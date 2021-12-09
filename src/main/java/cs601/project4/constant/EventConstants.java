@@ -17,8 +17,8 @@ public class EventConstants {
   public static final String ZIP = "zip";
   public static final String EVENT_START = "event_start";
   public static final String EVENT_END = "event_end";
-  public static final String NUM_TICKETS = "num_tickets";
-  public static final String NUM_TICKETS_AVAIL = "num_tickets_avail";
+  public static final String NUM_TICKET = "num_ticket";
+  public static final String NUM_TICKET_AVAIL = "num_tickets_avail";
   public static final String NEW_LINE = "\n";
   public static final String COMMA = ", ";
 }

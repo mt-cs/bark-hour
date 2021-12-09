@@ -81,8 +81,10 @@ public class HomeController {
 
     /* Add to database */
     try (Connection con = DBManager.getConnection()) {
-      if (!DBUser.checkUserExist(con, clientInfo.getEmail())) {
+      if (DBUser.checkUserExist(con, clientInfo.getEmail())) {
         logger.info("User already exists in database.");
+      } else {
+        DBUser.insertUser(con, clientInfo.getName(), clientInfo.getEmail());
       }
       DBSessionId.insertUserSessionID(con, clientInfo.getName(), sessionId);
     } catch (SQLException sqlException) {
@@ -102,6 +104,4 @@ public class HomeController {
   public String internalUser() {
     return "internal-user";
   }
-
-
 }

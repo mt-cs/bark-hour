@@ -20,14 +20,16 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="row: ${rows}">
-<!--      <td th:text="${row.login}">...</td>-->
-<!--      <td th:text="${user.name}">...</td>-->
-      <td th:each="r: ${row}" th:text="${r}" />
+    <tr th:each="event: ${events}">
+<!--      <td th:text="${event.about}"></td>-->
+<!--      <td th:text="${event.eventName}"></td>-->
+<!--      <td th:text="${event.location}"></td>-->
+<!--      <td th:text="${event.eventStart}"></td>-->
+<!--      <td th:text="${event.eventEnd}"></td>-->
+      <td th:each="e: ${event}" th:text="${e}" />
 <!--      <td th:each="header: ${headers}" th:text="${row.get(header)}" />-->
-      <td><a href="/event"><button>View</button></a> </td>
+      <td><a href="@{/event/{id}(id=$event.eventId})}"><button>View</button></a> </td>
     </tr>
-
     </tbody>
   </table>
   <a href="/home"><button>Home</button></a>

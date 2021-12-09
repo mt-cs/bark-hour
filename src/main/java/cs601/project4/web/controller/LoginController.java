@@ -44,7 +44,7 @@ public class LoginController {
         request.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
 
     if(clientInfoObj != null) {
-      System.out.println("Client with session ID %s already exists.\n");
+      logger.info("Client with session ID already exists.\n");
       return "redirect:/internal-user";
     }
 

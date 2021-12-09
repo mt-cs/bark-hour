@@ -9,10 +9,10 @@
   <h2 th:text="${event_name}"></h2>
   <p>About: <span th:text="${about}"></span></p>
   <p>Venue: <span th:text="${venue}"></span></p>
-  <p>Location: <span th:text="${city}"></span>, <span th:text="${state}"></span> <span th:text="${zip}"> </span><</p>
+  <p>Location: <span th:text="${city}"></span>, <span th:text="${state}"></span> <span th:text="${zip}"> </span></p>
   <p>Start: <span th:text="${event_start}"></span></p>
   <p>End: <span th:text="${event_end}"></span></p>
-  <p>Available spots: <span th:text="${num_tickets_avail}"></span> / <span th:text="${num_tickets}"></span></p>
+  <p>Capacity: <span th:text="${num_ticket}"></span></p>
   <br>
   <a href="/ticket"><button>Buy Ticket</button></a>
   <a href="/events"><button>All Events</button></a>

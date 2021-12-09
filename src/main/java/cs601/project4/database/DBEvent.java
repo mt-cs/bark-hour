@@ -36,7 +36,7 @@ public class DBEvent {
       throws SQLException {
     String selectUserSql = "SELECT * FROM events WHERE event_name = ?;";
     PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
-    selectUserStmt.setString(1, eventName);
+    selectUserStmt.setString(1, "Howliday Mingle");
     ResultSet results = selectUserStmt.executeQuery();
     return results;
   }
@@ -45,15 +45,15 @@ public class DBEvent {
    * Check if event is already in the database
    *
    * @param con       Connection
-   * @param eventName Event Name
+   * @param eventID   Event ID
    * @return true if event doesn't exist, false otherwise
    */
-  public static Boolean checkEventExist(Connection con, String eventName)
+  public static Boolean checkEventExist(Connection con, String eventID)
       throws SQLException {
-    String checkEventSql = "SELECT * FROM events WHERE event_name = ?";
+    String checkEventSql = "SELECT * FROM events WHERE event_id= ?";
     PreparedStatement insertUserStmt =
         con.prepareStatement(checkEventSql, Statement.RETURN_GENERATED_KEYS);
-    insertUserStmt.setString(1, eventName);
+    insertUserStmt.setString(1, eventID);
     ResultSet rs = insertUserStmt.executeQuery();
     return !rs.next();
   }
@@ -71,7 +71,7 @@ public class DBEvent {
       String about, String start, String end, int numTickets)
       throws SQLException {
 
-    String insertEventSql = "INSERT IGNORE INTO events "
+    String insertEventSql = "INSERT INTO events "
         + "(userid, event_name, venue, address, city, state, "
         + "country, zip, about, event_start, event_end, num_ticket) "
         + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";

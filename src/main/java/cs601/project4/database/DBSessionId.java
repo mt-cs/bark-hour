@@ -1,5 +1,6 @@
 package cs601.project4.database;
 
+import cs601.project4.constant.UserConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,7 +46,7 @@ public class DBSessionId {
     ResultSet results = selectUserIdStmt.executeQuery();
     int userId = 0;
     if(results.next()) {
-      userId = results.getInt("userid");
+      userId = results.getInt(UserConstants.USER_ID);
     }
     return userId;
   }

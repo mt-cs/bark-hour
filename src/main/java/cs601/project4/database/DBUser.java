@@ -59,7 +59,7 @@ public class DBUser {
    * @return true if successful
    */
   public static void insertUser(Connection con, String username, String email) throws SQLException{
-    String insertUserSql = "INSERT IGNORE INTO users (username, email) VALUES (?, ?)";
+    String insertUserSql = "INSERT INTO users (username, email) VALUES (?, ?)";
     PreparedStatement insertUserStmt = con.prepareStatement(insertUserSql, Statement.RETURN_GENERATED_KEYS);
     insertUserStmt.setString(1, username);
     insertUserStmt.setString(2, email);
@@ -73,11 +73,10 @@ public class DBUser {
    * @return true if data doesn't exist, false otherwise
    */
   public static Boolean checkUserExist(Connection connection, String email) throws SQLException{
-    String checkUserSql = "SELECT * FROM users WHERE email= ?";
+    String checkUserSql = "SELECT * FROM users WHERE email = ?";
     PreparedStatement insertUserStmt = connection.prepareStatement(checkUserSql, Statement.RETURN_GENERATED_KEYS);
     insertUserStmt.setString(1, email);
     ResultSet rs = insertUserStmt.executeQuery();
-    return !rs.next();
+    return rs.next();
   }
-
 }
