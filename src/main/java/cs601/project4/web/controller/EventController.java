@@ -24,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class EventController {
   private final Logger logger = LoggerFactory.getLogger(EventController.class);
-//  @Autowired
-//  private EventService eventService;
 
   /**
    * Display events

@@ -57,32 +57,6 @@ public class DBManager {
    * if SQL query is successful, return User object with userid
    * otherwise return null
    *
-   * @param username User object
-   * @param email    User email
-   * @return true if successful
-   */
-  public static boolean insertUser(Connection con, String username, String email) {
-    String query = "SELECT * FROM users WHERE email='" + email + "';"; // TODO: Change to prepared
-    if (!DBUtil.checkDB(query)) {
-      return false;
-    }
-    String insertUserSql = "INSERT IGNORE INTO users (username, email) VALUES (?, ?)";
-    try {
-      PreparedStatement insertUserStmt = con.prepareStatement(insertUserSql, Statement.RETURN_GENERATED_KEYS);
-      insertUserStmt.setString(1, username);
-      insertUserStmt.setString(2, email);
-      insertUserStmt.executeUpdate();
-    } catch (SQLException e) {
-      logger.error(e.getMessage());
-    }
-    return true;
-  }
-
-  /**
-   * Performs SQL insert user to users table
-   * if SQL query is successful, return User object with userid
-   * otherwise return null
-   *
    * @param username  User object
    * @param sessionID Login info
    * @return true if successful

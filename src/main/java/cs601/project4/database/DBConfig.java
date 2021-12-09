@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @EnableConfigurationProperties
 @ConfigurationProperties(prefix = "spring.datasource")
-public class Config {
+public class DBConfig {
   private String url;
   private String username;
   private String password;

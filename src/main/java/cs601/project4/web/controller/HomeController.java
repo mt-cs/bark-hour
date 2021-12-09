@@ -2,6 +2,7 @@ package cs601.project4.web.controller;
 import com.google.gson.Gson;
 import cs601.project4.database.DBManager;
 import cs601.project4.constant.LoginServerConstants;
+import cs601.project4.database.DBUser;
 import java.sql.Connection;
 import java.sql.SQLException;
 import cs601.project4.model.ClientInfo;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * Controller for landing page
@@ -79,7 +81,7 @@ public class HomeController {
 
     /* Add to database */
     try (Connection con = DBManager.getConnection()) {
-      if (!DBManager.insertUser(con, clientInfo.getName(), clientInfo.getEmail())) {
+      if (!DBUser.insertUser(con, clientInfo.getName(), clientInfo.getEmail())) {
         logger.info("User already exists in database.");
       }
       DBManager.insertUserSessionID(con, clientInfo.getName(), sessionId);
