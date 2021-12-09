@@ -1,6 +1,6 @@
 package cs601.project4.web.controller;
 
-import cs601.project4.database.DatabaseManager;
+import cs601.project4.database.DBManager;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,8 +26,8 @@ public class UserController {
   public String userAccount(Model model, HttpServletRequest request) {
     String sessionId = request.getSession(true).getId();
 
-    try (Connection con = DatabaseManager.getConnection()) {
-      ResultSet results = DatabaseManager.selectUser(con, sessionId);
+    try (Connection con = DBManager.getConnection()) {
+      ResultSet results = DBManager.selectUser(con, sessionId);
       while(results.next()) {
         model.addAttribute("username", results.getString("username"));
         model.addAttribute("email", results.getString("email"));
@@ -44,8 +44,8 @@ public class UserController {
   public String editProfile(Model model, HttpServletRequest request) {
     String sessionId = request.getSession(true).getId();
 
-    try (Connection con = DatabaseManager.getConnection()) {
-      ResultSet results = DatabaseManager.selectUser(con, sessionId);
+    try (Connection con = DBManager.getConnection()) {
+      ResultSet results = DBManager.selectUser(con, sessionId);
       while(results.next()) {
         model.addAttribute("username", results.getString("username"));
         model.addAttribute("email", results.getString("email"));
@@ -66,8 +66,8 @@ public class UserController {
       @RequestParam("username") String userName ,
       @RequestParam("email") String email,
       @RequestParam("location") String location) {
-    try (Connection con = DatabaseManager.getConnection()) {
-      DatabaseManager.updateUser(con, userName, email, location);
+    try (Connection con = DBManager.getConnection()) {
+      DBManager.updateUser(con, userName, email, location);
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }

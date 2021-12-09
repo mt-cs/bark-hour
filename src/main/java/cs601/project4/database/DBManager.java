@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
-public class DatabaseManager {
+public class DBManager {
   @Value("${spring.datasource.url}")
   private static String url;
 
@@ -25,22 +25,22 @@ public class DatabaseManager {
 
   private static final BasicDataSource ds = new BasicDataSource();
 
-  private static final Logger logger = LoggerFactory.getLogger(DatabaseManager.class);
+  private static final Logger logger = LoggerFactory.getLogger(DBManager.class);
 
   static {
     /* Source: https://www.geeksforgeeks.org/static-blocks-in-java/ */
     // TODO: Get url from application property
-    ds.setUrl(url);
-    ds.setUsername(username);
-    ds.setPassword(password);
-//    ds.setUrl("jdbc:mysql://localhost:3306/user026");
-//    ds.setUsername("user026");
-//    ds.setPassword("user026");
+//    ds.setUrl(url);
+//    ds.setUsername(username);
+//    ds.setPassword(password);
+    ds.setUrl("jdbc:mysql://localhost:3306/user026");
+    ds.setUsername("user026");
+    ds.setPassword("user026");
     ds.setMinIdle(MIN_IDLE);
     ds.setMaxIdle(MAX_IDLE);
   }
 
-  private DatabaseManager(){ }
+  private DBManager(){ }
 
   /**
    * Getter for Connection
@@ -63,7 +63,7 @@ public class DatabaseManager {
    */
   public static boolean insertUser(Connection con, String username, String email) {
     String query = "SELECT * FROM users WHERE email='" + email + "';"; // TODO: Change to prepared
-    if (!Utilities.checkDB(query)) {
+    if (!DBUtil.checkDB(query)) {
       return false;
     }
     String insertUserSql = "INSERT IGNORE INTO users (username, email) VALUES (?, ?)";
@@ -168,7 +168,7 @@ public class DatabaseManager {
   public static boolean createEvent(Connection con, int userId, String eventName, String about, String location, String date, String time, int numTickets) throws SQLException{
   //public static boolean createEvent(Connection con, int userId, String eventName, String about, String location, Date date, Time time, int numTickets) throws SQLException{
     String query = "SELECT * FROM events WHERE event_name='" + eventName + "';"; // TODO: Change to prepared
-    if (!Utilities.checkDB(query)) {
+    if (!DBUtil.checkDB(query)) {
       return false;
     }
     String insertEventSql = "INSERT IGNORE INTO events (userid, event_name, location, about,  event_date, event_time, num_ticket_avail) VALUES (?, ?, ?, ?, ?, ?, ?)";

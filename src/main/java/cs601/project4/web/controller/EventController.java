@@ -1,6 +1,6 @@
 package cs601.project4.web.controller;
 
-import cs601.project4.database.DatabaseManager;
+import cs601.project4.database.DBManager;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -37,8 +37,8 @@ public class EventController {
     List<String> headers = Arrays.asList("Event Name", "About", "Location", "Date", "Time");
     List<List<String>> events = new ArrayList<>();
 
-    try (Connection con = DatabaseManager.getConnection()) {
-      ResultSet results = DatabaseManager.selectEvent(con);
+    try (Connection con = DBManager.getConnection()) {
+      ResultSet results = DBManager.selectEvent(con);
 
       while(results.next()) {
         events.add(Arrays.asList(
@@ -77,9 +77,9 @@ public class EventController {
       HttpServletRequest request) {
     // Retrieve the ID of this session
     String sessionId = request.getSession(true).getId();
-    try (Connection con = DatabaseManager.getConnection()) {
-      int userId = DatabaseManager.getUserId(con, sessionId);
-      if (!DatabaseManager.createEvent(con, userId, eventName, about, location, date, time, numTickets)) {
+    try (Connection con = DBManager.getConnection()) {
+      int userId = DBManager.getUserId(con, sessionId);
+      if (!DBManager.createEvent(con, userId, eventName, about, location, date, time, numTickets)) {
         logger.info("Event already exists.");
       }
     } catch (SQLException sqlException) {
@@ -106,8 +106,8 @@ public class EventController {
 
   @GetMapping(value={"/event"})
   public String getEvent(Model model, String eventName) {
-    try (Connection con = DatabaseManager.getConnection()) {
-      ResultSet results = DatabaseManager.selectEvent(con,eventName);
+    try (Connection con = DBManager.getConnection()) {
+      ResultSet results = DBManager.selectEvent(con,eventName);
       while(results.next()) {
         model.addAttribute("event_name", results.getString("event_name"));
         model.addAttribute("about", results.getString("about"));

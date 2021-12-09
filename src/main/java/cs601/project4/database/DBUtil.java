@@ -6,15 +6,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 
 /**
  * A database utility class.
  *
  * @author marisatania
  */
-public class Utilities {
-  private static final Logger logger = LoggerFactory.getLogger(DatabaseManager.class);
+public class DBUtil {
+  private static final Logger logger = LoggerFactory.getLogger(DBManager.class);
 
   /**
    * Check if data is already in the database
@@ -23,7 +22,7 @@ public class Utilities {
    * @return true if data doesn't exist, false otherwise
    */
   public static Boolean checkDB(String query){
-    try (Connection connection = DatabaseManager.getConnection()) {
+    try (Connection connection = DBManager.getConnection()) {
       Statement statement = connection.createStatement();
       statement.setQueryTimeout(30);
       ResultSet rs = statement.executeQuery(query);

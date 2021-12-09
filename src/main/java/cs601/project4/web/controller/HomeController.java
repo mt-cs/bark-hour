@@ -1,6 +1,6 @@
 package cs601.project4.web.controller;
 import com.google.gson.Gson;
-import cs601.project4.database.DatabaseManager;
+import cs601.project4.database.DBManager;
 import cs601.project4.constant.LoginServerConstants;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -78,11 +78,11 @@ public class HomeController {
     }
 
     /* Add to database */
-    try (Connection con = DatabaseManager.getConnection()) {
-      if (!DatabaseManager.insertUser(con, clientInfo.getName(), clientInfo.getEmail())) {
+    try (Connection con = DBManager.getConnection()) {
+      if (!DBManager.insertUser(con, clientInfo.getName(), clientInfo.getEmail())) {
         logger.info("User already exists in database.");
       }
-      DatabaseManager.insertUserSessionID(con, clientInfo.getName(), sessionId);
+      DBManager.insertUserSessionID(con, clientInfo.getName(), sessionId);
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
