@@ -56,6 +56,10 @@ public class Event {
     this.numTicketPurchased = numTicketPurchased;
   }
 
+  /**
+   * Default constructor
+   */
+  public Event() {}
 
   public String getAbout() {
     return about;

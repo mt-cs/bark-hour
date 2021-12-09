@@ -91,6 +91,8 @@ public class HomeController {
       logger.error(sqlException.getMessage());
     }
     request.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, new Gson().toJson(clientInfo));
+
+    EventController.getAllEvents(model);
     model.addAttribute("name", clientInfo.getName());
     return "home";
   }

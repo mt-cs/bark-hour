@@ -21,8 +21,8 @@
     </thead>
     <tbody>
     <tr th:each="event: ${events}">
-      <td th:text="${event.about}"></td>
       <td th:text="${event.eventName}"></td>
+      <td th:text="${event.about}"></td>
       <td th:text="${event.location}"></td>
       <td th:text="${event.eventStart}"></td>
       <td th:text="${event.eventEnd}"></td>

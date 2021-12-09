@@ -41,7 +41,7 @@ public class UserController {
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
-    return "account";
+    return "users-profile";
   }
 
   @GetMapping(value={"/profile"})
