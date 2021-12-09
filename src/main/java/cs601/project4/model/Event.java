@@ -20,28 +20,30 @@ public class Event {
   private int numTicketAvail;
   private int numTicketPurchased;
 
-//  public Event(int eventId,
-//               String eventName,
-//               int numTickets,
-//               int numTicketAvail,
-//               int numTicketPurchased) {
-//    this.eventId = eventId;
-//    this.eventName = eventName;
-//    this.numTickets = numTickets;
-//    this.numTicketAvail = numTicketAvail;
-//    this.numTicketPurchased = numTicketPurchased;
-//  }
-
+  /**
+   * Constructor for Event model
+   *
+   * @param eventId            int event ID
+   * @param eventName          String event name
+   * @param about              String event description
+   * @param location           String location
+   * @param eventStart         Timestamp event start date
+   * @param eventEnd           Timestamp event end date
+   * @param userId             int user ID
+   * @param numTicket          int capacity
+   * @param numTicketAvail     int available ticket count
+   * @param numTicketPurchased int ticket purchased count
+   */
   public Event(int eventId,
-      String eventName,
-      String about,
-      String location,
-      Timestamp eventStart,
-      Timestamp eventEnd,
-      int userId,
-      int numTicket,
-      int numTicketAvail,
-      int numTicketPurchased) {
+               String eventName,
+               String about,
+               String location,
+               Timestamp eventStart,
+               Timestamp eventEnd,
+               int userId,
+               int numTicket,
+               int numTicketAvail,
+               int numTicketPurchased) {
     this.eventId = eventId;
     this.eventName = eventName;
     this.about = about;

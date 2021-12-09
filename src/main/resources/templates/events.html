@@ -21,14 +21,12 @@
     </thead>
     <tbody>
     <tr th:each="event: ${events}">
-<!--      <td th:text="${event.about}"></td>-->
-<!--      <td th:text="${event.eventName}"></td>-->
-<!--      <td th:text="${event.location}"></td>-->
-<!--      <td th:text="${event.eventStart}"></td>-->
-<!--      <td th:text="${event.eventEnd}"></td>-->
-      <td th:each="e: ${event}" th:text="${e}" />
-<!--      <td th:each="header: ${headers}" th:text="${row.get(header)}" />-->
-      <td><a href="@{/event/{id}(id=$event.eventId})}"><button>View</button></a> </td>
+      <td th:text="${event.about}"></td>
+      <td th:text="${event.eventName}"></td>
+      <td th:text="${event.location}"></td>
+      <td th:text="${event.eventStart}"></td>
+      <td th:text="${event.eventEnd}"></td>
+      <td><a th:href="@{/event/{eventId}(eventId=${event.eventId})}"><button>View</button></a> </td>
     </tr>
     </tbody>
   </table>

@@ -32,11 +32,11 @@ public class DBEvent {
    * @param con Connection
    * @throws SQLException database access error
    */
-  public static ResultSet selectEvent(Connection con, String eventName)
+  public static ResultSet selectEvent(Connection con, int eventId)
       throws SQLException {
-    String selectUserSql = "SELECT * FROM events WHERE event_name = ?;";
+    String selectUserSql = "SELECT * FROM events WHERE event_id = ?;";
     PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
-    selectUserStmt.setString(1, "Howliday Mingle");
+    selectUserStmt.setInt(1, eventId);
     ResultSet results = selectUserStmt.executeQuery();
     return results;
   }

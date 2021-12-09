@@ -11,7 +11,10 @@
     <label for="event_name">Event name:</label><br>
     <input type="text" id="event_name" name="event_name" th:value="${event_name}"><br><br>
     <label for="about">About:</label><br>
-    <input type="text" id="about" name="about" th:value="${about}"><br><br>
+    <textarea id="about" name="about" rows="4" cols="50">
+    What's this event about?
+    </textarea>
+    <input type="te" id="about" name="about" th:value="${about}"><br><br>
     <label for="venue">Venue:</label><br>
     <input type="text" id="venue" name="venue" th:value="${venue}"><br><br>
     <label for="address">Address:</label><br>
