@@ -8,8 +8,13 @@ import java.sql.Statement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Query statements for users table
+ *
+ * @author marisatania
+ */
 public class DBUser {
-  private static final Logger logger = LoggerFactory.getLogger(DBManager.class);
+  private static final Logger logger = LoggerFactory.getLogger(DBUser.class);
 
   /**
    * Perform update user from users table.
