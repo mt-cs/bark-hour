@@ -32,7 +32,8 @@ public class DBEvent {
    * @param con Connection
    * @throws SQLException database access error
    */
-  public static ResultSet selectEvent(Connection con, String eventName) throws SQLException {
+  public static ResultSet selectEvent(Connection con, String eventName)
+      throws SQLException {
     String selectUserSql = "SELECT * FROM events WHERE event_name = ?;";
     PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
     selectUserStmt.setString(1, eventName);
@@ -47,11 +48,11 @@ public class DBEvent {
    * @param eventName Event Name
    * @return true if event doesn't exist, false otherwise
    */
-  public static Boolean checkEventExist(Connection con, String eventName) throws SQLException {
+  public static Boolean checkEventExist(Connection con, String eventName)
+      throws SQLException {
     String checkEventSql = "SELECT * FROM events WHERE event_name = ?";
-    PreparedStatement insertUserStmt = con.prepareStatement(
-        checkEventSql,
-        Statement.RETURN_GENERATED_KEYS);
+    PreparedStatement insertUserStmt =
+        con.prepareStatement(checkEventSql, Statement.RETURN_GENERATED_KEYS);
     insertUserStmt.setString(1, eventName);
     ResultSet rs = insertUserStmt.executeQuery();
     return !rs.next();
@@ -65,22 +66,30 @@ public class DBEvent {
    * @return true if successful
    */
   public static boolean createEvent(
-      Connection con, int userId, String eventName, String about,
-      String location, String start, String end, int numTickets)
+      Connection con, int userId, String eventName, String venue,
+      String address, String city, String state, String country, int zip,
+      String about, String start, String end, int numTickets)
       throws SQLException {
 
     String insertEventSql = "INSERT IGNORE INTO events "
-        + "(userid, event_name, location, about, event_start, event_end, num_ticket) "
-        + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        + "(userid, event_name, venue, address, city, state, "
+        + "country, zip, about, event_start, event_end, num_ticket) "
+        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    PreparedStatement insertUserStmt = con.prepareStatement(insertEventSql, Statement.RETURN_GENERATED_KEYS);
+    PreparedStatement insertUserStmt =
+        con.prepareStatement(insertEventSql, Statement.RETURN_GENERATED_KEYS);
     insertUserStmt.setInt(1, userId);
     insertUserStmt.setString(2, eventName);
-    insertUserStmt.setString(3, location);
-    insertUserStmt.setString(4, about);
-    insertUserStmt.setString(5, start);
-    insertUserStmt.setString(6, end);
-    insertUserStmt.setInt(7, numTickets);
+    insertUserStmt.setString(3, venue);
+    insertUserStmt.setString(4, address);
+    insertUserStmt.setString(5, city);
+    insertUserStmt.setString(6, state);
+    insertUserStmt.setString(7, country);
+    insertUserStmt.setInt(8, zip);
+    insertUserStmt.setString(9, about);
+    insertUserStmt.setString(10, start);
+    insertUserStmt.setString(11, end);
+    insertUserStmt.setInt(12, numTickets);
     insertUserStmt.executeUpdate();
     return true;
   }

@@ -50,7 +50,6 @@ public class DBSessionId {
     return userId;
   }
 
-
   /**
    * Performs SQL Delete from users_session_id table
    *
