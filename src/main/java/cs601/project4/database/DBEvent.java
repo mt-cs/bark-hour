@@ -14,29 +14,6 @@ import java.sql.Statement;
 public class DBEvent {
 
   /**
-   * Performs SQL insert user to users table
-   * if SQL query is successful, return User object with userid
-   * otherwise return null
-   *
-   * @return true if successful
-   */
-  public static boolean createEvent(Connection con, int userId, String eventName, String about, String location, String start, String end, int numTickets) throws SQLException {
-    //public static boolean createEvent(Connection con, int userId, String eventName, String about, String location, Date date, Time time, int numTickets) throws SQLException{
-    String insertEventSql = "INSERT IGNORE INTO events (userid, event_name, location, about,  event_start, event_end, num_ticket) VALUES (?, ?, ?, ?, ?, ?, ?)";
-//    String insertEventSql = "INSERT IGNORE INTO events (userid, event_name, location, about, event_date, event_time, num_tickets_available) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    PreparedStatement insertUserStmt = con.prepareStatement(insertEventSql, Statement.RETURN_GENERATED_KEYS);
-    insertUserStmt.setInt(1, userId);
-    insertUserStmt.setString(2, eventName);
-    insertUserStmt.setString(3, location);
-    insertUserStmt.setString(4, about);
-    insertUserStmt.setString(5, start);
-    insertUserStmt.setString(6, end);
-    insertUserStmt.setInt(7, numTickets);
-    insertUserStmt.executeUpdate();
-    return true;
-  }
-
-  /**
    * Retrieve all event in the events table
    *
    * @param con Connection
@@ -78,5 +55,33 @@ public class DBEvent {
     insertUserStmt.setString(1, eventName);
     ResultSet rs = insertUserStmt.executeQuery();
     return !rs.next();
+  }
+
+  /**
+   * Performs SQL insert user to users table
+   * if SQL query is successful, return User object with userid
+   * otherwise return null
+   *
+   * @return true if successful
+   */
+  public static boolean createEvent(
+      Connection con, int userId, String eventName, String about,
+      String location, String start, String end, int numTickets)
+      throws SQLException {
+
+    String insertEventSql = "INSERT IGNORE INTO events "
+        + "(userid, event_name, location, about, event_start, event_end, num_ticket) "
+        + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+    PreparedStatement insertUserStmt = con.prepareStatement(insertEventSql, Statement.RETURN_GENERATED_KEYS);
+    insertUserStmt.setInt(1, userId);
+    insertUserStmt.setString(2, eventName);
+    insertUserStmt.setString(3, location);
+    insertUserStmt.setString(4, about);
+    insertUserStmt.setString(5, start);
+    insertUserStmt.setString(6, end);
+    insertUserStmt.setInt(7, numTickets);
+    insertUserStmt.executeUpdate();
+    return true;
   }
 }

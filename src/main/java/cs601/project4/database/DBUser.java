@@ -58,20 +58,12 @@ public class DBUser {
    * @param email    User email
    * @return true if successful
    */
-  public static boolean insertUser(Connection con, String username, String email) {
-    if (!checkUserExist(email)) {
-      return false;
-    }
+  public static void insertUser(Connection con, String username, String email) throws SQLException{
     String insertUserSql = "INSERT IGNORE INTO users (username, email) VALUES (?, ?)";
-    try { //TODO: remove try catch and throw exception
-      PreparedStatement insertUserStmt = con.prepareStatement(insertUserSql, Statement.RETURN_GENERATED_KEYS);
-      insertUserStmt.setString(1, username);
-      insertUserStmt.setString(2, email);
-      insertUserStmt.executeUpdate();
-    } catch (SQLException e) {
-      logger.error(e.getMessage());
-    }
-    return true;
+    PreparedStatement insertUserStmt = con.prepareStatement(insertUserSql, Statement.RETURN_GENERATED_KEYS);
+    insertUserStmt.setString(1, username);
+    insertUserStmt.setString(2, email);
+    insertUserStmt.executeUpdate();
   }
 
   /**
@@ -80,18 +72,12 @@ public class DBUser {
    * @param email User email
    * @return true if data doesn't exist, false otherwise
    */
-  public static Boolean checkUserExist(String email){
+  public static Boolean checkUserExist(Connection connection, String email) throws SQLException{
     String checkUserSql = "SELECT * FROM users WHERE email= ?";
-    try (Connection connection = DBManager.getConnection()) {
-      PreparedStatement insertUserStmt = connection.prepareStatement(checkUserSql, Statement.RETURN_GENERATED_KEYS);
-      insertUserStmt.setString(1, email);
-      ResultSet rs = insertUserStmt.executeQuery();
-      return !rs.next();
-    }
-    catch(SQLException e) {
-      logger.error(e.getMessage());
-    }
-    return false;
+    PreparedStatement insertUserStmt = connection.prepareStatement(checkUserSql, Statement.RETURN_GENERATED_KEYS);
+    insertUserStmt.setString(1, email);
+    ResultSet rs = insertUserStmt.executeQuery();
+    return !rs.next();
   }
 
 }

@@ -81,7 +81,7 @@ public class HomeController {
 
     /* Add to database */
     try (Connection con = DBManager.getConnection()) {
-      if (!DBUser.insertUser(con, clientInfo.getName(), clientInfo.getEmail())) {
+      if (!DBUser.checkUserExist(con, clientInfo.getEmail())) {
         logger.info("User already exists in database.");
       }
       DBSessionId.insertUserSessionID(con, clientInfo.getName(), sessionId);
