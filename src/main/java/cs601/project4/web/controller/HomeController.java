@@ -83,10 +83,15 @@ public class HomeController {
     try (Connection con = DBManager.getConnection()) {
       if (DBUser.checkUserExist(con, clientInfo.getEmail())) {
         logger.info("User already exists in database.");
+        return "redirect:/login-error";
       } else {
         DBUser.insertUser(con, clientInfo.getName(), clientInfo.getEmail());
       }
-      DBSessionId.insertUserSessionID(con, clientInfo.getName(), sessionId);
+
+      int userID = DBUser.getUserId(con, clientInfo.getEmail());
+      clientInfo.setUserId(userID);
+      DBSessionId.insertUserSessionID(con, clientInfo.getUserId(), sessionId);
+
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }

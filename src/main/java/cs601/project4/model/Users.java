@@ -4,6 +4,9 @@ package cs601.project4.model;
  * A class to maintain info about each client.
  */
 public class Users {
+  // TODO : add image
+  // TODO : add foreign key
+  
   private String username;
   private String email;
   private String location;

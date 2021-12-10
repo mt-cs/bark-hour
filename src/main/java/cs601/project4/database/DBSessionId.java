@@ -18,15 +18,15 @@ public class DBSessionId {
    * otherwise return null
    *
    * @param con       Connection
-   * @param username  User object
+   * @param userID    User ID
    * @param sessionID Login info
    * @throws SQLException database access error
    */
-  public static void insertUserSessionID(Connection con, String username, String sessionID) throws SQLException {
-    String insertContactSql = "REPLACE INTO users_session_id (session_id, username) VALUES (?, ?);";
+  public static void insertUserSessionID(Connection con, int userID, String sessionID) throws SQLException {
+    String insertContactSql = "REPLACE INTO users_session_id (session_id, user_id) VALUES (?, ?);";
     PreparedStatement insertContactStmt = con.prepareStatement(insertContactSql);
     insertContactStmt.setString(1, sessionID);
-    insertContactStmt.setString(2, username);
+    insertContactStmt.setInt(2, userID);
     insertContactStmt.executeUpdate();
   }
 
@@ -40,7 +40,7 @@ public class DBSessionId {
    * @throws SQLException database access error
    */
   public static int getUserId(Connection con, String sessionId) throws SQLException {
-    String selectUserIdSql = "SELECT userid FROM users NATURAL JOIN users_session_id WHERE session_id = ?;";
+    String selectUserIdSql = "SELECT userid FROM users_session_id WHERE session_id = ?;";
     PreparedStatement selectUserIdStmt = con.prepareStatement(selectUserIdSql);
     selectUserIdStmt.setString(1, sessionId);
     ResultSet results = selectUserIdStmt.executeQuery();

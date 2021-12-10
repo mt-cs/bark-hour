@@ -9,6 +9,8 @@ import java.sql.Timestamp;
  * @author marisatania
  */
 public class Event {
+  // TODO : add image
+  // TODO : add foreign key
   private int eventId;
   private String eventName;
   private String about;

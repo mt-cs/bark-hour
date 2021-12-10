@@ -25,7 +25,7 @@ public class DBTicket {
    * @return execute batch array result
    * @throws SQLException on a database access error
    */
-  public static int[] insertTickets(Connection con, Ticket ticket, int numTickets) throws SQLException {
+  public static boolean insertTickets(Connection con, Ticket ticket, int numTickets) throws SQLException {
     PreparedStatement insertTicketStmt = con.prepareStatement(
         "INSERT INTO tickets (userid, event_id) VALUES (?, ?)");
     for (int i = 1; i <= numTickets; i++) {
@@ -33,13 +33,10 @@ public class DBTicket {
       insertTicketStmt.setInt(2, ticket.getEventId());
       insertTicketStmt.addBatch();
     }
-    return insertTicketStmt.executeBatch();
-  }
+    int[] executeBatchResult = insertTicketStmt.executeBatch();
 
-  private static boolean insertTicketIsComplete(Connection con, Ticket ticket, int[] executeBatchResult, int numTickets) {
     if(executeBatchResult.length != numTickets) {
       logger.warn("Insert tickets failed");
-
       if(executeBatchResult.length > 0) {
         if(deleteTickets(con, ticket, executeBatchResult.length)) {
           logger.info("Ticket insertion is undone");

@@ -1,5 +1,6 @@
 package cs601.project4.database;
 
+import cs601.project4.constant.UserConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -83,5 +84,17 @@ public class DBUser {
     insertUserStmt.setString(1, email);
     ResultSet rs = insertUserStmt.executeQuery();
     return rs.next();
+  }
+
+  public static int getUserId(Connection connection, String email) throws SQLException{
+    String checkUserSql = "SELECT userid FROM users WHERE email = ?";
+    PreparedStatement insertUserStmt = connection.prepareStatement(checkUserSql, Statement.RETURN_GENERATED_KEYS);
+    insertUserStmt.setString(1, email);
+    ResultSet results = insertUserStmt.executeQuery();
+    int userId = 0;
+    if(results.next()) {
+      userId = results.getInt(UserConstants.USER_ID);
+    }
+    return userId;
   }
 }
