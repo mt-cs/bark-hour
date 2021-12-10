@@ -10,6 +10,11 @@ public class Ticket {
   private int userId;
   private int eventId;
 
+  public Ticket(int userId, int eventId) {
+    this.userId = userId;
+    this.eventId = eventId;
+  }
+
   public int getTicketId() {
     return ticketId;
   }

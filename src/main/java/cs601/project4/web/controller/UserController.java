@@ -15,8 +15,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-//TODO: ADD EDIT NAME FEATURE
-
 /**
  * Controller for user services
  *
@@ -82,7 +80,7 @@ public class UserController {
   /**
    * Handles get profile-update
    */
-  @GetMapping(value={"/users-profile-confirmation"})
+  @GetMapping(value={"/users-profile/confirmation"})
   public String updateProfileForm() {
     return "users-profile-confirmation";
   }

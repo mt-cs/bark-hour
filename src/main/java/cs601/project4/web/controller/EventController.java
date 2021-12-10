@@ -4,7 +4,9 @@ import cs601.project4.constant.EventConstants;
 import cs601.project4.database.DBEvent;
 import cs601.project4.database.DBManager;
 import cs601.project4.database.DBSessionId;
+import cs601.project4.database.DBTicket;
 import cs601.project4.model.Event;
+import cs601.project4.model.Ticket;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -113,12 +115,15 @@ public class EventController {
     String sessionId = request.getSession(true).getId();
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
-      if (!DBEvent.checkEventExist(con, eventName)) {
+      if (DBEvent.checkEventExist(con, eventName)) {
         logger.info("Event already exists.");
+        return "redirect:/error-400";
+      } else {
+        int eventId = DBEvent.createEvent(
+            con, userId, eventName, venue, address, city, state,
+            country, zip, about, start, end, numTickets);
+        DBTicket.insertTickets(con, new Ticket(userId, eventId), numTickets);
       }
-      DBEvent.createEvent(
-          con, userId, eventName, venue, address, city, state,
-          country, zip, about, start, end, numTickets);
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }

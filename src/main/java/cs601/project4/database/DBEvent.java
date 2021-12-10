@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Query statements for the events table
@@ -12,6 +14,7 @@ import java.sql.Statement;
  * @author marisatania
  */
 public class DBEvent {
+  private static final Logger logger = LoggerFactory.getLogger(DBEvent.class);
 
   /**
    * Retrieve all event in the events table
@@ -55,7 +58,7 @@ public class DBEvent {
         con.prepareStatement(checkEventSql, Statement.RETURN_GENERATED_KEYS);
     insertUserStmt.setString(1, eventID);
     ResultSet rs = insertUserStmt.executeQuery();
-    return !rs.next();
+    return rs.next();
   }
 
   /**
@@ -65,7 +68,7 @@ public class DBEvent {
    *
    * @return true if successful
    */
-  public static boolean createEvent(
+  public static int createEvent(
       Connection con, int userId, String eventName, String venue,
       String address, String city, String state, String country, int zip,
       String about, String start, String end, int numTickets)
@@ -91,6 +94,12 @@ public class DBEvent {
     insertUserStmt.setString(11, end);
     insertUserStmt.setInt(12, numTickets);
     insertUserStmt.executeUpdate();
-    return true;
+
+    ResultSet result = insertUserStmt.getGeneratedKeys();
+    if(result.next()) {
+      return result.getInt(1);
+    }
+    logger.warn("Insert event failed");
+    return -1;
   }
 }
