@@ -105,7 +105,7 @@ public class DBTicket {
   }
 
   /**
-   * swaps one user with another in tickets table
+   * Transfer tickets to another user
    *
    * @param userId
    * @param targetUserId

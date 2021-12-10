@@ -116,6 +116,7 @@ public class EventController {
       logger.warn("Number of tickets has to be at least 1");
       return "redirect:/error-400";
     }
+
     String sessionId = request.getSession(true).getId();
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
@@ -126,6 +127,7 @@ public class EventController {
         int eventId = DBEvent.createEvent(
             con, userId, eventName, venue, address, city, state,
             country, zip, about, start, end, numTickets);
+
         if(!DBTicket.insertTickets(con, new Ticket(userId, eventId), numTickets)) {
           return "redirect:/error";
         }

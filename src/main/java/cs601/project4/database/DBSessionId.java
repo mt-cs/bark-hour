@@ -40,7 +40,7 @@ public class DBSessionId {
    * @throws SQLException database access error
    */
   public static int getUserId(Connection con, String sessionId) throws SQLException {
-    String selectUserIdSql = "SELECT userid FROM users_session_id WHERE session_id = ?;";
+    String selectUserIdSql = "SELECT userid FROM users NATURAL JOIN users_session_id WHERE session_id = ?;";
     PreparedStatement selectUserIdStmt = con.prepareStatement(selectUserIdSql);
     selectUserIdStmt.setString(1, sessionId);
     ResultSet results = selectUserIdStmt.executeQuery();
