@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
 
 <head>
   <meta charset="utf-8">
@@ -257,7 +258,7 @@
             <div class="tab-content pt-2">
 
               <!-- Profile Edit Form -->
-              <form action=# th:action="@{/users-profile-confirmation}">
+              <form action=# th:action="@{/users-profile-confirmation}" method="post">
                 <div class="row mb-3">
                   <label for="profileImage" class="col-md-4 col-lg-3 col-form-label">Profile Image</label>
                   <div class="col-md-8 col-lg-9">
@@ -270,9 +271,9 @@
                 </div>
 
                 <div class="row mb-3">
-                  <label for="fullName" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
+                  <label for="username" class="col-md-4 col-lg-3 col-form-label">Full Name</label>
                   <div class="col-md-8 col-lg-9">
-                    <input name="fullName" type="text" class="form-control" id="fullName" th:value="${username}" >
+                    <input name="username" type="text" class="form-control" id="username" th:value="${username}" >
                   </div>
                 </div>
 

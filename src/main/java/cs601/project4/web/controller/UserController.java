@@ -65,7 +65,7 @@ public class UserController {
   /**
    * Handles successful profile update
    */
-  @PostMapping(value={"/profile-update"})
+  @PostMapping(value={"/users-profile-confirmation"})
   public String updateProfileSubmit(
       @RequestParam(UserConstants.USERNAME) String userName ,
       @RequestParam(UserConstants.EMAIL) String email,
@@ -76,14 +76,14 @@ public class UserController {
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
-    return "profile-update";
+    return "users-profile-confirmation";
   }
 
   /**
    * Handles get profile-update
    */
-  @GetMapping(value={"/profile-update"})
+  @GetMapping(value={"/users-profile-confirmation"})
   public String updateProfileForm() {
-    return "profile-update";
+    return "users-profile-confirmation";
   }
 }
