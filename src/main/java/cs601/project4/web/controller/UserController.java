@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class UserController {
   private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
-  @GetMapping(value={"/account"})
+  @GetMapping(value={"/users-profile"})
   public String userAccount(Model model, HttpServletRequest request) {
     String sessionId = request.getSession(true).getId();
 
@@ -44,7 +44,7 @@ public class UserController {
     return "users-profile";
   }
 
-  @GetMapping(value={"/profile"})
+  @GetMapping(value={"/users-profile-form"})
   public String editProfile(Model model, HttpServletRequest request) {
     String sessionId = request.getSession(true).getId();
 
@@ -59,7 +59,7 @@ public class UserController {
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
-    return "profile";
+    return "users-profile-form";
   }
 
   /**

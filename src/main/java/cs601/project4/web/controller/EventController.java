@@ -39,50 +39,14 @@ public class EventController {
   @GetMapping(value={"/events"})
   public String displayEvents(Model model) {
     getAllEvents(model);
-//    List<Event> events = new ArrayList<>();
-//    List<String> headers = Arrays.asList(
-//        EventConstants.HEADERS_NAME,
-//        EventConstants.HEADERS_ABOUT,
-//        EventConstants.HEADERS_LOCATION,
-//        EventConstants.HEADERS_START,
-//        EventConstants.HEADERS_END);
-//
-//    try (Connection con = DBManager.getConnection()) {
-//      ResultSet results = DBEvent.selectAllEvent(con);
-//
-//      while(results.next()) {
-//        String location = results.getString(EventConstants.VENUE)
-//            + EventConstants.NEW_LINE
-//            + results.getString(EventConstants.CITY)
-//            + EventConstants.COMMA
-//            + results.getString(EventConstants.STATE)
-//            + EventConstants.COMMA
-//            + results.getString(EventConstants.ZIP)
-//            + EventConstants.NEW_LINE
-//            + results.getString(EventConstants.COUNTRY);
-//
-//        Event event = new Event();
-//        event.setEventId(results.getInt(EventConstants.EVENT_ID));
-//        event.setEventName(results.getString(EventConstants.EVENT_NAME));
-//        event.setAbout(results.getString(EventConstants.ABOUT));
-//        event.setLocation(location);
-//        event.setEventStart(results.getTimestamp(EventConstants.EVENT_START));
-//        event.setEventEnd(results.getTimestamp(EventConstants.EVENT_END));
-//        event.setUserId(1);
-//        event.setNumTickets(results.getInt(EventConstants.NUM_TICKET));
-//        event.setNumTicketAvail(results.getInt(EventConstants.NUM_TICKET));
-//        event.setNumTicketPurchased(results.getInt(EventConstants.NUM_TICKET_PURCHASED));
-//        events.add(event);
-//      }
-//    } catch (SQLException sqlException) {
-//      logger.error(sqlException.getMessage());
-//    }
-//    model.addAttribute("headers", headers);
-//    model.addAttribute("events", events);
     return "home";
   }
 
-
+  /**
+   * A helper method to get all events
+   *
+   * @param model Model
+   */
   public static void getAllEvents(Model model) {
     List<Event> events = new ArrayList<>();
     List<String> headers = Arrays.asList(
@@ -125,8 +89,6 @@ public class EventController {
     model.addAttribute("headers", headers);
     model.addAttribute("events", events);
   }
-
-
 
   /**
    * Handles create event post method
@@ -176,19 +138,18 @@ public class EventController {
   /**
    * Handles even that just been created
    */
-  @GetMapping(value={"/events2"})
-  public String getEvents() {
-    return "home";
-  }
-
-  /**
-   * Handles even that just been created
-   */
   @GetMapping(value={"/event-status"})
   public String getEventStatus() {
     return "event-status";
   }
 
+  /**
+   * Get detail on one event
+   *
+   * @param model   Model model
+   * @param eventId Event ID int
+   * @return event.html
+   */
   @GetMapping(value={"/event/{eventId}"})
   public String getEvent(Model model, @PathVariable int eventId) {
     try (Connection con = DBManager.getConnection()) {
