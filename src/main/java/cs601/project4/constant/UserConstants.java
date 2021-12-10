@@ -1,5 +1,10 @@
 package cs601.project4.constant;
 
+/**
+ A helper class to maintain constants used for the users table.
+ *
+ * @author marisatania
+ */
 public class UserConstants {
   public static final String USERNAME = "username";
   public static final String EMAIL = "email";
