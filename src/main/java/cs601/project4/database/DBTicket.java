@@ -105,6 +105,33 @@ public class DBTicket {
   }
 
   /**
+   * Buy tickets
+   *
+   * @param userId
+   * @param eventId
+   * @param numTickets
+   * @return
+   */
+  public static boolean buyTickets(Connection con, int userId, int eventId, int numTickets) {
+    try {
+      PreparedStatement stmt = con.prepareStatement(
+          "UPDATE tickets SET user_id = ? WHERE event_id = ? LIMIT ?");
+      stmt.setInt(1, userId);
+      stmt.setInt(2, eventId);
+      stmt.setInt(3, numTickets);
+      int count = stmt.executeUpdate();
+      if(count == 0) {
+        logger.warn("Update tickets failed");
+        return false;
+      }
+      return true;
+    } catch (SQLException e) {
+      logger.error(e.getMessage());
+      return false;
+    }
+  }
+
+  /**
    * Transfer tickets to another user
    *
    * @param userId
@@ -113,7 +140,7 @@ public class DBTicket {
    * @param numTickets
    * @return
    */
-  public boolean updateTickets(Connection con, int userId, int targetUserId, int eventId, int numTickets) {
+  public static boolean transferTickets(Connection con, int userId, int targetUserId, int eventId, int numTickets) {
     try {
       PreparedStatement stmt = con.prepareStatement(
           "UPDATE tickets SET user_id = ? WHERE user_id = ? and event_id = ? LIMIT ?");

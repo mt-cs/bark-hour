@@ -24,8 +24,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class UserController {
   private final Logger logger = LoggerFactory.getLogger(UserController.class);
 
+  /**
+   * Displays user profile
+   *
+   * @param model   Model
+   * @param request HTTP Request
+   * @return users-profile.html
+   */
   @GetMapping(value={"/users-profile"})
-  public String userAccount(Model model, HttpServletRequest request) {
+  public String getUserAccount(Model model, HttpServletRequest request) {
     String sessionId = request.getSession(true).getId();
 
     try (Connection con = DBManager.getConnection()) {
@@ -42,6 +49,13 @@ public class UserController {
     return "users-profile";
   }
 
+  /**
+   * Get update users profile form
+   *
+   * @param model   Model
+   * @param request HTTP Request
+   * @return users-profile-form.html
+   */
   @GetMapping(value={"/users-profile-form"})
   public String editProfile(Model model, HttpServletRequest request) {
     String sessionId = request.getSession(true).getId();
@@ -62,6 +76,11 @@ public class UserController {
 
   /**
    * Handles successful profile update
+   *
+   * @param userName String user name
+   * @param email    String user email
+   * @param location String location
+   * @return users-profile-confirmation.html
    */
   @PostMapping(value={"/users-profile-confirmation"})
   public String updateProfileSubmit(
@@ -79,6 +98,8 @@ public class UserController {
 
   /**
    * Handles get profile-update
+   *
+   * @return users-profile-confirmation.html
    */
   @GetMapping(value={"/users-profile/confirmation"})
   public String updateProfileForm() {

@@ -86,6 +86,14 @@ public class DBUser {
     return rs.next();
   }
 
+  /**
+   * Get user ID from the users table
+   *
+   * @param connection Connection
+   * @param email      email
+   * @return userId
+   * @throws SQLException on database errors
+   */
   public static int getUserId(Connection connection, String email) throws SQLException{
     String checkUserSql = "SELECT userid FROM users WHERE email = ?";
     PreparedStatement insertUserStmt = connection.prepareStatement(checkUserSql, Statement.RETURN_GENERATED_KEYS);
