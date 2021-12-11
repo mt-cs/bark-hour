@@ -1,7 +1,6 @@
 package cs601.project4.web.controller;
 
 import cs601.project4.constant.EventConstants;
-import cs601.project4.constant.UserConstants;
 import cs601.project4.database.DBEvent;
 import cs601.project4.database.DBManager;
 import cs601.project4.database.DBSessionId;
@@ -15,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -41,6 +41,11 @@ public class EventController {
    */
   @GetMapping(value={"/events"})
   public String displayEvents(Model model, HttpServletRequest request) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
+
     getAllEvents(model, request);
     return "home";
   }
@@ -107,12 +112,17 @@ public class EventController {
       @RequestParam(EventConstants.NUM_TICKET) int numTickets,
       HttpServletRequest request) {
 
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
+    String sessionId = session.getId();
+
     if (numTickets < 1) {
       logger.warn("Number of tickets has to be at least 1");
       return "redirect:/error-400";
     }
 
-    String sessionId = request.getSession(true).getId();
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
       if (DBEvent.checkEventExist(con, eventName)) {
@@ -139,7 +149,11 @@ public class EventController {
    * @return new-event
    */
   @GetMapping(value={"/new-event"})
-  public String createEventForm() {
+  public String createEventForm(HttpServletRequest request) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
     return "new-event";
   }
 
@@ -147,7 +161,11 @@ public class EventController {
    * Handles even that just been created
    */
   @GetMapping(value={"/event-status"})
-  public String getEventStatus() {
+  public String getEventStatus(HttpServletRequest request) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
     return "event-status";
   }
 
@@ -159,7 +177,13 @@ public class EventController {
    * @return event.html
    */
   @GetMapping(value={"/event/{eventId}"})
-  public String getEvent(Model model, @PathVariable int eventId) {
+  public String getEvent(Model model, @PathVariable int eventId, HttpServletRequest request) {
+
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
+
     try (Connection con = DBManager.getConnection()) {
       ResultSet results = DBEvent.selectEvent(con, eventId);
       while(results.next()) {
@@ -183,7 +207,11 @@ public class EventController {
   }
 
   @GetMapping("/event-update")
-  public String getEventUpdateForm() {
+  public String getEventUpdateForm(HttpServletRequest request) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
     return "event-update";
   }
 
@@ -207,12 +235,17 @@ public class EventController {
       @RequestParam(EventConstants.NUM_TICKET) int numTickets,
       HttpServletRequest request) {
 
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
+    String sessionId = session.getId();
+
     if (numTickets < 1) {
       logger.warn("Number of tickets has to be at least 1");
       return "redirect:/error-400";
     }
 
-    String sessionId = request.getSession(true).getId();
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
 
@@ -235,7 +268,8 @@ public class EventController {
    * @return event-status
    */
   @GetMapping(value={"/update-event/{eventId}"})
-  public String getUpdateEventForm(Model model, @PathVariable int eventId) {
+  public String getUpdateEventForm(Model model, @PathVariable int eventId, HttpServletRequest request) {
+
     try (Connection con = DBManager.getConnection()) {
       ResultSet results = DBEvent.selectEvent(con, eventId);
       while(results.next()) {

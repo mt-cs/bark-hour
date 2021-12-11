@@ -54,6 +54,11 @@ public class BarkourErrorController implements ErrorController {
     return "error-500";
   }
 
+  /**
+   * Handles login error
+   *
+   * @return login-error
+   */
   @RequestMapping("/error-login")
   public String handleLoginError() {
     return "error-login";

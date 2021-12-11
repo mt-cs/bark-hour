@@ -7,7 +7,6 @@ import cs601.project4.database.DBManager;
 import cs601.project4.database.DBSessionId;
 import cs601.project4.database.DBTicket;
 import cs601.project4.database.DBUser;
-import cs601.project4.model.Event;
 import cs601.project4.model.UserTicket;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -16,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -45,8 +45,14 @@ public class TicketController {
       Model model,
       HttpServletRequest request,
       @PathVariable int eventId) {
+
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
+    String sessionId = session.getId();
+
     try (Connection con = DBManager.getConnection()) {
-      String sessionId = request.getSession(true).getId();
       int userId = DBSessionId.getUserId(con, sessionId);
       model.addAttribute(EventConstants.EVENT_ID, eventId);
       model.addAttribute(UserConstants.USER_ID, userId);
@@ -68,7 +74,12 @@ public class TicketController {
       @RequestParam(EventConstants.NUM_TICKET) int numTickets,
       @PathVariable int eventId,
       HttpServletRequest request) {
-    String sessionId = request.getSession(true).getId();
+
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
+    String sessionId = session.getId();
 
     if (numTickets < 1) {
       logger.warn("Number of tickets has to be at least 1");
@@ -121,7 +132,13 @@ public class TicketController {
       Model model,
       HttpServletRequest request,
       @PathVariable int eventId) {
-    String sessionId = request.getSession(true).getId();
+
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
+    String sessionId = session.getId();
+
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
       model.addAttribute(EventConstants.EVENT_ID, eventId);
@@ -147,12 +164,17 @@ public class TicketController {
       @PathVariable int eventId,
       HttpServletRequest request) {
 
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
+    String sessionId = session.getId();
+
     if (numTickets < 1) {
       logger.warn("Number of tickets has to be at least 1");
       return "redirect:/error-400";
     }
 
-    String sessionId = request.getSession(true).getId();
     try (Connection con = DBManager.getConnection()) {
 
       int userId = DBSessionId.getUserId(con, sessionId);
@@ -193,6 +215,12 @@ public class TicketController {
    */
   @GetMapping(value={"/tickets"})
   public String displayTickets(Model model, HttpServletRequest request) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
+    String sessionId = session.getId();
+
     List<UserTicket> ticketList = new ArrayList<>();
     List<String> headers = Arrays.asList(
         EventConstants.HEADERS_NAME,
@@ -200,7 +228,6 @@ public class TicketController {
         EventConstants.TICKET_COUNT
       );
 
-    String sessionId = request.getSession(true).getId();
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
       int ticketCount = 0;

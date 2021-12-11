@@ -100,14 +100,4 @@ public class HomeController {
     model.addAttribute("name", clientInfo.getName());
     return "home";
   }
-
-  /**
-   * Handles users that are already being authenticated
-   *
-   * @return internal-user
-   */
-  @GetMapping(value={"/internal-user"})
-  public String internalUser() {
-    return "internal-user";
-  }
 }

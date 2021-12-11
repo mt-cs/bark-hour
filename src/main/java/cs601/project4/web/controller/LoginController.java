@@ -7,6 +7,7 @@ import cs601.project4.login.LoginUtilities;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +41,7 @@ public class LoginController {
   @GetMapping(value={"/login"})
   public String getLogin(Model model, HttpServletRequest request) {
     String sessionId = request.getSession(true).getId();
+
     Object clientInfoObj =
         request.getSession().getAttribute(LoginServerConstants.CLIENT_INFO_KEY);
 
@@ -61,18 +63,6 @@ public class LoginController {
   }
 
   /**
-   * Handles login error
-   *
-   * @param request HttpServletRequest
-   * @return        login-error
-   */
-  @GetMapping(value={"/login-error"})
-  public String loginError(HttpServletRequest request) {
-    request.getSession().invalidate();
-    return "login-error";
-  }
-
-  /**
    * Handles a request to sign out
    *
    * @param request HTTP Servlet Request
@@ -80,7 +70,13 @@ public class LoginController {
    */
   @GetMapping(value={"/logout"})
   public String logout(HttpServletRequest request) {
-    String sessionId = request.getSession(true).getId();
+
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
+    String sessionId = session.getId();
+
     try (Connection con = DBManager.getConnection()) {
       DBSessionId.deleteUserSessionID(con, sessionId);
     } catch (SQLException sqlException) {
