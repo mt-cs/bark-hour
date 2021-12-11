@@ -14,6 +14,7 @@
   <tbody>
   <tr th:each="ticket: ${tickets}">
     <td th:text="${ticket.eventName}"></td>
+    <td th:text="${ticket.eventId}"></td>
     <td th:text="${ticket.ticketCount}"></td>
     <td><a th:href="@{/ticket-transfer/{event_id}(event_id=${ticket.eventId})}"><button>Transfer</button></a> </td>
   </tr>

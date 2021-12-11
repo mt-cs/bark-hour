@@ -30,5 +30,6 @@ public class EventConstants {
   public static final String HEADERS_END = "End";
   public static final String TICKETS = "tickets";
   public static final String TICKET_COUNT = "Ticket Count";
+  public static final String HEADERS_EVENT_ID = "Event ID";
   public static final String TICKET_ID = "ticket_id";
 }

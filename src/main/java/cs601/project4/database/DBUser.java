@@ -105,4 +105,23 @@ public class DBUser {
     }
     return userId;
   }
+
+  /**
+   * Get user email from the users table
+   *
+   * @param connection Connection
+   * @param userId     String user ID
+   * @return email
+   * @throws SQLException on database errors
+   */
+  public static String getUserEmail(Connection connection, int userId) throws SQLException{
+    String getEmailSql = "SELECT email FROM users WHERE userId = ?";
+    PreparedStatement getEmailStmt = connection.prepareStatement(getEmailSql, Statement.RETURN_GENERATED_KEYS);
+    getEmailStmt.setInt(1, userId);
+    ResultSet results = getEmailStmt.executeQuery();
+    if(results.next()) {
+      return results.getString(UserConstants.EMAIL);
+    }
+    return null;
+  }
 }

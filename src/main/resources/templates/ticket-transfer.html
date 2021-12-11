@@ -6,14 +6,15 @@
   <title>Buy Ticket</title>
 </head>
 <body>
-<h2>Buy Ticket</h2>
+<h2>Ticket Transfer</h2>
+<!--<form action="/ticket-transfer-status}" method="post">-->
 <form th:action="@{/ticket-transfer-status/{event_id}(event_id=${event_id})}" method="post">
-<!--  <label for="event_id">Event ID:</label><br>-->
-  <input type="hidden" id="event_id" name="event_id" th:value="${event_id}" readonly><br><br>
 <!--  <label for="userid">User ID:</label><br>-->
-  <input type="hidden" id="userid" name="userid" th:value="${userid}" readonly><br><br>
+  <input type="hidden" id="userid" name="userid" th:value="${userid}" readonly>
   <label for="num_ticket">Number of tickets:</label><br>
   <input type="number" id="num_ticket" name="num_ticket" th:value="${num_ticket}" min="1" required="required"><br><br>
+  <label for="email">Transfer to:</label><br>
+  <input type="email" id="email" name="email" th:value="${email}" required="required"><br><br>
   <input type="submit" value="Submit">
 </form>
 

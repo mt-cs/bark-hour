@@ -142,7 +142,7 @@ public class DBTicket {
    */
   public static boolean transferTickets(Connection con, int userId, int targetUserId, int eventId, int numTickets) {
     try (PreparedStatement stmt = con.prepareStatement(
-        "UPDATE tickets SET user_id = ? WHERE userid = ? and event_id = ? LIMIT ?")){
+        "UPDATE tickets SET userid = ? WHERE userid = ? and event_id = ? LIMIT ?")){
       stmt.setInt(1, targetUserId);
       stmt.setInt(2, userId);
       stmt.setInt(3, eventId);
