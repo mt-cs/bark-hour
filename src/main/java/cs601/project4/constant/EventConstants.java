@@ -24,6 +24,8 @@ public class EventConstants {
   public static final String HEADERS_NAME = "Event Name";
   public static final String HEADERS_ABOUT = "About";
   public static final String HEADERS_LOCATION = "Location";
+  public static final String HEADERS_INFO = "INFO";
+  public static final String HEADERS_CITY = "City";
   public static final String HEADERS_START = "Start";
   public static final String HEADERS_END = "End";
   public static final String NEW_LINE = "\n";

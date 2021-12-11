@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="https://www.thymeleaf.org">
+
 <head>
   <meta charset="UTF-8">
-  <title>New Event</title>
+  <title>Update Event</title>
 </head>
 <body>
-  <h2>Create Event</h2>
-  <form action="/event-status" method="post">
+  <h2>Update Event</h2>
+  <form action="/event_update" method="post">
     <label for="event_name">Event name:</label><br>
     <input type="text" id="event_name" name="event_name" th:value="${event_name}" required="required"><br><br>
     <label for="about">About:</label><br>
-    <textarea id="about" name="about" rows="4" cols="50">What's this event about?</textarea><br><br>
+    <textarea id="about" name="about" rows="4" cols="50" required="required" th:text="${about}"></textarea><br><br>
     <label for="venue">Venue:</label><br>
     <input type="text" id="venue" name="venue" th:value="${venue}" required="required"><br><br>
     <label for="address">Address:</label><br>
@@ -25,9 +26,10 @@
     <label for="state">Zip/ Postal Code:</label><br>
     <input type="number" id="zip" name="zip" th:value="${zip}" required="required"><br><br>
     <label for="event_start">Start:</label><br>
-    <input type="datetime-local" id="event_start" name="event_start" th:value="${event_start}" required="required"><br><br>
-    <label for="event_end">End:</label><br>
+    <input type="datetime-local" id="event_start" name="event_start" th:value="${event_start}" min="2021-12-13" required="required"><br><br>
+    <label for="event_end" max="#event_start">End:</label><br>
     <input type="datetime-local" id="event_end" name="event_end" th:value="${event_end}" required="required"><br><br>
+
     <label for="num_ticket">Available seats:</label><br>
     <input type="number" id="num_ticket" name="num_ticket" th:value="${num_ticket}" min="1" required="required"><br><br>
     <input type="submit" value="Submit">

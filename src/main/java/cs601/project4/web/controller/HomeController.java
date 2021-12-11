@@ -60,7 +60,7 @@ public class HomeController {
     /* Check if already authenticated */
     if (clientInfoObj != null) {
       logger.info("Client with session ID already exists.\n");
-      return "redirect:/internal-user";
+      return "redirect:/events";
     }
 
     /* Retrieve the code provided by Slack */
@@ -96,7 +96,7 @@ public class HomeController {
     }
     request.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, new Gson().toJson(clientInfo));
 
-    EventController.getAllEvents(model);
+    EventController.getAllEvents(model, request);
     model.addAttribute("name", clientInfo.getName());
     return "home";
   }

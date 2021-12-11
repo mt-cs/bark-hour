@@ -14,7 +14,12 @@ public class Event {
   private int eventId;
   private String eventName;
   private String about;
-  private String location;
+  private String venue;
+  private String address;
+  private String city;
+  private String state;
+  private String country;
+  private int zip;
   private Timestamp eventStart;
   private Timestamp eventEnd;
   private int userId;
@@ -28,7 +33,12 @@ public class Event {
    * @param eventId            int event ID
    * @param eventName          String event name
    * @param about              String event description
-   * @param location           String location
+   * @param venue              String venue
+   * @param address            String address
+   * @param city               String city
+   * @param state              String state
+   * @param country            String country
+   * @param zip                int zip
    * @param eventStart         Timestamp event start date
    * @param eventEnd           Timestamp event end date
    * @param userId             int user ID
@@ -39,7 +49,12 @@ public class Event {
   public Event(int eventId,
                String eventName,
                String about,
-               String location,
+               String venue,
+               String address,
+               String city,
+               String state,
+               String country,
+               int zip,
                Timestamp eventStart,
                Timestamp eventEnd,
                int userId,
@@ -49,7 +64,11 @@ public class Event {
     this.eventId = eventId;
     this.eventName = eventName;
     this.about = about;
-    this.location = location;
+    this.address = address;
+    this.city = city;
+    this.state = state;
+    this.country = country;
+    this.zip = zip;
     this.eventStart = eventStart;
     this.eventEnd = eventEnd;
     this.userId = userId;
@@ -120,11 +139,63 @@ public class Event {
   }
 
   public String getLocation() {
-    return location;
+    return address + ", " + city + ", " + state + ", " + country;
   }
 
-  public void setLocation(String location) {
-    this.location = location;
+  public String getAddress() {
+    return address;
+  }
+
+  public void setAddress(String address) {
+    this.address = address;
+  }
+
+  public String getCity() {
+    return city;
+  }
+
+  public void setCity(String city) {
+    this.city = city;
+  }
+
+  public String getState() {
+    return state;
+  }
+
+  public void setState(String state) {
+    this.state = state;
+  }
+
+  public String getCountry() {
+    return country;
+  }
+
+  public void setCountry(String country) {
+    this.country = country;
+  }
+
+  public int getZip() {
+    return zip;
+  }
+
+  public void setZip(int zip) {
+    this.zip = zip;
+  }
+
+  public int getNumTicket() {
+    return numTicket;
+  }
+
+  public void setNumTicket(int numTicket) {
+    this.numTicket = numTicket;
+  }
+
+  public String getVenue() {
+    return venue;
+  }
+
+  public void setVenue(String venue) {
+    this.venue = venue;
   }
 
   public Timestamp getEventStart() {
@@ -141,21 +212,5 @@ public class Event {
 
   public void setEventEnd(Timestamp eventEnd) {
     this.eventEnd = eventEnd;
-  }
-
-  @Override
-  public String toString() {
-    return "Event{" +
-        "eventId=" + eventId +
-        ", eventName='" + eventName + '\'' +
-        ", about='" + about + '\'' +
-        ", location='" + location + '\'' +
-        ", eventStart=" + eventStart +
-        ", eventEnd=" + eventEnd +
-        ", userId=" + userId +
-        ", numTicket=" + numTicket +
-        ", numTicketAvail=" + numTicketAvail +
-        ", numTicketPurchased=" + numTicketPurchased +
-        '}';
   }
 }

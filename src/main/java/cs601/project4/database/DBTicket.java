@@ -115,7 +115,7 @@ public class DBTicket {
   public static boolean buyTickets(Connection con, int userId, int eventId, int numTickets) {
     try {
       PreparedStatement stmt = con.prepareStatement(
-          "UPDATE tickets SET user_id = ? WHERE event_id = ? LIMIT ?");
+          "UPDATE tickets SET userid = ? WHERE event_id = ? LIMIT ?");
       stmt.setInt(1, userId);
       stmt.setInt(2, eventId);
       stmt.setInt(3, numTickets);

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -35,9 +36,10 @@ public class TicketController {
    * @param numTickets number of tickets
    * @return users-profile-confirmation.html
    */
-  @PostMapping(value={"/ticket-purchase"})
+  @PostMapping(value={"/ticket-purchase/{eventId}"})
   public String updateProfileSubmit(
       @RequestParam(EventConstants.NUM_TICKET) int numTickets,
+      @PathVariable int eventId,
       HttpServletRequest request) {
     String sessionId = request.getSession(true).getId();
 
@@ -48,7 +50,7 @@ public class TicketController {
 
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
-      DBTicket.buyTickets(con, userId, 8, numTickets);
+      DBTicket.buyTickets(con, userId, eventId, numTickets);
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
@@ -67,7 +69,8 @@ public class TicketController {
       int userId = DBSessionId.getUserId(con, sessionId);
       int eventId = DBEvent.getEventId(con, userId);
       model.addAttribute(EventConstants.EVENT_ID, eventId);
-      model.addAttribute(UserConstants.USER_ID, eventId);
+      model.addAttribute(UserConstants.USER_ID, userId);
+      model.addAttribute(EventConstants.NUM_TICKET, 1);
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }

@@ -30,13 +30,27 @@ public class BarkourErrorController implements ErrorController {
     logger.error("ERROR: " + status.toString());
     int statusCode = Integer.parseInt(status.toString());
     if (statusCode == HttpStatus.NOT_FOUND.value()) {
-      return "error-404";
+      return "redirect:/error-404";
     } else if (statusCode == HttpStatus.INTERNAL_SERVER_ERROR.value()) {
-      return "error-500";
+      return "redirect:/error-500";
     } else if (statusCode == HttpStatus.BAD_REQUEST.value()) {
-      return "error-400";
+      return "redirect:/error-400";
     }
-
     return "error";
+  }
+
+  @RequestMapping("/error-404")
+  public String handle404Error() {
+    return "error-404";
+  }
+
+  @RequestMapping("/error-400")
+  public String handle400Error() {
+    return "error-400";
+  }
+
+  @RequestMapping("/error-500")
+  public String handle500Error() {
+    return "error-500";
   }
 }

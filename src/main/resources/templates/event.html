@@ -9,12 +9,13 @@
   <h2 th:text="${event_name}"></h2>
   <p>About: <span th:text="${about}"></span></p>
   <p>Venue: <span th:text="${venue}"></span></p>
-  <p>Location: <span th:text="${city}"></span>, <span th:text="${state}"></span> <span th:text="${zip}"> </span></p>
+  <p>Location: <span th:text="${city}"></span>, <span th:text="${state}"></span> <span th:text="${zip}">, <span th:text="${country}"></span></p>
   <p>Start: <span th:text="${event_start}"></span></p>
   <p>End: <span th:text="${event_end}"></span></p>
   <p>Capacity: <span th:text="${num_ticket}"></span></p>
   <br>
   <a href="/ticket"><button>Buy Ticket</button></a>
+  <a th:href="@{/update-event/{eventId}(eventId=${eventId})}"><button>Update Event</button></a>
   <a href="/events"><button>All Events</button></a>
   <a href="/home"><button>Home</button></a>
   <a href="/logout"><button>Logout</button></a>
