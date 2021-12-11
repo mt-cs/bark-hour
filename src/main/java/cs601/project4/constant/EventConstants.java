@@ -24,12 +24,12 @@ public class EventConstants {
   public static final String HEADERS_NAME = "Event Name";
   public static final String HEADERS_ABOUT = "About";
   public static final String HEADERS_LOCATION = "Location";
-  public static final String HEADERS_INFO = "INFO";
+  public static final String HEADERS_INFO = "Info";
   public static final String HEADERS_CITY = "City";
   public static final String HEADERS_START = "Start";
   public static final String HEADERS_END = "End";
   public static final String TICKETS = "tickets";
   public static final String TICKET_COUNT = "Ticket Count";
   public static final String HEADERS_EVENT_ID = "Event ID";
-  public static final String TICKET_ID = "ticket_id";
+  public static final String HEADERS_UPDATE = "Update";
 }

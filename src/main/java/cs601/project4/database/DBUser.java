@@ -30,14 +30,16 @@ public class DBUser {
       Connection con,
       String username,
       String email,
-      String location)
+      String location,
+      int userId)
       throws SQLException {
-    String selectUserSql = "UPDATE users SET email = ?, location = ? WHERE username = ?";
-    PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
-    selectUserStmt.setString(1, email);
-    selectUserStmt.setString(2, location);
-    selectUserStmt.setString(3, username);
-    selectUserStmt.executeUpdate();
+    String updateUserSql = "UPDATE users SET email = ?, location = ?, username = ? WHERE userid = ?";
+    PreparedStatement updateUserStmt = con.prepareStatement(updateUserSql);
+    updateUserStmt.setString(1, email);
+    updateUserStmt.setString(2, location);
+    updateUserStmt.setString(3, username);
+    updateUserStmt.setInt(4, userId);
+    updateUserStmt.executeUpdate();
   }
 
   /**

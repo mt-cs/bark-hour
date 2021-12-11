@@ -1,6 +1,7 @@
 package cs601.project4.web.controller;
 
 import cs601.project4.constant.EventConstants;
+import cs601.project4.constant.UserConstants;
 import cs601.project4.database.DBEvent;
 import cs601.project4.database.DBManager;
 import cs601.project4.database.DBSessionId;
@@ -12,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 public class EventController {
+
   private static final Logger logger = LoggerFactory.getLogger(EventController.class);
 
   /**
@@ -42,7 +45,7 @@ public class EventController {
    * @param model Model
    * @return home
    */
-  @GetMapping(value={"/events"})
+  @GetMapping(value = {"/events"})
   public String displayEvents(Model model, HttpServletRequest request) {
     HttpSession session = request.getSession(false);
     if (session == null) {
@@ -73,7 +76,7 @@ public class EventController {
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
       ResultSet results = DBEvent.selectAllEvent(con);
-      while(results.next()) {
+      while (results.next()) {
         Event event = new Event();
         event.setEventId(results.getInt(EventConstants.EVENT_ID));
         event.setEventName(results.getString(EventConstants.EVENT_NAME));
@@ -100,7 +103,7 @@ public class EventController {
    *
    * @return event-status
    */
-  @PostMapping(value={"/event-status"})
+  @PostMapping(value = {"/event-status"})
   public String createEventSubmit(
       @RequestParam(EventConstants.EVENT_NAME) String eventName,
       @RequestParam(EventConstants.ABOUT) String about,
@@ -148,7 +151,7 @@ public class EventController {
             con, userId, eventName, venue, address, city, state,
             country, zip, about, start, end, numTickets);
 
-        if(!DBTicket.insertTickets(con, new Ticket(userId, eventId), numTickets)) {
+        if (!DBTicket.insertTickets(con, new Ticket(userId, eventId), numTickets)) {
           return "redirect:/error";
         }
       }
@@ -163,19 +166,20 @@ public class EventController {
    *
    * @return new-event
    */
-  @GetMapping(value={"/new-event"})
-  public String createEventForm(HttpServletRequest request) {
+  @GetMapping(value = {"/new-event"})
+  public String createEventForm(Model model, HttpServletRequest request) {
     HttpSession session = request.getSession(false);
     if (session == null) {
       return "redirect:/error-login";
     }
+    model.addAttribute("event_start", LocalDateTime.now());
     return "new-event";
   }
 
   /**
    * Handles even that just been created
    */
-  @GetMapping(value={"/event-status"})
+  @GetMapping(value = {"/event-status"})
   public String getEventStatus(HttpServletRequest request) {
     HttpSession session = request.getSession(false);
     if (session == null) {
@@ -191,7 +195,7 @@ public class EventController {
    * @param eventId Event ID int
    * @return event.html
    */
-  @GetMapping(value={"/event/{eventId}"})
+  @GetMapping(value = {"/event/{eventId}"})
   public String getEvent(Model model, @PathVariable int eventId, HttpServletRequest request) {
 
     HttpSession session = request.getSession(false);
@@ -201,7 +205,7 @@ public class EventController {
 
     try (Connection con = DBManager.getConnection()) {
       ResultSet results = DBEvent.selectEvent(con, eventId);
-      while(results.next()) {
+      while (results.next()) {
         model.addAttribute(EventConstants.EVENT_ID, results.getString(EventConstants.EVENT_ID));
         model.addAttribute(EventConstants.EVENT_NAME, results.getString(EventConstants.EVENT_NAME));
         model.addAttribute(EventConstants.ABOUT, results.getString(EventConstants.ABOUT));
@@ -211,7 +215,8 @@ public class EventController {
         model.addAttribute(EventConstants.STATE, results.getString(EventConstants.STATE));
         model.addAttribute(EventConstants.COUNTRY, results.getString(EventConstants.COUNTRY));
         model.addAttribute(EventConstants.ZIP, results.getString(EventConstants.ZIP));
-        model.addAttribute(EventConstants.EVENT_START, results.getString(EventConstants.EVENT_START));
+        model.addAttribute(EventConstants.EVENT_START,
+            results.getString(EventConstants.EVENT_START));
         model.addAttribute(EventConstants.EVENT_END, results.getString(EventConstants.EVENT_END));
         model.addAttribute(EventConstants.NUM_TICKET, results.getString(EventConstants.NUM_TICKET));
       }
@@ -221,7 +226,7 @@ public class EventController {
     return "event";
   }
 
-  @GetMapping("/event-update")
+  @GetMapping("/event-update") // TODO: update if failed or successful
   public String getEventUpdateForm(HttpServletRequest request) {
     HttpSession session = request.getSession(false);
     if (session == null) {
@@ -235,7 +240,7 @@ public class EventController {
    *
    * @return event-status
    */
-  @PostMapping(value={"/event-update"})
+  @PostMapping(value = {"/event-update"})
   public String updateEvent(
       @RequestParam(EventConstants.EVENT_NAME) String eventName,
       @RequestParam(EventConstants.ABOUT) String about,
@@ -255,7 +260,7 @@ public class EventController {
       return "redirect:/error-login";
     }
     String sessionId = session.getId();
-
+    //TODO: only can update your own event
     if (numTickets < 1) {
       logger.warn("Number of tickets has to be at least 1");
       return "redirect:/error-400";
@@ -268,7 +273,6 @@ public class EventController {
           con, 1, userId, eventName, venue, address, city, state,
           country, zip, about, start, end, numTickets);
 
-
 //      if(!DBTicket.insertTickets(con, new Ticket(userId, eventId), numTickets)) {
 //        return "redirect:/error";
 //      }
@@ -277,17 +281,24 @@ public class EventController {
     }
     return "event-update";
   }
+
   /**
    * Handles update event form
    *
    * @return event-status
    */
-  @GetMapping(value={"/update-event/{eventId}"})
-  public String getUpdateEventForm(Model model, @PathVariable int eventId, HttpServletRequest request) {
+  @GetMapping(value = {"/update-event/{eventId}"})
+  public String getUpdateEventForm(Model model, @PathVariable int eventId,
+      HttpServletRequest request) {
+
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
 
     try (Connection con = DBManager.getConnection()) {
       ResultSet results = DBEvent.selectEvent(con, eventId);
-      while(results.next()) {
+      while (results.next()) {
         model.addAttribute(EventConstants.EVENT_ID, results.getString(EventConstants.EVENT_ID));
         model.addAttribute(EventConstants.EVENT_NAME, results.getString(EventConstants.EVENT_NAME));
         model.addAttribute(EventConstants.ABOUT, results.getString(EventConstants.ABOUT));
@@ -297,7 +308,8 @@ public class EventController {
         model.addAttribute(EventConstants.STATE, results.getString(EventConstants.STATE));
         model.addAttribute(EventConstants.COUNTRY, results.getString(EventConstants.COUNTRY));
         model.addAttribute(EventConstants.ZIP, results.getString(EventConstants.ZIP));
-        model.addAttribute(EventConstants.EVENT_START, results.getString(EventConstants.EVENT_START));
+        model.addAttribute(EventConstants.EVENT_START,
+            results.getString(EventConstants.EVENT_START));
         model.addAttribute(EventConstants.EVENT_END, results.getString(EventConstants.EVENT_END));
         model.addAttribute(EventConstants.NUM_TICKET, results.getString(EventConstants.NUM_TICKET));
       }
@@ -307,4 +319,53 @@ public class EventController {
     return "update-event";
   }
 
+  /**
+   * Get detail on one event
+   *
+   * @param model Model model
+   * @return events.html
+   */
+  @GetMapping(value = {"/users-events"})
+  public String getMyEvents(Model model, HttpServletRequest request) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
+
+    String sessionId = session.getId();
+    List<Event> events = new ArrayList<>();
+    List<String> headers = Arrays.asList(
+        EventConstants.HEADERS_NAME,
+        EventConstants.HEADERS_ABOUT,
+        EventConstants.HEADERS_LOCATION,
+        EventConstants.HEADERS_CITY,
+        EventConstants.HEADERS_START,
+        EventConstants.HEADERS_END,
+        EventConstants.HEADERS_UPDATE);
+
+    try (Connection con = DBManager.getConnection()) {
+      int userId = DBSessionId.getUserId(con, sessionId);
+      ResultSet results = DBEvent.getMyEvents(con, userId);
+      while (results.next()) {
+        Event event = new Event();
+        event.setEventId(results.getInt(EventConstants.EVENT_ID));
+        event.setEventName(results.getString(EventConstants.EVENT_NAME));
+        event.setAbout(results.getString(EventConstants.ABOUT));
+        event.setVenue(results.getString(EventConstants.VENUE));
+        event.setCity(results.getString(EventConstants.CITY));
+        event.setEventStart(results.getTimestamp(EventConstants.EVENT_START));
+        event.setEventEnd(results.getTimestamp(EventConstants.EVENT_END));
+        event.setUserId(userId);
+        event.setNumTickets(results.getInt(EventConstants.NUM_TICKET));
+        event.setNumTicketAvail(results.getInt(EventConstants.NUM_TICKET));
+        event.setNumTicketPurchased(results.getInt(EventConstants.NUM_TICKET_PURCHASED));
+        events.add(event);
+      }
+    } catch (SQLException sqlException) {
+      logger.error(sqlException.getMessage());
+    }
+    model.addAttribute("headers", headers);
+    model.addAttribute("events", events);
+    return "users-events";
+  }
 }
