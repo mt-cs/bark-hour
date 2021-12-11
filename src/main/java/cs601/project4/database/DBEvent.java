@@ -1,6 +1,5 @@
 package cs601.project4.database;
 
-import cs601.project4.constant.EventConstants;
 import cs601.project4.constant.UserConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -64,13 +63,33 @@ public class DBEvent {
   }
 
   /**
+   * Get all userId by eventId
+   *
+   * @param con     Connection
+   * @param eventId int event ID
+   * @return userId
+   * @throws SQLException database access error
+   */
+  public static int getUserIdByEventId(Connection con, int eventId)
+      throws SQLException {
+    String selectUserSql = "SELECT userid FROM events WHERE event_id = ?;";
+    PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
+    selectUserStmt.setInt(1, eventId);
+    ResultSet results = selectUserStmt.executeQuery();
+    if(results.next()) {
+      return results.getInt(UserConstants.USER_ID);
+    }
+    return -1;
+  }
+
+  /**
    * Check if event is already in the database
    *
    * @param con       Connection
    * @param eventID   Event ID
    * @return true if event doesn't exist, false otherwise
    */
-  public static Boolean checkEventExist(Connection con, String eventID)
+  public static boolean checkEventExist(Connection con, String eventID)
       throws SQLException {
     String checkEventSql = "SELECT * FROM events WHERE event_id= ?";
     PreparedStatement insertUserStmt =
@@ -108,9 +127,9 @@ public class DBEvent {
       throws SQLException {
 
     String insertEventSql = "INSERT INTO events "
-        + "(userid, event_name, venue, address, city, state, "
-        + "country, zip, about, event_start, event_end, num_ticket) "
-        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        + "(userid, event_name, venue, address, city, state, country, zip,"
+        + "about, event_start, event_end, num_ticket, num_ticket_avail) "
+        + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     PreparedStatement insertEventStmt =
         con.prepareStatement(insertEventSql, Statement.RETURN_GENERATED_KEYS);
@@ -126,6 +145,7 @@ public class DBEvent {
     insertEventStmt.setString(10, start);
     insertEventStmt.setString(11, end);
     insertEventStmt.setInt(12, numTickets);
+    insertEventStmt.setInt(13, numTickets);
     insertEventStmt.executeUpdate();
 
     ResultSet result = insertEventStmt.getGeneratedKeys();

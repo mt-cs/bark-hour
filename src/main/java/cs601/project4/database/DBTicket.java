@@ -1,5 +1,6 @@
 package cs601.project4.database;
 
+import cs601.project4.constant.EventConstants;
 import cs601.project4.model.Ticket;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -83,18 +84,18 @@ public class DBTicket {
    * @param eventId
    * @return
    */
-  public int countTickets(Connection con, int userId, int eventId) {
+  public static int countTickets(Connection con, int userId, int eventId) {
     try {
-      PreparedStatement stmt = con.prepareStatement("SELECT COUNT(ticket_id) tickets FROM tickets WHERE user_id = ? and event_id = ?");
+      PreparedStatement stmt = con.prepareStatement("SELECT COUNT(ticket_id) tickets FROM tickets WHERE userid = ? and event_id = ?");
       stmt.setInt(1, userId);
       stmt.setInt(2, eventId);
       ResultSet result = stmt.executeQuery();
-      int ticketCount = 0;
+      int ticketCount;
       if(!result.next()) {
         logger.warn("Ticket does not exists");
         return -1;
       } else {
-        ticketCount = result.getInt("tickets");
+        ticketCount = result.getInt("ticket");
       }
       logger.info("Number of Tickets: " + ticketCount);
       return ticketCount;
@@ -143,7 +144,7 @@ public class DBTicket {
   public static boolean transferTickets(Connection con, int userId, int targetUserId, int eventId, int numTickets) {
     try {
       PreparedStatement stmt = con.prepareStatement(
-          "UPDATE tickets SET user_id = ? WHERE user_id = ? and event_id = ? LIMIT ?");
+          "UPDATE tickets SET user_id = ? WHERE userid = ? and event_id = ? LIMIT ?");
       stmt.setInt(1, targetUserId);
       stmt.setInt(2, userId);
       stmt.setInt(3, eventId);
@@ -157,6 +158,64 @@ public class DBTicket {
     } catch (SQLException e) {
       logger.error(e.getMessage());
       return false;
+    }
+  }
+
+  public static int getTicketAvail(Connection con, int eventId) throws SQLException{
+    try {
+      PreparedStatement stmt = con.prepareStatement(
+          "SELECT num_ticket_avail FROM events WHERE event_id = ?");
+      stmt.setInt(1, eventId);
+      ResultSet result = stmt.executeQuery();
+      int ticketCount;
+      if(!result.next()) {
+        logger.warn("Ticket does not exists");
+        return -1;
+      } else {
+        ticketCount = result.getInt(EventConstants.NUM_TICKET_AVAIL);
+      }
+      logger.info("Number of Tickets: " + ticketCount);
+      return ticketCount;
+    } catch (SQLException e) {
+      logger.error(e.getMessage());
+      return -1;
+    }
+  }
+
+  public static void updateTicketAvail(Connection con, int ticketCount, int eventId) throws SQLException{
+    PreparedStatement stmt = con.prepareStatement(
+        "UPDATE events SET num_ticket_avail = ? WHERE event_id = ?");
+    stmt.setInt(1, ticketCount);
+    stmt.setInt(2, eventId);
+    stmt.executeUpdate();
+  }
+
+  public static void updateTicketPurchased(Connection con, int ticketCount, int eventId) throws SQLException{
+    PreparedStatement stmt = con.prepareStatement(
+        "UPDATE events SET num_ticket_purchased = ? WHERE event_id = ?");
+    stmt.setInt(1, ticketCount);
+    stmt.setInt(2, eventId);
+    stmt.executeUpdate();
+  }
+
+  public static int getTicketPurchased(Connection con, int eventId) throws SQLException {
+    try {
+      PreparedStatement stmt = con.prepareStatement(
+          "SELECT num_ticket_purchased tickets FROM events WHERE event_id = ?");
+      stmt.setInt(1, eventId);
+      ResultSet result = stmt.executeQuery();
+      int ticketCount;
+      if (!result.next()) {
+        logger.warn("Ticket does not exists");
+        return -1;
+      } else {
+        ticketCount = result.getInt(EventConstants.NUM_TICKET_PURCHASED);
+      }
+      logger.info("Number of Tickets: " + ticketCount);
+      return ticketCount;
+    } catch (SQLException e) {
+      logger.error(e.getMessage());
+      return -1;
     }
   }
 }

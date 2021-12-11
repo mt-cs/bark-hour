@@ -49,12 +49,26 @@ public class TicketController {
     }
 
     try (Connection con = DBManager.getConnection()) {
+      int eventUserId = DBEvent.getUserIdByEventId(con, eventId);
+      int availTicket = DBTicket.getTicketAvail(con, eventId);
+      if (availTicket < numTickets) {
+        logger.warn("Not enough space available.");
+        return "redirect:/error"; //TODO: create status update page
+      }
       int userId = DBSessionId.getUserId(con, sessionId);
       if (!DBTicket.buyTickets(con, userId, eventId, numTickets)){
         logger.warn("Ticket purchase failed.");
-        return "redirect:/error-400";
+        return "redirect:/error";
       } else {
-
+        int curAvailTicket = DBTicket.countTickets(con, eventUserId, eventId);
+        if (curAvailTicket == availTicket) {
+          logger.warn("Ticket purchase failed.");
+          return "redirect:/error";
+        } else {
+          DBTicket.updateTicketAvail(con, curAvailTicket, eventId);
+          int purchasedSoFar = DBTicket.getTicketPurchased(con, eventId);
+          DBTicket.updateTicketPurchased(con,purchasedSoFar + numTickets, eventId);
+        }
       }
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
@@ -75,7 +89,6 @@ public class TicketController {
     try (Connection con = DBManager.getConnection()) {
       String sessionId = request.getSession(true).getId();
       int userId = DBSessionId.getUserId(con, sessionId);
-//      int eventId = DBEvent.getEventId(con, userId);
       model.addAttribute(EventConstants.EVENT_ID, eventId);
       model.addAttribute(UserConstants.USER_ID, userId);
       model.addAttribute(EventConstants.NUM_TICKET, 1);
