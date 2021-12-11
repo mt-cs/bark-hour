@@ -2,6 +2,7 @@ package cs601.project4.web.controller;
 
 import cs601.project4.constant.UserConstants;
 import cs601.project4.database.DBManager;
+import cs601.project4.database.DBSessionId;
 import cs601.project4.database.DBUser;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -36,7 +37,8 @@ public class UserController {
     String sessionId = request.getSession(true).getId();
 
     try (Connection con = DBManager.getConnection()) {
-      ResultSet results = DBUser.selectUser(con, sessionId);
+      int userId = DBSessionId.getUserId(con, sessionId);
+      ResultSet results = DBUser.selectUser(con, sessionId, userId);
       while(results.next()) {
         model.addAttribute(UserConstants.USERNAME, results.getString(UserConstants.USERNAME));
         model.addAttribute(UserConstants.EMAIL, results.getString(UserConstants.EMAIL));
@@ -61,8 +63,9 @@ public class UserController {
     String sessionId = request.getSession(true).getId();
 
     try (Connection con = DBManager.getConnection()) {
-      ResultSet results = DBUser.selectUser(con, sessionId);
-      while(results.next()) {
+      int userId = DBSessionId.getUserId(con, sessionId);
+      ResultSet results = DBUser.selectUser(con, sessionId, userId);
+      if(results.next()) {
         model.addAttribute(UserConstants.USERNAME, results.getString(UserConstants.USERNAME));
         model.addAttribute(UserConstants.EMAIL, results.getString(UserConstants.EMAIL));
         model.addAttribute(UserConstants.LOCATION, results.getString(UserConstants.LOCATION));

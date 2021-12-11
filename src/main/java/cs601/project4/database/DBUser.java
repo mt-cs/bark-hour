@@ -47,10 +47,12 @@ public class DBUser {
    * @param sessionId Login info
    * @throws SQLException database access error
    */
-  public static ResultSet selectUser(Connection con, String sessionId) throws SQLException {
-    String selectUserSql = "SELECT * FROM users NATURAL JOIN users_session_id WHERE session_id = ?;";
+  public static ResultSet selectUser(Connection con, String sessionId, int userId) throws SQLException {
+    String selectUserSql =
+        "SELECT * FROM users NATURAL JOIN users_session_id WHERE session_id = ? AND userid = ?;";
     PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
     selectUserStmt.setString(1, sessionId);
+    selectUserStmt.setInt(2, userId);
     ResultSet results = selectUserStmt.executeQuery();
     return results;
   }
