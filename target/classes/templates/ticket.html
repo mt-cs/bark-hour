@@ -7,7 +7,7 @@
 </head>
 <body>
 <h2>Buy Ticket</h2>
-<form action="/ticket-purchase" method="post">
+<form th:action="@{/ticket-purchase/{event_id}(event_id=${event_id})}" method="post">
   <label for="event_id">Event ID:</label><br>
   <input type="text" id="event_id" name="event_id" th:value="${event_id}" readonly><br><br>
   <label for="userid">User ID:</label><br>
@@ -16,5 +16,6 @@
   <input type="number" id="num_ticket" name="num_ticket" th:value="${num_ticket}" min="1" required="required"><br><br>
   <input type="submit" value="Submit">
 </form>
+
 </body>
 </html>

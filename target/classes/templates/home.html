@@ -268,7 +268,8 @@
                         <!--<th scope="row"><a href="#"><img src="assets/img/product-4.jpg" alt=""></a></th>-->
                         <td class="text-primary fw-bold" th:text="${event.eventName}"></td>
                         <td class="fw-bold" th:text="${event.about}"></td>
-                        <td class="fw-bold" th:text="${event.location}"></td>
+                        <td class="fw-bold" th:text="${event.venue}"></td>
+                        <td class="fw-bold" th:text="${event.city}"></td>
                         <td class="fw-bold" th:text="${event.eventStart}"></td>
                         <td class="fw-bold" th:text="${event.eventEnd}"></td>
                         <td><a class="fw-bold" th:href="@{/event/{eventId}(eventId=${event.eventId})}"><button class="btn btn-primary">View</button></a> </td>

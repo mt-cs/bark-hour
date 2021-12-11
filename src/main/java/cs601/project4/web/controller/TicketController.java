@@ -50,7 +50,12 @@ public class TicketController {
 
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
-      DBTicket.buyTickets(con, userId, eventId, numTickets);
+      if (!DBTicket.buyTickets(con, userId, eventId, numTickets)){
+        logger.warn("Ticket purchase failed.");
+        return "redirect:/error-400";
+      } else {
+
+      }
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
@@ -62,12 +67,15 @@ public class TicketController {
    *
    * @return internal-user
    */
-  @GetMapping(value={"/ticket"})
-  public String getPurchaseTicketForm(Model model, HttpServletRequest request) {
+  @GetMapping(value={"/ticket/{eventId}"})
+  public String getPurchaseTicketForm(
+      Model model,
+      HttpServletRequest request,
+      @PathVariable int eventId) {
     try (Connection con = DBManager.getConnection()) {
       String sessionId = request.getSession(true).getId();
       int userId = DBSessionId.getUserId(con, sessionId);
-      int eventId = DBEvent.getEventId(con, userId);
+//      int eventId = DBEvent.getEventId(con, userId);
       model.addAttribute(EventConstants.EVENT_ID, eventId);
       model.addAttribute(UserConstants.USER_ID, userId);
       model.addAttribute(EventConstants.NUM_TICKET, 1);

@@ -47,23 +47,20 @@ public class DBEvent {
   }
 
   /**
-   * Get eventId by userId
+   * Get all events by userId
    *
-   * @param con Connection
-   * @return eventId
+   * @param con    Connection
+   * @param userId int user ID
+   * @return results
    * @throws SQLException database access error
    */
-  public static int getEventId(Connection con, int userId)
+  public static ResultSet getMyEvents(Connection con, int userId)
       throws SQLException {
-    String selectUserSql = "SELECT event_id FROM events WHERE userid = ?;";
+    String selectUserSql = "SELECT * FROM events WHERE userid = ?;";
     PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
     selectUserStmt.setInt(1, userId);
     ResultSet results = selectUserStmt.executeQuery();
-    int eventId = 0;
-    if(results.next()) {
-      eventId = results.getInt(EventConstants.EVENT_ID);
-    }
-    return eventId;
+    return results;
   }
 
   /**
