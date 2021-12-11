@@ -37,7 +37,7 @@ public class EventController {
    * Display events
    *
    * @param model Model
-   * @return login-error
+   * @return home
    */
   @GetMapping(value={"/events"})
   public String displayEvents(Model model, HttpServletRequest request) {

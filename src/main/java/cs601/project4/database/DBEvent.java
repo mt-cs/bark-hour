@@ -1,5 +1,6 @@
 package cs601.project4.database;
 
+import cs601.project4.constant.EventConstants;
 import cs601.project4.constant.UserConstants;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -80,6 +81,26 @@ public class DBEvent {
       return results.getInt(UserConstants.USER_ID);
     }
     return -1;
+  }
+
+  /**
+   * Get event name by eventId
+   *
+   * @param con     Connection
+   * @param eventId int event ID
+   * @return event name
+   * @throws SQLException database access error
+   */
+  public static String getEventName(Connection con, int eventId)
+      throws SQLException {
+    String selectUserSql = "SELECT event_name FROM events WHERE event_id = ?;";
+    PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
+    selectUserStmt.setInt(1, eventId);
+    ResultSet results = selectUserStmt.executeQuery();
+    if(results.next()) {
+      return results.getString(EventConstants.EVENT_NAME);
+    }
+    return null;
   }
 
   /**

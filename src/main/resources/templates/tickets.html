@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Events</title>
+</head>
+<body>
+<table>
+  <thead>
+  <tr class="headings">
+    <th th:each="header: ${headers}" class="column-title" th:text="${header}" />
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="ticket: ${tickets}">
+    <td th:text="${ticket.eventName}"></td>
+    <td th:text="${ticket.ticketCount}"></td>
+    <td><a th:href="@{/ticket-transfer/{event_id}(event_id=${ticket.eventId})}"><button>Transfer</button></a> </td>
+  </tr>
+  </tbody>
+</table>
+<a href="/home"><button>Home</button></a>
+<a href="/events"><button>All Events</button></a>
+<a href="/new-event"><button>Create Event</button></a>
+<a href="/logout"><button>Logout</button></a>
+</body>
+</html>

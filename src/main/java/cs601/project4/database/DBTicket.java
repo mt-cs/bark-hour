@@ -214,4 +214,21 @@ public class DBTicket {
       return -1;
     }
   }
+
+  /**
+   * Get all tickets by userId
+   *
+   * @param con    Connection
+   * @param userId int user ID
+   * @return results
+   * @throws SQLException database access error
+   */
+  public static ResultSet getMyTickets(Connection con, int userId)
+      throws SQLException {
+    String selectUserSql = "SELECT * FROM tickets WHERE userid = ?;";
+    PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
+    selectUserStmt.setInt(1, userId);
+    ResultSet results = selectUserStmt.executeQuery();
+    return results;
+  }
 }
