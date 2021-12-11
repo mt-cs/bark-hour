@@ -64,7 +64,7 @@ public class UserController {
    * @return users-profile-form.html
    */
   @GetMapping(value={"/users-profile-form"})
-  public String editProfile(Model model, HttpServletRequest request) {
+  public String updateProfile(Model model, HttpServletRequest request) {
     HttpSession session = request.getSession(false);
     if (session == null) {
       return "redirect:/error-login";
@@ -98,10 +98,19 @@ public class UserController {
   public String updateProfileSubmit(
       @RequestParam(UserConstants.USERNAME) String userName ,
       @RequestParam(UserConstants.EMAIL) String email,
-      @RequestParam(UserConstants.LOCATION) String location) {
+      @RequestParam(UserConstants.LOCATION) String location,
+      HttpServletRequest request) {
+
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
+
+    String sessionId = session.getId();
 
     try (Connection con = DBManager.getConnection()) {
-      DBUser.updateUser(con, userName, email, location);
+      int userId = DBSessionId.getUserId(con, sessionId);
+      DBUser.updateUser(con, userName, email, location, userId);
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }

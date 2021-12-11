@@ -6,6 +6,7 @@ import cs601.project4.database.DBEvent;
 import cs601.project4.database.DBManager;
 import cs601.project4.database.DBSessionId;
 import cs601.project4.database.DBTicket;
+import cs601.project4.database.DBTransaction;
 import cs601.project4.database.DBUser;
 import cs601.project4.model.UserTicket;
 import java.sql.Connection;
@@ -114,6 +115,7 @@ public class TicketController {
             return "redirect:/error-400";
           }
           DBTicket.updateTicketPurchased(con,purchasedSoFar + numTickets, eventId);
+          DBTransaction.insertTransaction(con, eventId, eventUserId, userId, numTickets);
         }
       }
     } catch (SQLException sqlException) {
@@ -260,5 +262,7 @@ public class TicketController {
     model.addAttribute("tickets", ticketList);
     return "tickets";
   }
+
+
 
 }

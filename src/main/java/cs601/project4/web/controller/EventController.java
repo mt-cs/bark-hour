@@ -10,6 +10,9 @@ import cs601.project4.model.Ticket;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -121,6 +124,18 @@ public class EventController {
     if (numTickets < 1) {
       logger.warn("Number of tickets has to be at least 1");
       return "redirect:/error-400";
+    }
+
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-dd-MM");
+    try {
+      Date startDate = formatter.parse(start);
+      Date endDate = formatter.parse(end);
+      if (startDate.after(endDate)) {
+        logger.warn("Start date can not be later than end date ");
+        return "redirect:/error-400"; //TODO: Add error status
+      }
+    } catch (ParseException e) {
+      logger.error(e.getMessage());
     }
 
     try (Connection con = DBManager.getConnection()) {
