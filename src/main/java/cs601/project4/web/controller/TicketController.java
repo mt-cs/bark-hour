@@ -6,16 +6,13 @@ import cs601.project4.database.DBEvent;
 import cs601.project4.database.DBManager;
 import cs601.project4.database.DBSessionId;
 import cs601.project4.database.DBTicket;
-import cs601.project4.database.DBUser;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,7 +25,30 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 public class TicketController {
+
   private final Logger logger = LoggerFactory.getLogger(TicketController.class);
+
+  /**
+   * Handles users that are already being authenticated
+   *
+   * @return internal-user
+   */
+  @GetMapping(value={"/ticket/{eventId}"})
+  public String getPurchaseTicketForm(
+      Model model,
+      HttpServletRequest request,
+      @PathVariable int eventId) {
+    try (Connection con = DBManager.getConnection()) {
+      String sessionId = request.getSession(true).getId();
+      int userId = DBSessionId.getUserId(con, sessionId);
+      model.addAttribute(EventConstants.EVENT_ID, eventId);
+      model.addAttribute(UserConstants.USER_ID, userId);
+      model.addAttribute(EventConstants.NUM_TICKET, 1);
+    } catch (SQLException sqlException) {
+      logger.error(sqlException.getMessage());
+    }
+    return "ticket";
+  }
 
   /**
    * Displays ticket purchase history
@@ -53,20 +73,28 @@ public class TicketController {
       int availTicket = DBTicket.getTicketAvail(con, eventId);
       if (availTicket < numTickets) {
         logger.warn("Not enough space available.");
-        return "redirect:/error"; //TODO: create status update page
+        return "redirect:/error-400"; //TODO: create status update page
       }
       int userId = DBSessionId.getUserId(con, sessionId);
-      if (!DBTicket.buyTickets(con, userId, eventId, numTickets)){
-        logger.warn("Ticket purchase failed.");
-        return "redirect:/error";
+      if (eventUserId == userId) {
+        logger.warn("You are the owner of this event.");
+        return "redirect:/error-400";
+      }
+      if (!DBTicket.buyTickets(con, userId, eventId, eventUserId, numTickets)){
+        notifyFailedPurchase();
+        return "redirect:/error-400";
       } else {
         int curAvailTicket = DBTicket.countTickets(con, eventUserId, eventId);
-        if (curAvailTicket == availTicket) {
-          logger.warn("Ticket purchase failed.");
-          return "redirect:/error";
+        if (curAvailTicket == availTicket || curAvailTicket == -1) {
+          notifyFailedPurchase();
+          return "redirect:/error-400";
         } else {
           DBTicket.updateTicketAvail(con, curAvailTicket, eventId);
           int purchasedSoFar = DBTicket.getTicketPurchased(con, eventId);
+          if (purchasedSoFar == -1) {
+            notifyFailedPurchase();
+            return "redirect:/error-400";
+          }
           DBTicket.updateTicketPurchased(con,purchasedSoFar + numTickets, eventId);
         }
       }
@@ -76,25 +104,8 @@ public class TicketController {
     return "ticket-purchase";
   }
 
-  /**
-   * Handles users that are already being authenticated
-   *
-   * @return internal-user
-   */
-  @GetMapping(value={"/ticket/{eventId}"})
-  public String getPurchaseTicketForm(
-      Model model,
-      HttpServletRequest request,
-      @PathVariable int eventId) {
-    try (Connection con = DBManager.getConnection()) {
-      String sessionId = request.getSession(true).getId();
-      int userId = DBSessionId.getUserId(con, sessionId);
-      model.addAttribute(EventConstants.EVENT_ID, eventId);
-      model.addAttribute(UserConstants.USER_ID, userId);
-      model.addAttribute(EventConstants.NUM_TICKET, 1);
-    } catch (SQLException sqlException) {
-      logger.error(sqlException.getMessage());
-    }
-    return "ticket";
+  private void notifyFailedPurchase() {
+    logger.warn("Ticket purchase failed.");
   }
+
 }
