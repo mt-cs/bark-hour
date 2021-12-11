@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -34,7 +35,11 @@ public class UserController {
    */
   @GetMapping(value={"/users-profile"})
   public String getUserAccount(Model model, HttpServletRequest request) {
-    String sessionId = request.getSession(true).getId();
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
+    String sessionId = session.getId();
 
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
@@ -60,7 +65,11 @@ public class UserController {
    */
   @GetMapping(value={"/users-profile-form"})
   public String editProfile(Model model, HttpServletRequest request) {
-    String sessionId = request.getSession(true).getId();
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
+    String sessionId = session.getId();
 
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
@@ -104,8 +113,12 @@ public class UserController {
    *
    * @return users-profile-confirmation.html
    */
-  @GetMapping(value={"/users-profile/confirmation"})
-  public String updateProfileForm() {
+  @GetMapping(value={"/users-profile-confirmation"})
+  public String updateProfileForm(HttpServletRequest request) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
     return "users-profile-confirmation";
   }
 }

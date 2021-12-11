@@ -76,7 +76,7 @@ public class HomeController {
     Users clientInfo = LoginUtilities.verifyTokenResponse(response, sessionId);
 
     if (clientInfo == null) {
-      return "redirect:/login-error";
+      return "redirect:/error-login";
     }
 
     /* Add to database */

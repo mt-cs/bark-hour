@@ -3,6 +3,7 @@ package cs601.project4.login;
 import com.google.gson.Gson;
 import cs601.project4.constant.LoginServerConstants;
 import cs601.project4.model.Users;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.StringReader;
@@ -70,7 +71,12 @@ public class LoginUtilities {
    * @param redirectURI  String redirect URI
    * @return url
    */
-  public static String generateSlackTokenURL(String clientId, String clientSecret, String code, String redirectURI) {
+  public static String generateSlackTokenURL(
+      String clientId,
+      String clientSecret,
+      String code,
+      String redirectURI) {
+
     return String.format("https://%s/%s?%s=%s&%s=%s&%s=%s&%s=%s",
         LoginServerConstants.HOST,
         LoginServerConstants.TOKEN_PATH,
@@ -159,5 +165,15 @@ public class LoginUtilities {
 
     /* convert the id_token payload to a map */
     return gson.fromJson(new StringReader(payload), Map.class);
+  }
+
+  /**
+   * get cookie
+   * @param request HttpServletRequest request
+   * @return cookieVal String username
+   */
+  public boolean hasSessionId(HttpServletRequest request) {
+    String sessionId = request.getSession(false).getId();
+    return sessionId != null;
   }
 }
