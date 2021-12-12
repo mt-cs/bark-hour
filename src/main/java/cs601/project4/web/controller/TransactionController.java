@@ -10,6 +10,7 @@ import cs601.project4.database.DBTransaction;
 import cs601.project4.database.DBUser;
 import cs601.project4.model.Transaction;
 import cs601.project4.model.UserTicket;
+import cs601.project4.web.Util;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -50,10 +51,10 @@ public class TransactionController {
     List<Transaction> transactionList = new ArrayList<>();
     List<String> headers = Arrays.asList(
         TransactionConstants.HEADERS_ID,
-        TransactionConstants.HEADERS_EVENT,
         TransactionConstants.HEADERS_EVENT_ID,
-        TransactionConstants.HEADERS_FROM,
+        TransactionConstants.HEADERS_EVENT,
         TransactionConstants.HEADERS_OWNER_ID,
+        TransactionConstants.HEADERS_FROM,
         TransactionConstants.HEADERS_COUNT,
         TransactionConstants.HEADERS_DATE
     );
@@ -76,7 +77,7 @@ public class TransactionController {
         String ownerName = DBUser.getUserName(con, results.getInt(TransactionConstants.OWNER_ID));
         transaction.setOwnerName(ownerName);
         transaction.setOwnerId(results.getInt(TransactionConstants.OWNER_ID));
-        transaction.setTimestamp(results.getTimestamp(TransactionConstants.TIMESTAMP));
+        transaction.setTimestamp(Util.getTimestampString(results.getTimestamp(TransactionConstants.TIMESTAMP)));
         transactionList.add(transaction);
       }
     } catch (SQLException sqlException) {

@@ -5,6 +5,8 @@
   <title>Transactions</title>
 </head>
 <body>
+<h3>MY TICKETS</h3><br>
+<p>List of all tickets under your name.</p><br>
 <table>
   <thead>
   <tr class="headings">
@@ -16,7 +18,6 @@
     <td th:text="${ticket.eventName}"></td>
     <td th:text="${ticket.eventId}"></td>
     <td th:text="${ticket.ticketCount}"></td>
-<!--    <td><a th:href="@{/ticket-transfer/{event_id}(event_id=${ticket.eventId})}"><button>Transfer</button></a> </td>-->
   </tr>
   </tbody>
 </table>

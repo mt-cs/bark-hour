@@ -36,4 +36,7 @@ public class EventConstants {
   public static final String SF = "San Francisco";
   public static final String USA = "United States";
   public static final String CA = "California";
+  public static final String HEADERS_CAPACITY = "Capacity";
+  public static final String AVAIL = "#Tickets Available";
+  public static final String SOLD = "#Tickets Sold";
 }

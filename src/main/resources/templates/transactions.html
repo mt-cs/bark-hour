@@ -5,6 +5,8 @@
   <title>Events</title>
 </head>
 <body>
+<h3>PURCHASE HISTORY</h3><br>
+
 <table>
   <thead>
   <tr class="headings">
@@ -19,13 +21,14 @@
     <td th:text="${transaction.ownerId}"></td>
     <td th:text="${transaction.ownerName}"></td>
     <td th:text="${transaction.transactionCount}"></td>
-    <td th:datetime="${transaction.timestamp}"></td>
+    <td th:text="${transaction.timestamp}"></td>
     <td><a th:href="@{/ticket-transfer/{event_id}(event_id=${transaction.eventId})}"><button>Transfer</button></a> </td>
   </tr>
   </tbody>
 </table>
+<br>
 <a href="/home"><button>Home</button></a>
-<a href="/events"><button>All Events</button></a>
+<a href="/tickets"><button>My Tickets</button></a>
 <a href="/new-event"><button>Create Event</button></a>
 <a href="/logout"><button>Logout</button></a>
 </body>

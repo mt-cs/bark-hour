@@ -8,7 +8,7 @@ public class Transaction {
   public int ownerId;
   public int buyerId;
   public int transactionCount;
-  public Timestamp timestamp;
+  public String timestamp;
   public String eventName;
   public String ownerName;
 
@@ -68,11 +68,11 @@ public class Transaction {
     this.transactionCount = transactionCount;
   }
 
-  public Timestamp getTimestamp() {
+  public String getTimestamp() {
     return timestamp;
   }
 
-  public void setTimestamp(Timestamp timestamp) {
+  public void setTimestamp(String timestamp) {
     this.timestamp = timestamp;
   }
 }

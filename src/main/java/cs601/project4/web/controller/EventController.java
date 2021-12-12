@@ -8,6 +8,7 @@ import cs601.project4.database.DBSessionId;
 import cs601.project4.database.DBTicket;
 import cs601.project4.model.Event;
 import cs601.project4.model.Ticket;
+import cs601.project4.web.Util;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -219,8 +220,7 @@ public class EventController {
         model.addAttribute(EventConstants.STATE, results.getString(EventConstants.STATE));
         model.addAttribute(EventConstants.COUNTRY, results.getString(EventConstants.COUNTRY));
         model.addAttribute(EventConstants.ZIP, results.getString(EventConstants.ZIP));
-        model.addAttribute(EventConstants.EVENT_START,
-            results.getString(EventConstants.EVENT_START));
+        model.addAttribute(EventConstants.EVENT_START, results.getString(EventConstants.EVENT_START));
         model.addAttribute(EventConstants.EVENT_END, results.getString(EventConstants.EVENT_END));
         model.addAttribute(EventConstants.NUM_TICKET, results.getString(EventConstants.NUM_TICKET));
       }
@@ -312,8 +312,7 @@ public class EventController {
         model.addAttribute(EventConstants.STATE, results.getString(EventConstants.STATE));
         model.addAttribute(EventConstants.COUNTRY, results.getString(EventConstants.COUNTRY));
         model.addAttribute(EventConstants.ZIP, results.getString(EventConstants.ZIP));
-        model.addAttribute(EventConstants.EVENT_START,
-            results.getString(EventConstants.EVENT_START));
+        model.addAttribute(EventConstants.EVENT_START, results.getString(EventConstants.EVENT_START));
         model.addAttribute(EventConstants.EVENT_END, results.getString(EventConstants.EVENT_END));
         model.addAttribute(EventConstants.NUM_TICKET, results.getString(EventConstants.NUM_TICKET));
       }
@@ -339,17 +338,22 @@ public class EventController {
     String sessionId = session.getId();
     List<Event> events = new ArrayList<>();
     List<String> headers = Arrays.asList(
+        EventConstants.HEADERS_EVENT_ID,
         EventConstants.HEADERS_NAME,
         EventConstants.HEADERS_ABOUT,
         EventConstants.HEADERS_LOCATION,
         EventConstants.HEADERS_CITY,
         EventConstants.HEADERS_START,
         EventConstants.HEADERS_END,
+        EventConstants.HEADERS_CAPACITY,
+        EventConstants.AVAIL,
+        EventConstants.SOLD,
         EventConstants.HEADERS_UPDATE);
 
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
       ResultSet results = DBEvent.getMyEvents(con, userId);
+
       while (results.next()) {
         Event event = new Event();
         event.setEventId(results.getInt(EventConstants.EVENT_ID));
