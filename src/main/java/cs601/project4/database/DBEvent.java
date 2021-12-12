@@ -104,6 +104,28 @@ public class DBEvent {
   }
 
   /**
+   * Get event name by eventId
+   *
+   * @param con       Connection
+   * @param eventName String eventName
+   * @param userId    int userId
+   * @return event name
+   * @throws SQLException database access error
+   */
+  public static int getEventId(Connection con, String eventName, int userId)
+      throws SQLException {
+    String selectUserSql = "SELECT event_id FROM events WHERE event_name = ? AND userid = ?;";
+    PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
+    selectUserStmt.setString(1, eventName);
+    selectUserStmt.setInt(2, userId);
+    ResultSet results = selectUserStmt.executeQuery();
+    if(results.next()) {
+      return results.getInt(EventConstants.EVENT_ID);
+    }
+    return -1;
+  }
+
+  /**
    * Check if event is already in the database
    *
    * @param con       Connection
@@ -201,10 +223,9 @@ public class DBEvent {
       String about, String start, String end, int numTickets)
       throws SQLException {
     String updateEventSql = "UPDATE events "
-        + "SET userid = ?, event_name = ?, venue = ?,"
-        + "address = ?, city = ?, state = ?, country = ?, zip = ?,"
-        + "about = ?, event_start = ?, event_end = ?, num_ticket = ?"
-        + "WHERE eventId = ?";
+        + "SET userid = ?, event_name = ?, venue = ?, address = ?, "
+        + "city = ?, state = ?, country = ?, zip = ?, about = ?, "
+        + "event_start = ?, event_end = ?, num_ticket = ? WHERE event_id = ?;";
     PreparedStatement updateEventStmt =
         con.prepareStatement(updateEventSql, Statement.RETURN_GENERATED_KEYS);
     updateEventStmt.setInt(1, userId);

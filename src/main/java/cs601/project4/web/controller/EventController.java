@@ -263,8 +263,6 @@ public class EventController {
       return "redirect:/error-login";
     }
     String sessionId = session.getId();
-    //TODO: only can update your own event
-
 
     if (numTickets < 1) {
       logger.warn("Number of tickets has to be at least 1");
@@ -272,27 +270,26 @@ public class EventController {
     }
 
     try (Connection con = DBManager.getConnection()) {
-      int organizerId = DBEvent.getUserIdByEventId(con, 1);
-
       int userId = DBSessionId.getUserId(con, sessionId);
-
-      if (organizerId == userId) {
-
-        DBEvent.updateEvent(
-            con, 1, userId, eventName, venue, address, city, state,
-            country, zip, about, start, end, numTickets);
-
-//      if(!DBTicket.insertTickets(con, new Ticket(userId, eventId), numTickets)) {
-//        return "redirect:/error";
-//      }
-        model.addAttribute("msg", "Your event is updated");
-      } else {
-        model.addAttribute("msg", "You are not the organizer of this event");
+      int evenId = DBEvent.getEventId(con, eventName, userId);
+      int organizerId = DBEvent.getUserIdByEventId(con, evenId);
+      if (evenId == -1) {
+        model.addAttribute("msg", "Event doesn't exist");
+        return "event-update-status";
       }
+
+      if (organizerId != userId) {
+        model.addAttribute("msg", "You are not the organizer of this event");
+        return "event-update-status";
+      }
+      DBEvent.updateEvent(
+          con, evenId, userId, eventName, venue, address, city, state,
+          country, zip, about, start, end, numTickets);
+
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
-
+    model.addAttribute("msg", "Your event is updated.");
     return "event-update-status";
   }
 
