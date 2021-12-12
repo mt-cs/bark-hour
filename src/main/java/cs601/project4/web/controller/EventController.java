@@ -82,26 +82,39 @@ public class EventController {
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
       ResultSet results = EventSelectQuery.selectAllEvent(con);
-      while (results.next()) {
-        Event event = new Event();
-        event.setEventId(results.getInt(EventConstants.EVENT_ID));
-        event.setEventName(results.getString(EventConstants.EVENT_NAME));
-        event.setAbout(results.getString(EventConstants.ABOUT));
-        event.setVenue(results.getString(EventConstants.VENUE));
-        event.setCity(results.getString(EventConstants.CITY));
-        event.setEventStart(results.getTimestamp(EventConstants.EVENT_START));
-        event.setEventEnd(results.getTimestamp(EventConstants.EVENT_END));
-        event.setUserId(userId);
-        event.setNumTickets(results.getInt(EventConstants.NUM_TICKET));
-        event.setNumTicketAvail(results.getInt(EventConstants.NUM_TICKET_AVAIL));
-        event.setNumTicketPurchased(results.getInt(EventConstants.NUM_TICKET_PURCHASED));
-        events.add(event);
-      }
+      setEvent(events, userId, results);
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
     model.addAttribute("headers", headers);
     model.addAttribute("events", events);
+  }
+
+  /**
+   * A helper method to add event object to list
+   *
+   * @param events  List of events
+   * @param userId  User ID
+   * @param results query results
+   * @throws SQLException
+   */
+  private static void setEvent(List<Event> events, int userId, ResultSet results)
+      throws SQLException {
+    while (results.next()) {
+      Event event = new Event();
+      event.setEventId(results.getInt(EventConstants.EVENT_ID));
+      event.setEventName(results.getString(EventConstants.EVENT_NAME));
+      event.setAbout(results.getString(EventConstants.ABOUT));
+      event.setVenue(results.getString(EventConstants.VENUE));
+      event.setCity(results.getString(EventConstants.CITY));
+      event.setEventStart(results.getTimestamp(EventConstants.EVENT_START));
+      event.setEventEnd(results.getTimestamp(EventConstants.EVENT_END));
+      event.setUserId(userId);
+      event.setNumTickets(results.getInt(EventConstants.NUM_TICKET));
+      event.setNumTicketAvail(results.getInt(EventConstants.NUM_TICKET_AVAIL));
+      event.setNumTicketPurchased(results.getInt(EventConstants.NUM_TICKET_PURCHASED));
+      events.add(event);
+    }
   }
 
   /**
@@ -392,21 +405,7 @@ public class EventController {
       int userId = DBSessionId.getUserId(con, sessionId);
       ResultSet results = EventSelectQuery.getMyEvents(con, userId);
 
-      while (results.next()) {
-        Event event = new Event();
-        event.setEventId(results.getInt(EventConstants.EVENT_ID));
-        event.setEventName(results.getString(EventConstants.EVENT_NAME));
-        event.setAbout(results.getString(EventConstants.ABOUT));
-        event.setVenue(results.getString(EventConstants.VENUE));
-        event.setCity(results.getString(EventConstants.CITY));
-        event.setEventStart(results.getTimestamp(EventConstants.EVENT_START));
-        event.setEventEnd(results.getTimestamp(EventConstants.EVENT_END));
-        event.setUserId(userId);
-        event.setNumTickets(results.getInt(EventConstants.NUM_TICKET));
-        event.setNumTicketAvail(results.getInt(EventConstants.NUM_TICKET_AVAIL));
-        event.setNumTicketPurchased(results.getInt(EventConstants.NUM_TICKET_PURCHASED));
-        events.add(event);
-      }
+      setEvent(events, userId, results);
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }

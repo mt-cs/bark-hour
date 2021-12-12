@@ -20,9 +20,26 @@ public class EventSearchQuery {
     return results;
   }
 
+  /**
+   * Partial search event that happens today
+   *
+   * @param con   Connection
+   * @param input query input String
+   * @throws SQLException database access error
+   */
+  public static ResultSet searchByCurrentDate(Connection con, String input) throws SQLException{
+    String searchByNameSql =
+        "SELECT * FROM events WHERE MONTH(event_start) = MONTH(CURRENT_DATE()) AND YEAR(event_start) = YEAR(CURRENT_DATE()) AND DAY(event_start) = DAY(CURRENT_DATE());";
+    Statement searchByNameStmt = con.createStatement();
+    ResultSet results = searchByNameStmt.executeQuery(searchByNameSql);
+    return results;
+  }
+
+  // "SELECT * FROM events WHERE MONTH(event_start) = MONTH(CURRENT_DATE()) AND YEAR(event_start) = YEAR(CURRENT_DATE());"
+
   // SELECT * FROM events WHERE MONTH(event_start) = MONTH(CURRENT_DATE()) AND YEAR(event_start) = YEAR(CURRENT_DATE());
 
-  // SELECT * FROM events WHERE YEAR(event_start) = YEAR(CURRENT_DATE());
+  // "SELECT * FROM events WHERE YEAR(event_start) = YEAR(CURRENT_DATE());";
 
 
 
