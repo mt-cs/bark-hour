@@ -58,4 +58,21 @@ public class DBTransaction {
     return results;
   }
 
+  /**
+   * Get all transfer transactions by ownerId
+   *
+   * @param con    Connection
+   * @param userId int user ID
+   * @return results
+   * @throws SQLException database access error
+   */
+  public static ResultSet getTransfers(Connection con, int userId)
+      throws SQLException {
+    String selectUserSql = "SELECT * FROM transactions WHERE owner_id = ?;";
+    PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
+    selectUserStmt.setInt(1, userId);
+    ResultSet results = selectUserStmt.executeQuery();
+    return results;
+  }
+
 }

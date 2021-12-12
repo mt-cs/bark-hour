@@ -13,7 +13,8 @@ public class TransactionConstants {
   public static final String HEADERS_EVENT_ID = "Event ID";
   public static final String HEADERS_FROM = "Organizer";
   public static final String HEADERS_OWNER_ID = "Organizer ID";
-  public static final String HEADERS_TO = "Transfer To";
+  public static final String HEADERS_TO = "Recipient";
+  public static final String HEADERS_BUYER_ID= "Recipient ID";
   public static final String HEADERS_COUNT = "Count";
   public static final String HEADERS_DATE = "Transaction Date";
 

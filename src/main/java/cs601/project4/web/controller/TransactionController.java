@@ -88,6 +88,65 @@ public class TransactionController {
     return "transactions";
   }
 
+  /**
+   * Display all user's transactions
+   *
+   * @param model Model
+   * @return ticket
+   */
+  @GetMapping(value={"/transfers"})
+  public String getTransfers(Model model, HttpServletRequest request) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
+    String sessionId = session.getId();
+
+    List<Transaction> transactionList = new ArrayList<>();
+    List<String> headers = Arrays.asList(
+        TransactionConstants.HEADERS_ID,
+        TransactionConstants.HEADERS_EVENT_ID,
+        TransactionConstants.HEADERS_EVENT,
+        TransactionConstants.HEADERS_BUYER_ID,
+        TransactionConstants.HEADERS_TO,
+        TransactionConstants.HEADERS_COUNT,
+        TransactionConstants.HEADERS_DATE
+    );
+
+    try (Connection con = DBManager.getConnection()) {
+      int userId = DBSessionId.getUserId(con, sessionId);
+      ResultSet results = DBTransaction.getTransfers(con, userId);
+      while(results.next()) {
+        int eventId = results.getInt(TransactionConstants.EVENT_ID);
+        int organizerId = DBEvent.getUserIdByEventId(con, eventId);
+        if (organizerId == userId) {
+          continue;
+        }
+        Transaction transaction = new Transaction();
+        transaction.setTransactionId(results.getInt(TransactionConstants.TRANSACTION_ID));
+
+        transaction.setEventId(eventId);
+        String eventName = DBEvent.getEventName(con, eventId);
+        if (eventName == null) {
+          logger.warn("Event doesn't exist");
+        }
+        transaction.setEventName(eventName);
+        transaction.setTransactionCount(results.getInt(TransactionConstants.COUNT));
+        transaction.setBuyerId(results.getInt(TransactionConstants.BUYER_ID));
+        transaction.setBuyerName(DBUser.getUserName(con, results.getInt(TransactionConstants.BUYER_ID)));
+        transaction.setOwnerId(results.getInt(TransactionConstants.OWNER_ID));
+        transaction.setOwnerName(DBUser.getUserName(con, results.getInt(TransactionConstants.OWNER_ID)));
+        transaction.setTimestamp(Util.getTimestampString(results.getTimestamp(TransactionConstants.TIMESTAMP)));
+        transactionList.add(transaction);
+      }
+    } catch (SQLException sqlException) {
+      logger.error(sqlException.getMessage());
+    }
+    model.addAttribute("headers", headers);
+    model.addAttribute("transactions", transactionList);
+    return "transfers";
+  }
+
 }
 
 

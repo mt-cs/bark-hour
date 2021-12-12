@@ -1,7 +1,5 @@
 package cs601.project4.model;
 
-import java.sql.Timestamp;
-
 public class Transaction {
   public int transactionId;
   public int eventId;
@@ -11,6 +9,15 @@ public class Transaction {
   public String timestamp;
   public String eventName;
   public String ownerName;
+  public String buyerName;
+
+  public String getBuyerName() {
+    return buyerName;
+  }
+
+  public void setBuyerName(String buyerName) {
+    this.buyerName = buyerName;
+  }
 
   public String getOwnerName() {
     return ownerName;
