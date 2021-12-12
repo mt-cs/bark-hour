@@ -1,6 +1,9 @@
 package cs601.project4.web.controller;
 
+import static cs601.project4.web.Util.notifyFailedQuery;
+
 import cs601.project4.constant.EventConstants;
+import cs601.project4.constant.NotificationConstants;
 import cs601.project4.database.DBEvent.EventInsertQuery;
 import cs601.project4.database.DBEvent.EventSelectQuery;
 import cs601.project4.database.DBEvent.EventUpdateQuery;
@@ -14,7 +17,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -117,48 +122,43 @@ public class EventController {
       @RequestParam(EventConstants.EVENT_START) String start,
       @RequestParam(EventConstants.EVENT_END) String end,
       @RequestParam(EventConstants.NUM_TICKET) int numTickets,
-      HttpServletRequest request) {
+      HttpServletRequest request,
+      Model model) {
 
     HttpSession session = request.getSession(false);
     if (session == null) {
-      return "redirect:/error-login";
+      return "event-status";
     }
     String sessionId = session.getId();
 
     if (numTickets < 1) {
-      logger.warn("Number of tickets has to be at least 1");
-      return "redirect:/error-400";
+      notifyFailedQuery(model, NotificationConstants.NOTIFY_MIN_TICKET);
+      return "event-status";
     }
 
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-dd-MM");
-    try {
-      Date startDate = formatter.parse(start);
-      Date endDate = formatter.parse(end);
-      if (startDate.after(endDate)) {
-        logger.warn("Start date can not be later than end date ");
-        return "redirect:/error-400"; //TODO: Add error status
-      }
-    } catch (ParseException e) {
-      logger.error(e.getMessage());
+    if (validateInputDate(start, end, model)) {
+      return "event-status";
     }
 
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
       if (EventSelectQuery.checkEventExist(con, eventName)) {
-        logger.info("Event already exists.");
-        return "redirect:/error-400";
+        notifyFailedQuery(model, NotificationConstants.NOTIFY_EVENT_EXIST);
+        return "event-status";
       } else {
         int eventId = EventInsertQuery.createEvent(
             con, userId, eventName, venue, address, city, state,
             country, zip, about, start, end, numTickets);
 
         if (!DBTicket.insertTickets(con, new Ticket(userId, eventId), numTickets)) {
-          return "redirect:/error";
+          notifyFailedQuery(model, NotificationConstants.NOTIFY_EVENT_FAIL);
+          return "event-status";
         }
       }
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
+    model.addAttribute(NotificationConstants.MSG, NotificationConstants.NOTIFY_EVENT_SUCCESS);
     return "event-status";
   }
 
@@ -258,8 +258,12 @@ public class EventController {
     String sessionId = session.getId();
 
     if (numTickets < 1) {
-      logger.warn("Number of tickets has to be at least 1");
+      notifyFailedQuery(model, NotificationConstants.NOTIFY_MIN_TICKET);
       return "redirect:/error-400";
+    }
+
+    if (validateInputDate(start, end, model)) {
+      return "event-status";
     }
 
     try (Connection con = DBManager.getConnection()) {
@@ -267,12 +271,12 @@ public class EventController {
       int evenId = EventSelectQuery.getEventId(con, eventName, userId);
       int organizerId = EventSelectQuery.getUserIdByEventId(con, evenId);
       if (evenId == -1) {
-        model.addAttribute("msg", "Event doesn't exist");
+        notifyFailedQuery(model, NotificationConstants.NOTIFY_EVENT_NOTFOUND);
         return "event-update-status";
       }
 
       if (organizerId != userId) {
-        model.addAttribute("msg", "You are not the organizer of this event");
+        notifyFailedQuery(model, NotificationConstants.NOTIFY_NOT_ORGANIZER);
         return "event-update-status";
       }
       EventUpdateQuery.updateEvent(
@@ -282,8 +286,42 @@ public class EventController {
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
-    model.addAttribute("msg", "Your event is updated.");
+    model.addAttribute(NotificationConstants.MSG, NotificationConstants.NOTIFY_EVENT_UPDATE_SUCCESS);
     return "event-update-status";
+  }
+
+  /**
+   * A helper class to validate start date and end date input
+   *
+   * @param start Start Date
+   * @param end   End Date
+   * @param model Model
+   * @return true if date is valid
+   */
+  private boolean validateInputDate(
+      @RequestParam(EventConstants.EVENT_START) String start,
+      @RequestParam(EventConstants.EVENT_END) String end,
+      Model model) {
+    Date startDate = new Date(), endDate = new Date(), today = new Date();
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-dd-MM");
+    try {
+      startDate = formatter.parse(start);
+      endDate = formatter.parse(end);
+      today = formatter.parse(String.valueOf(LocalDate.now(ZoneId.systemDefault())));
+    } catch (ParseException e) {
+      logger.error(e.getMessage());
+    }
+
+    if (startDate.before(today) || endDate.before(today)) {
+      notifyFailedQuery(model, NotificationConstants.NOTIFY_DATE_PAST);
+      return true;
+    }
+
+    if (startDate.after(endDate)) {
+      notifyFailedQuery(model, NotificationConstants.NOTIFY_END_DATE);
+      return true;
+    }
+    return false;
   }
 
   /**

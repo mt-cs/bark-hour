@@ -1,5 +1,8 @@
 package cs601.project4.web.controller;
 
+import static cs601.project4.web.Util.notifyFailedQuery;
+
+import cs601.project4.constant.NotificationConstants;
 import cs601.project4.constant.UserConstants;
 import cs601.project4.database.DBManager;
 import cs601.project4.database.DBSessionId;
@@ -99,7 +102,8 @@ public class UserController {
       @RequestParam(UserConstants.USERNAME) String userName ,
       @RequestParam(UserConstants.EMAIL) String email,
       @RequestParam(UserConstants.LOCATION) String location,
-      HttpServletRequest request) {
+      HttpServletRequest request,
+      Model model) {
 
     HttpSession session = request.getSession(false);
     if (session == null) {
@@ -110,24 +114,14 @@ public class UserController {
 
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
-      DBUser.updateUser(con, userName, email, location, userId);
+      if (!DBUser.updateUser(con, userName, email, location, userId)) {
+        notifyFailedQuery(model, NotificationConstants.NOTIFY_USER_UPDATE_FAIL);
+        return "users-profile-confirmation";
+      }
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
-    return "users-profile-confirmation";
-  }
-
-  /**
-   * Handles get profile-update
-   *
-   * @return users-profile-confirmation.html
-   */
-  @GetMapping(value={"/users-profile-confirmation"})
-  public String updateProfileForm(HttpServletRequest request) {
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
-    }
+    notifyFailedQuery(model, NotificationConstants.NOTIFY_USER_UPDATE_SUCCESS);
     return "users-profile-confirmation";
   }
 }

@@ -26,7 +26,7 @@ public class DBUser {
    * @param location String location
    * @throws SQLException database access error
    */
-  public static void updateUser(
+  public static boolean updateUser(
       Connection con,
       String username,
       String email,
@@ -39,7 +39,13 @@ public class DBUser {
     updateUserStmt.setString(2, location);
     updateUserStmt.setString(3, username);
     updateUserStmt.setInt(4, userId);
-    updateUserStmt.executeUpdate();
+
+    int count = updateUserStmt.executeUpdate();
+    if(count == 0) {
+      logger.warn("Update tickets failed");
+      return false;
+    }
+    return true;
   }
 
   /**

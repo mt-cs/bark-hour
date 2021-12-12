@@ -1,6 +1,9 @@
 package cs601.project4.web.controller;
 
+import static cs601.project4.web.Util.notifyFailedQuery;
+
 import cs601.project4.constant.EventConstants;
+import cs601.project4.constant.NotificationConstants;
 import cs601.project4.constant.TicketConstants;
 import cs601.project4.constant.TransactionConstants;
 import cs601.project4.constant.UserConstants;
@@ -86,48 +89,35 @@ public class TicketController {
     }
     String sessionId = session.getId();
 
-    String msg;
     if (numTickets < 1) {
-      msg = "Number of tickets has to be at least 1";
-      notifyFailedQuery(model, msg);
+      notifyFailedQuery(model, NotificationConstants.NOTIFY_MIN_TICKET);
       return "ticket-purchase";
     }
 
     try (Connection con = DBManager.getConnection()) {
       int eventUserId = EventSelectQuery.getUserIdByEventId(con, eventId);
       int availTicket = DBTicket.getTicketAvail(con, eventId);
-      if (availTicket == 0)  {
-        msg = "Sorry, this event is sold out.";
-        notifyFailedQuery(model, msg);
-        return "ticket-purchase";
-      }
-      if (availTicket - numTickets < 0) {
-        msg = "Sorry, not enough space available.";
-        notifyFailedQuery(model, msg);
+      if (checkAvailTicket(numTickets, model, availTicket)) {
         return "ticket-purchase";
       }
       int userId = DBSessionId.getUserId(con, sessionId);
       if (eventUserId == userId) {
-        msg = "You are the owner of this event.";
-        notifyFailedQuery(model, msg);
+        notifyFailedQuery(model, NotificationConstants.NOTIFY_OWNER);
         return "ticket-purchase";
       }
       if (!DBTicket.buyTickets(con, userId, eventId, eventUserId, numTickets)){
-        msg = "Failed to purchase ticket";
-        notifyFailedQuery(model, msg);
+        notifyFailedQuery(model, NotificationConstants.NOTIFY_FAIL);
         return "ticket-purchase";
       } else {
         int curAvailTicket = DBTicket.countTickets(con, eventUserId, eventId);
         if (curAvailTicket == availTicket || curAvailTicket == -1) {
-          msg = "Failed to purchase ticket";
-          notifyFailedQuery(model, msg);
+          notifyFailedQuery(model, NotificationConstants.NOTIFY_FAIL);
           return "ticket-purchase";
         } else {
           DBTicket.updateTicketAvail(con, availTicket - numTickets, eventId);
           int purchasedSoFar = DBTicket.getTicketPurchased(con, eventId);
           if (purchasedSoFar == -1) {
-            msg = "Failed to purchase ticket";
-            notifyFailedQuery(model, msg);
+            notifyFailedQuery(model, NotificationConstants.NOTIFY_FAIL);
             return "ticket-purchase";
           }
           DBTicket.updateTicketPurchased(con,purchasedSoFar + numTickets, eventId);
@@ -137,14 +127,32 @@ public class TicketController {
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
-    model.addAttribute("msg", "Registration successful");
+    model.addAttribute(NotificationConstants.MSG, NotificationConstants.NOTIFY_SUCCESS);
     return "ticket-purchase";
   }
 
-  private void notifyFailedQuery(Model model, String msg) {
-    logger.warn(msg);
-    model.addAttribute("msg", msg);;
+  /**
+   * A helper class to check the number of available ticket
+   *
+   * @param numTickets  number of Tickets to be purchased
+   * @param model       Model
+   * @param availTicket number of available ticket
+   * @return true if there is enough available ticket
+   */
+  private boolean checkAvailTicket(
+      @RequestParam(EventConstants.NUM_TICKET) int numTickets,
+      Model model, int availTicket) {
+    if (availTicket == 0)  {
+      notifyFailedQuery(model, NotificationConstants.NOTIFY_SOLD_OUT);
+      return true;
+    }
+    if (availTicket - numTickets < 0) {
+      notifyFailedQuery(model, NotificationConstants.NOTIFY_SPACE);
+      return true;
+    }
+    return false;
   }
+
 
   /**
    * Get transfer ticket form
@@ -197,9 +205,7 @@ public class TicketController {
     String msg;
 
     if (numTickets < 1) {
-      msg = "Number of tickets has to be at least 1";
-      logger.warn(msg);
-      model.addAttribute("msg", msg);
+      notifyFailedQuery(model, NotificationConstants.NOTIFY_MIN_TICKET);
       return "ticket-transfer-status";
     }
 
@@ -209,41 +215,32 @@ public class TicketController {
       int recipientId = DBUser.getUserId(con, email);
       int organizerId = EventSelectQuery.getUserIdByEventId(con, eventId);
       if (recipientId <= 0) {
-        msg = "Recipient email is not registered.";
-        logger.warn(msg);
-        model.addAttribute("msg", msg);
+        notifyFailedQuery(model, NotificationConstants.NOTIFY_EMAIL);
         return "ticket-transfer-status";
       }
       if (userId == recipientId) {
-        msg = "Can't transfer to yourself";
-        logger.warn(msg);
-        model.addAttribute("msg", msg);
+        notifyFailedQuery(model, NotificationConstants.NOTIFY_OTHER);
         return "ticket-transfer-status";
       }
       if (userId == organizerId) {
-        msg = "Can't transfer to owner";
-        logger.warn(msg);
-        model.addAttribute("msg", msg);
+        notifyFailedQuery(model, NotificationConstants.NOTIFY_ORGANIZER);
         return "ticket-transfer-status";
       }
       int availTicket = DBTicket.getTicketAvail(con, eventId);
-      if (availTicket < numTickets) {
-        msg = "Not enough tickets reserved.";
-        logger.warn(msg);
-        model.addAttribute("msg", msg);
-        return "ticket-transfer-status";
+
+      if (checkAvailTicket(numTickets, model, availTicket)) {
+        return "ticket-purchase";
       }
+
       if (!DBTicket.transferTickets(con, userId, recipientId, eventId, numTickets)){
-        msg = "Ticket transfer failed.";
-        logger.warn(msg);
-        model.addAttribute("msg", msg);
+        notifyFailedQuery(model, NotificationConstants.NOTIFY_TRANSFER_FAIL);
         return "ticket-transfer-status";
       }
       DBTransaction.insertTransaction(con, eventId, userId, recipientId, numTickets);
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
-    model.addAttribute("msg","Ticket transfer successful");
+    model.addAttribute(NotificationConstants.MSG,NotificationConstants.NOTIFY_TRANSFER_SUCCESS);
     return "ticket-transfer-status";
   }
 
