@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="https://www.thymeleaf.org">
+      xmlns:th="https://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -51,7 +51,7 @@
     </div><!-- End Logo -->
 
     <div class="search-bar">
-      <form class="search-form d-flex align-items-center" method="POST" action="#">
+      <form class="search-form d-flex align-items-center" method="POST" action="/results">
         <input type="text" name="query" placeholder="Search" title="Enter search keyword">
         <button type="submit" title="Search"><i class="bi bi-search"></i></button>
       </form>
@@ -92,7 +92,7 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="/events">
+              <a class="dropdown-item d-flex align-items-center" href="/users-events">
                 <i class="bi bi-question-circle"></i>
                 <span>My Events</span>
               </a>
@@ -167,7 +167,14 @@
           <i class="bi bi-card-list"></i>
           <span>Manage Events</span>
         </a>
-      </li><!-- End My Events Page Nav -->
+      </li><!-- End Manage Events Page Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="/tickets-transferal">
+          <i class="bi bi-ticket-detailed"></i>
+          <span>Transfer Tickets</span>
+        </a>
+      </li><!-- End Transfer Tickets Nav -->
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="/tickets">
@@ -175,13 +182,6 @@
           <span>Tickets</span>
         </a>
       </li><!-- End Tickets Nav -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="/transactions">
-          <i class="bi bi-table"></i>
-          <span>Transactions</span>
-        </a>
-      </li><!-- End Transactions Nav -->
 
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="/transactions">
@@ -194,7 +194,7 @@
             </a>
           </li>
           <li>
-            <a href="/transfers">
+            <a href="/transfer-history">
               <i class="bi bi-circle"></i><span>Transfer</span>
             </a>
           </li>
@@ -223,62 +223,56 @@
     <div class="col-lg-12">
       <img src="assets/img/home.png" class="img-fluid" alt="Homepage">
     </div>
-        <!-- Left side columns -->
-<!--        <div class="col-lg-8">-->
-        <div class="col-lg-12">
-          <div class="row">
 
-            <!-- All Events -->
-            <div class="col-12">
-              <div class="card top-selling">
+    <div class="col-lg-12">
+      <div class="row">
 
-                <div class="filter">
-                  <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
+        <!-- All Events -->
+        <div class="col-12">
+          <div class="card top-selling">
 
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul>
-                </div>
+            <div class="filter">
+              <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <li class="dropdown-header text-start">
+                  <h6>Filter</h6>
+                </li>
 
-                <div class="card-body pb-0">
-                  <h5 class="card-title">Events <span>| All</span></h5>
+                <li><a class="dropdown-item" href="/results-name">Today</a></li>
+                <li><a class="dropdown-item" href="/results-date">This Month</a></li>
+                <li><a class="dropdown-item" href="/results-location">This Year</a></li>
+              </ul>
+            </div>
 
-                  <table class="table datatable table-borderless ">
-                    <thead>
+            <div class="card-body pb-0">
+              <h5 class="card-title">Events <span>| All</span></h5>
 
-                      <tr class="headings">
-                        <th th:each="header: ${headers}" class="column-title" th:text="${header}" />
-                      </tr>
-                      </thead>
-                      <tbody>
-                      <tr scope="row" th:each="event: ${events}">
-                        <!--<th scope="row"><a href="#"><img src="assets/img/product-4.jpg" alt=""></a></th>-->
-                        <td class="text-primary fw-bold" th:text="${event.eventName}"></td>
-                        <td class="fw-bold" th:text="${event.about}"></td>
-                        <td class="fw-bold" th:text="${event.venue}"></td>
-                        <td class="fw-bold" th:text="${event.city}"></td>
-                        <td class="fw-bold" th:text="${event.eventStart}"></td>
-                        <td class="fw-bold" th:text="${event.eventEnd}"></td>
-                        <td><a class="fw-bold" th:href="@{/event/{eventId}(eventId=${event.eventId})}"><button class="btn btn-primary">View</button></a> </td>
-                      </tr>
-
-                    </tbody>
-                  </table>
-
-                </div>
-
+              <table class="table datatable table-borderless ">
+                <thead>
+                  <tr class="headings">
+                    <th th:each="header: ${headers}" class="column-title" th:text="${header}" />
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr scope="row" th:each="event: ${events}">
+                    <!--<th scope="row"><a href="#"><img src="assets/img/product-4.jpg" alt=""></a></th>-->
+                    <td class="text-primary fw-bold" th:text="${event.eventName}"></td>
+                    <td class="fw-bold" th:text="${event.about}"></td>
+                    <td class="fw-bold" th:text="${event.venue}"></td>
+                    <td class="fw-bold" th:text="${event.city}"></td>
+                    <td class="fw-bold" th:text="${event.eventStart}"></td>
+                    <td class="fw-bold" th:text="${event.eventEnd}"></td>
+                    <td><a class="fw-bold" th:href="@{/event/{eventId}(eventId=${event.eventId})}"><button class="btn btn-primary">View</button></a> </td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
               </div>
             </div><!-- End Events -->
           </div>
-        </div><!-- End Left side columns -->
+        </div>
       </div>
     </section>
-
   </main><!-- End #main -->
 
   <!-- ======= Footer ======= -->

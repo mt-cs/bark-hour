@@ -1,7 +1,9 @@
 package cs601.project4.web.controller;
 
 import cs601.project4.constant.EventConstants;
-import cs601.project4.database.DBEvent;
+import cs601.project4.database.DBEvent.EventInsertQuery;
+import cs601.project4.database.DBEvent.EventSelectQuery;
+import cs601.project4.database.DBEvent.EventUpdateQuery;
 import cs601.project4.database.DBManager;
 import cs601.project4.database.DBSessionId;
 import cs601.project4.database.DBTicket;
@@ -74,7 +76,7 @@ public class EventController {
     String sessionId = request.getSession(true).getId();
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
-      ResultSet results = DBEvent.selectAllEvent(con);
+      ResultSet results = EventSelectQuery.selectAllEvent(con);
       while (results.next()) {
         Event event = new Event();
         event.setEventId(results.getInt(EventConstants.EVENT_ID));
@@ -142,11 +144,11 @@ public class EventController {
 
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
-      if (DBEvent.checkEventExist(con, eventName)) {
+      if (EventSelectQuery.checkEventExist(con, eventName)) {
         logger.info("Event already exists.");
         return "redirect:/error-400";
       } else {
-        int eventId = DBEvent.createEvent(
+        int eventId = EventInsertQuery.createEvent(
             con, userId, eventName, venue, address, city, state,
             country, zip, about, start, end, numTickets);
 
@@ -207,7 +209,7 @@ public class EventController {
     }
 
     try (Connection con = DBManager.getConnection()) {
-      ResultSet results = DBEvent.selectEvent(con, eventId);
+      ResultSet results = EventSelectQuery.selectEvent(con, eventId);
       while (results.next()) {
         model.addAttribute(EventConstants.EVENT_ID, results.getString(EventConstants.EVENT_ID));
         model.addAttribute(EventConstants.EVENT_NAME, results.getString(EventConstants.EVENT_NAME));
@@ -227,15 +229,6 @@ public class EventController {
     }
     return "event";
   }
-
-//  @GetMapping("/event-update") // TODO: update if failed or successful
-//  public String getEventUpdateForm(HttpServletRequest request) {
-//    HttpSession session = request.getSession(false);
-//    if (session == null) {
-//      return "redirect:/error-login";
-//    }
-//    return "event-update-status";
-//  }
 
   /**
    * Handles update event form
@@ -271,8 +264,8 @@ public class EventController {
 
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
-      int evenId = DBEvent.getEventId(con, eventName, userId);
-      int organizerId = DBEvent.getUserIdByEventId(con, evenId);
+      int evenId = EventSelectQuery.getEventId(con, eventName, userId);
+      int organizerId = EventSelectQuery.getUserIdByEventId(con, evenId);
       if (evenId == -1) {
         model.addAttribute("msg", "Event doesn't exist");
         return "event-update-status";
@@ -282,7 +275,7 @@ public class EventController {
         model.addAttribute("msg", "You are not the organizer of this event");
         return "event-update-status";
       }
-      DBEvent.updateEvent(
+      EventUpdateQuery.updateEvent(
           con, evenId, userId, eventName, venue, address, city, state,
           country, zip, about, start, end, numTickets);
 
@@ -308,7 +301,7 @@ public class EventController {
     }
 
     try (Connection con = DBManager.getConnection()) {
-      ResultSet results = DBEvent.selectEvent(con, eventId);
+      ResultSet results = EventSelectQuery.selectEvent(con, eventId);
       while (results.next()) {
         model.addAttribute(EventConstants.EVENT_ID, results.getString(EventConstants.EVENT_ID));
         model.addAttribute(EventConstants.EVENT_NAME, results.getString(EventConstants.EVENT_NAME));
@@ -359,7 +352,7 @@ public class EventController {
 
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
-      ResultSet results = DBEvent.getMyEvents(con, userId);
+      ResultSet results = EventSelectQuery.getMyEvents(con, userId);
 
       while (results.next()) {
         Event event = new Event();

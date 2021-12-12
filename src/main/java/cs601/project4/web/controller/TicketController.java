@@ -1,8 +1,9 @@
 package cs601.project4.web.controller;
 
 import cs601.project4.constant.EventConstants;
+import cs601.project4.constant.TransactionConstants;
 import cs601.project4.constant.UserConstants;
-import cs601.project4.database.DBEvent;
+import cs601.project4.database.DBEvent.EventSelectQuery;
 import cs601.project4.database.DBManager;
 import cs601.project4.database.DBSessionId;
 import cs601.project4.database.DBTicket;
@@ -88,7 +89,7 @@ public class TicketController {
     }
 
     try (Connection con = DBManager.getConnection()) {
-      int eventUserId = DBEvent.getUserIdByEventId(con, eventId);
+      int eventUserId = EventSelectQuery.getUserIdByEventId(con, eventId);
       int availTicket = DBTicket.getTicketAvail(con, eventId);
       if (availTicket < numTickets) {
         logger.warn("Not enough space available.");
@@ -181,7 +182,7 @@ public class TicketController {
 
       int userId = DBSessionId.getUserId(con, sessionId);
       int recipientId = DBUser.getUserId(con, email);
-      if (recipientId == -1) {
+      if (recipientId <= 0) {
         logger.warn("Recipient email is not registered.");
         return "redirect:/error-400";
       }
@@ -211,7 +212,7 @@ public class TicketController {
 
 
   /**
-   * Display all user's tickets
+   * Display all tickets with userId
    *
    * @param model Model
    * @return ticket
@@ -228,13 +229,14 @@ public class TicketController {
     List<String> headers = Arrays.asList(
         EventConstants.HEADERS_NAME,
         EventConstants.HEADERS_EVENT_ID,
+        TransactionConstants.HEADERS_FROM,
         EventConstants.TICKET_COUNT
       );
 
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
       int ticketCount = 0;
-      ResultSet results = DBTicket.getMyTickets(con, userId);
+      ResultSet results = DBTicket.getTicketsById(con, userId);
 
       int temp = 0;
       if(results.next()) {
@@ -245,12 +247,14 @@ public class TicketController {
         ticketCount++;
 
         if (temp != eventId) {
-          String eventName = DBEvent.getEventName(con, temp);
+          String eventName = EventSelectQuery.getEventName(con, temp);
           if (eventName == null) {
             logger.warn("Event doesn't exist");
             return "redirect:/error-400";
           }
-          UserTicket ticket = new UserTicket(temp, eventName, ticketCount);
+          int organizerId = EventSelectQuery.getUserIdByEventId(con, temp);
+          String organizer = DBUser.getUserName(con, organizerId);
+          UserTicket ticket = new UserTicket(temp, eventName, ticketCount, organizer);
           ticketList.add(ticket);
           temp = eventId;
           ticketCount = 0;
@@ -262,5 +266,53 @@ public class TicketController {
     model.addAttribute("headers", headers);
     model.addAttribute("tickets", ticketList);
     return "tickets";
+  }
+
+  /**
+   * Display tickets that user have purchased from others
+   *
+   * @param model Model
+   * @return ticket
+   */
+  @GetMapping(value={"/tickets-transferal"})
+  public String getPurchasedTickets(Model model, HttpServletRequest request) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
+    String sessionId = session.getId();
+
+    List<UserTicket> ticketList = new ArrayList<>();
+    List<String> headers = Arrays.asList(
+        EventConstants.HEADERS_NAME,
+        EventConstants.HEADERS_EVENT_ID,
+        TransactionConstants.HEADERS_FROM,
+        EventConstants.TICKET_COUNT,
+        EventConstants.HEADERS_TRANSFER
+    );
+
+    try (Connection con = DBManager.getConnection()) {
+      int userId = DBSessionId.getUserId(con, sessionId);
+      ResultSet results = DBTicket.getPurchasedTicket(con, userId);
+
+      while(results.next()) {
+        int eventId = results.getInt(EventConstants.EVENT_ID);
+        String eventName = EventSelectQuery.getEventName(con, eventId);
+        if (eventName == null) {
+          logger.warn("Event doesn't exist");
+          return "redirect:/error-400";
+        }
+        int organizerId = EventSelectQuery.getUserIdByEventId(con, eventId);
+        String organizer = DBUser.getUserName(con, organizerId);
+        int ticketCount = DBTicket.countTickets(con, userId, eventId);
+        UserTicket ticket = new UserTicket(eventId, eventName, ticketCount, organizer);
+        ticketList.add(ticket);
+      }
+    } catch (SQLException sqlException) {
+      logger.error(sqlException.getMessage());
+    }
+    model.addAttribute("headers", headers);
+    model.addAttribute("tickets", ticketList);
+    return "tickets-transferal";
   }
 }

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="https://www.thymeleaf.org">
+      xmlns:th="https://www.thymeleaf.org" lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Event</title>
@@ -9,13 +9,14 @@
   <h2 th:text="${event_name}"></h2>
   <p>About: <span th:text="${about}"></span></p>
   <p>Venue: <span th:text="${venue}"></span></p>
-  <p>Location: <span th:text="${city}"></span>, <span th:text="${state}"></span> <span th:text="${zip}">, <span th:text="${country}"></span></p>
+  <p>Location: <span th:text="${city}"></span>, <span th:text="${state}"></span> <span th:text="${zip}"></span>, <span th:text="${country}"></span></p>
   <p>Start: <span th:text="${event_start}"></span></p>
   <p>End: <span th:text="${event_end}"></span></p>
   <p>Capacity: <span th:text="${num_ticket}"></span></p>
   <br>
   <a th:href="@{/ticket/{eventId}(eventId=${eventId})}"><button>Buy Ticket</button></a>
   <a href="/events"><button>All Events</button></a>
+  <a href="/new-event"><button>Create Event</button></a>
   <a href="/home"><button>Home</button></a>
   <a href="/logout"><button>Logout</button></a>
 </body>

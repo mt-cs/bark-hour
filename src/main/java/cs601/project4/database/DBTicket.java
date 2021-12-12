@@ -223,9 +223,30 @@ public class DBTicket {
    * @return results
    * @throws SQLException database access error
    */
-  public static ResultSet getMyTickets(Connection con, int userId)
+  public static ResultSet getTicketsById(Connection con, int userId)
       throws SQLException {
     String selectUserSql = "SELECT * FROM tickets WHERE userid = ?;";
+    PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
+    selectUserStmt.setInt(1, userId);
+    ResultSet results = selectUserStmt.executeQuery();
+    return results;
+  }
+
+  /**
+   * Get purchased tickets by userId
+   *
+   * @param con    Connection
+   * @param userId int user ID
+   * @return results
+   * @throws SQLException database access error
+   */
+  public static ResultSet getPurchasedTicket(Connection con, int userId)
+      throws SQLException {
+    String selectUserSql =
+          "SELECT ticket_id, t.event_id, e.userid "
+        + "FROM tickets as t LEFT JOIN events as e "
+        + "ON e.event_id = t.event_id "
+        + "WHERE t.userid = ? && t.userid <> e.userid;";
     PreparedStatement selectUserStmt = con.prepareStatement(selectUserSql);
     selectUserStmt.setInt(1, userId);
     ResultSet results = selectUserStmt.executeQuery();

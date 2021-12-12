@@ -22,7 +22,6 @@
     <td th:text="${transaction.ownerName}"></td>
     <td th:text="${transaction.transactionCount}"></td>
     <td th:text="${transaction.timestamp}"></td>
-    <td><a th:href="@{/ticket-transfer/{event_id}(event_id=${transaction.eventId})}"><button>Transfer</button></a> </td>
   </tr>
   </tbody>
 </table>

@@ -8,14 +8,24 @@ package cs601.project4.model;
 public class UserTicket {
   public int eventId;
   public String eventName;
+  public String organizer;
   public int ticketCount;
 
-  public UserTicket(int eventId, String eventName, int ticketCount) {
+
+  public UserTicket(int eventId, String eventName, int ticketCount, String organizer) {
     this.eventId = eventId;
     this.eventName = eventName;
     this.ticketCount = ticketCount;
+    this.organizer = organizer;
   }
 
+  public String getOrganizer() {
+    return organizer;
+  }
+
+  public void setOrganizer(String organizer) {
+    this.organizer = organizer;
+  }
 
   public int getEventId() {
     return eventId;

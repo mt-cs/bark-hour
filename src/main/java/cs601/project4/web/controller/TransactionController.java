@@ -1,8 +1,7 @@
 package cs601.project4.web.controller;
 
-import cs601.project4.constant.EventConstants;
 import cs601.project4.constant.TransactionConstants;
-import cs601.project4.database.DBEvent;
+import cs601.project4.database.DBEvent.EventSelectQuery;
 import cs601.project4.database.DBManager;
 import cs601.project4.database.DBSessionId;
 import cs601.project4.database.DBTransaction;
@@ -65,7 +64,7 @@ public class TransactionController {
         transaction.setTransactionId(results.getInt(TransactionConstants.TRANSACTION_ID));
         int eventId = results.getInt(TransactionConstants.EVENT_ID);
         transaction.setEventId(eventId);
-        String eventName = DBEvent.getEventName(con, eventId);
+        String eventName = EventSelectQuery.getEventName(con, eventId);
         if (eventName == null) {
           logger.warn("Event doesn't exist");
         }
@@ -92,7 +91,7 @@ public class TransactionController {
    * @param model Model
    * @return ticket
    */
-  @GetMapping(value={"/transfers"})
+  @GetMapping(value={"/transfer-history"})
   public String getTransfers(Model model, HttpServletRequest request) {
     HttpSession session = request.getSession(false);
     if (session == null) {
@@ -116,7 +115,7 @@ public class TransactionController {
       ResultSet results = DBTransaction.getTransfers(con, userId);
       while(results.next()) {
         int eventId = results.getInt(TransactionConstants.EVENT_ID);
-        int organizerId = DBEvent.getUserIdByEventId(con, eventId);
+        int organizerId = EventSelectQuery.getUserIdByEventId(con, eventId);
         if (organizerId == userId) {
           continue;
         }
@@ -124,7 +123,7 @@ public class TransactionController {
         transaction.setTransactionId(results.getInt(TransactionConstants.TRANSACTION_ID));
 
         transaction.setEventId(eventId);
-        String eventName = DBEvent.getEventName(con, eventId);
+        String eventName = EventSelectQuery.getEventName(con, eventId);
         if (eventName == null) {
           logger.warn("Event doesn't exist");
         }
@@ -144,6 +143,8 @@ public class TransactionController {
     model.addAttribute("transactions", transactionList);
     return "transfers";
   }
+
+
 
 }
 
