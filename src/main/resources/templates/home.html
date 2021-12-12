@@ -51,8 +51,8 @@
     </div><!-- End Logo -->
 
     <div class="search-bar">
-      <form class="search-form d-flex align-items-center" th:action="@{/results-name}" method="get">
-        <input type="text" name="query" placeholder="Search" title="Enter search keyword">
+      <form class="search-form d-flex align-items-center" th:action="@{/results-location}" method="get">
+        <input type="text" name="query" placeholder="Search" title="Search by city..">
         <button type="submit" title="Search"><i class="bi bi-search"></i></button>
       </form>
     </div><!-- End Search Bar -->
@@ -232,14 +232,12 @@
           <div class="card top-selling">
 
             <div class="filter">
-              <a class="icon" href="/results-name" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+              <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
               <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
                 <li class="dropdown-header text-start">
                   <h6>Filter</h6>
                 </li>
-
-                <li><a class="dropdown-item" href="/results-name">Name</a></li>
-                <li><a class="dropdown-item" href="/results-location">Location</a></li>
+<!--                <li><a class="dropdown-item" href="/results-location">Location</a></li>-->
                 <li><a class="dropdown-item" href="/results-today">Today</a></li>
                 <li><a class="dropdown-item" href="/results-month">This Month</a></li>
                 <li><a class="dropdown-item" href="/results-year">This Year</a></li>

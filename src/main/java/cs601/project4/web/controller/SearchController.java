@@ -72,6 +72,48 @@ public class SearchController {
   }
 
   /**
+   * Display events partial search by Name
+   *
+   * @param model   Model
+   * @param request HTTP Servlet Request
+   * @param query   Result parameter query
+   * @return results-name
+   */
+  @GetMapping(value = {"/results-location"})
+  public String searchByLocation(
+      Model model,
+      HttpServletRequest request,
+      @RequestParam(value="query",required=false) String query) {
+
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return "redirect:/error-login";
+    }
+
+    List<Event> events = new ArrayList<>();
+    List<String> headers = Arrays.asList(
+        EventConstants.HEADERS_NAME,
+        EventConstants.HEADERS_ABOUT,
+        EventConstants.HEADERS_LOCATION,
+        EventConstants.HEADERS_CITY,
+        EventConstants.HEADERS_START,
+        EventConstants.HEADERS_END,
+        EventConstants.HEADERS_INFO);
+
+    String sessionId = request.getSession(true).getId();
+    try (Connection con = DBManager.getConnection()) {
+      int userId = DBSessionId.getUserId(con, sessionId);
+      ResultSet results = EventSearchQuery.searchEventByLocation(con, query);
+      addEventToList(events, userId, results);
+    } catch (SQLException sqlException) {
+      logger.error(sqlException.getMessage());
+    }
+    model.addAttribute("headers", headers);
+    model.addAttribute("events", events);
+    return "results";
+  }
+
+  /**
    * Display events partial search by Today's date
    *
    * @param model   Model

@@ -1,6 +1,7 @@
 package cs601.project4.database.DBEvent;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,6 +18,21 @@ public class EventSearchQuery {
     String searchByNameSql = "SELECT * FROM events WHERE event_name LIKE" + "'%" + input +"%';";
     Statement searchByNameStmt = con.createStatement();
     ResultSet results = searchByNameStmt.executeQuery(searchByNameSql);
+    return results;
+  }
+
+  /**
+   * Partial search event by location
+   *
+   * @param con   Connection
+   * @param input query input String
+   * @throws SQLException database access error
+   */
+  public static ResultSet searchEventByLocation(Connection con, String input) throws SQLException{
+    String searchByLocationSql = "SELECT * FROM events WHERE city = ?;";
+    PreparedStatement searchByLocationStmt = con.prepareStatement(searchByLocationSql);
+    searchByLocationStmt.setString(1, input);
+    ResultSet results = searchByLocationStmt.executeQuery();
     return results;
   }
 
