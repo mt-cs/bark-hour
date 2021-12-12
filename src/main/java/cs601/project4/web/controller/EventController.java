@@ -88,7 +88,7 @@ public class EventController {
         event.setEventEnd(results.getTimestamp(EventConstants.EVENT_END));
         event.setUserId(userId);
         event.setNumTickets(results.getInt(EventConstants.NUM_TICKET));
-        event.setNumTicketAvail(results.getInt(EventConstants.NUM_TICKET));
+        event.setNumTicketAvail(results.getInt(EventConstants.NUM_TICKET_AVAIL));
         event.setNumTicketPurchased(results.getInt(EventConstants.NUM_TICKET_PURCHASED));
         events.add(event);
       }
@@ -365,7 +365,7 @@ public class EventController {
         event.setEventEnd(results.getTimestamp(EventConstants.EVENT_END));
         event.setUserId(userId);
         event.setNumTickets(results.getInt(EventConstants.NUM_TICKET));
-        event.setNumTicketAvail(results.getInt(EventConstants.NUM_TICKET));
+        event.setNumTicketAvail(results.getInt(EventConstants.NUM_TICKET_AVAIL));
         event.setNumTicketPurchased(results.getInt(EventConstants.NUM_TICKET_PURCHASED));
         events.add(event);
       }

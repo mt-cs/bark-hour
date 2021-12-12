@@ -1,6 +1,7 @@
 package cs601.project4.web.controller;
 
 import cs601.project4.constant.EventConstants;
+import cs601.project4.constant.TicketConstants;
 import cs601.project4.constant.TransactionConstants;
 import cs601.project4.constant.UserConstants;
 import cs601.project4.database.DBEvent.EventSelectQuery;
@@ -9,6 +10,7 @@ import cs601.project4.database.DBSessionId;
 import cs601.project4.database.DBTicket;
 import cs601.project4.database.DBTransaction;
 import cs601.project4.database.DBUser;
+import cs601.project4.model.TicketTransferal;
 import cs601.project4.model.UserTicket;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -75,7 +77,8 @@ public class TicketController {
   public String purchaseTicket(
       @RequestParam(EventConstants.NUM_TICKET) int numTickets,
       @PathVariable int eventId,
-      HttpServletRequest request) {
+      HttpServletRequest request,
+      Model model) {
 
     HttpSession session = request.getSession(false);
     if (session == null) {
@@ -83,37 +86,49 @@ public class TicketController {
     }
     String sessionId = session.getId();
 
+    String msg;
     if (numTickets < 1) {
-      logger.warn("Number of tickets has to be at least 1");
-      return "redirect:/error-400";
+      msg = "Number of tickets has to be at least 1";
+      notifyFailedQuery(model, msg);
+      return "ticket-purchase";
     }
 
     try (Connection con = DBManager.getConnection()) {
       int eventUserId = EventSelectQuery.getUserIdByEventId(con, eventId);
       int availTicket = DBTicket.getTicketAvail(con, eventId);
-      if (availTicket < numTickets) {
-        logger.warn("Not enough space available.");
-        return "redirect:/error-400"; //TODO: create status update page
+      if (availTicket == 0)  {
+        msg = "Sorry, this event is sold out.";
+        notifyFailedQuery(model, msg);
+        return "ticket-purchase";
+      }
+      if (availTicket - numTickets < 0) {
+        msg = "Sorry, not enough space available.";
+        notifyFailedQuery(model, msg);
+        return "ticket-purchase";
       }
       int userId = DBSessionId.getUserId(con, sessionId);
       if (eventUserId == userId) {
-        logger.warn("You are the owner of this event.");
-        return "redirect:/error-400";
+        msg = "You are the owner of this event.";
+        notifyFailedQuery(model, msg);
+        return "ticket-purchase";
       }
       if (!DBTicket.buyTickets(con, userId, eventId, eventUserId, numTickets)){
-        notifyFailedPurchase();
-        return "redirect:/error-400";
+        msg = "Failed to purchase ticket";
+        notifyFailedQuery(model, msg);
+        return "ticket-purchase";
       } else {
         int curAvailTicket = DBTicket.countTickets(con, eventUserId, eventId);
         if (curAvailTicket == availTicket || curAvailTicket == -1) {
-          notifyFailedPurchase();
-          return "redirect:/error-400";
+          msg = "Failed to purchase ticket";
+          notifyFailedQuery(model, msg);
+          return "ticket-purchase";
         } else {
-          DBTicket.updateTicketAvail(con, curAvailTicket, eventId);
+          DBTicket.updateTicketAvail(con, availTicket - numTickets, eventId);
           int purchasedSoFar = DBTicket.getTicketPurchased(con, eventId);
           if (purchasedSoFar == -1) {
-            notifyFailedPurchase();
-            return "redirect:/error-400";
+            msg = "Failed to purchase ticket";
+            notifyFailedQuery(model, msg);
+            return "ticket-purchase";
           }
           DBTicket.updateTicketPurchased(con,purchasedSoFar + numTickets, eventId);
           DBTransaction.insertTransaction(con, eventId, eventUserId, userId, numTickets);
@@ -122,7 +137,13 @@ public class TicketController {
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
+    model.addAttribute("msg", "Registration successful");
     return "ticket-purchase";
+  }
+
+  private void notifyFailedQuery(Model model, String msg) {
+    logger.warn(msg);
+    model.addAttribute("msg", msg);;
   }
 
   /**
@@ -165,51 +186,66 @@ public class TicketController {
       @RequestParam(EventConstants.NUM_TICKET) int numTickets,
       @RequestParam(UserConstants.EMAIL) String email,
       @PathVariable int eventId,
-      HttpServletRequest request) {
+      HttpServletRequest request,
+      Model model) {
 
     HttpSession session = request.getSession(false);
     if (session == null) {
       return "redirect:/error-login";
     }
     String sessionId = session.getId();
+    String msg;
 
     if (numTickets < 1) {
-      logger.warn("Number of tickets has to be at least 1");
-      return "redirect:/error-400";
+      msg = "Number of tickets has to be at least 1";
+      logger.warn(msg);
+      model.addAttribute("msg", msg);
+      return "ticket-transfer-status";
     }
 
     try (Connection con = DBManager.getConnection()) {
 
       int userId = DBSessionId.getUserId(con, sessionId);
       int recipientId = DBUser.getUserId(con, email);
+      int organizerId = EventSelectQuery.getUserIdByEventId(con, eventId);
       if (recipientId <= 0) {
-        logger.warn("Recipient email is not registered.");
-        return "redirect:/error-400";
+        msg = "Recipient email is not registered.";
+        logger.warn(msg);
+        model.addAttribute("msg", msg);
+        return "ticket-transfer-status";
       }
       if (userId == recipientId) {
-        logger.warn("Can't transfer to owner");
-        return "redirect:/error-400";
+        msg = "Can't transfer to yourself";
+        logger.warn(msg);
+        model.addAttribute("msg", msg);
+        return "ticket-transfer-status";
+      }
+      if (userId == organizerId) {
+        msg = "Can't transfer to owner";
+        logger.warn(msg);
+        model.addAttribute("msg", msg);
+        return "ticket-transfer-status";
       }
       int availTicket = DBTicket.getTicketAvail(con, eventId);
       if (availTicket < numTickets) {
-        logger.warn("Not enough tickets reserved.");
-        return "redirect:/error-400"; //TODO: create status update page
+        msg = "Not enough tickets reserved.";
+        logger.warn(msg);
+        model.addAttribute("msg", msg);
+        return "ticket-transfer-status";
       }
       if (!DBTicket.transferTickets(con, userId, recipientId, eventId, numTickets)){
-        logger.warn("Ticket transfer failed.");
-        return "redirect:/error-400";
+        msg = "Ticket transfer failed.";
+        logger.warn(msg);
+        model.addAttribute("msg", msg);
+        return "ticket-transfer-status";
       }
       DBTransaction.insertTransaction(con, eventId, userId, recipientId, numTickets);
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
+    model.addAttribute("msg","Ticket transfer successful");
     return "ticket-transfer-status";
   }
-
-  private void notifyFailedPurchase() {
-    logger.warn("Ticket purchase failed.");
-  }
-
 
   /**
    * Display all tickets with userId
@@ -282,13 +318,14 @@ public class TicketController {
     }
     String sessionId = session.getId();
 
-    List<UserTicket> ticketList = new ArrayList<>();
+    List<TicketTransferal> ticketList = new ArrayList<>();
     List<String> headers = Arrays.asList(
+        TicketConstants.HEADERS_ID,
         EventConstants.HEADERS_NAME,
         EventConstants.HEADERS_EVENT_ID,
         TransactionConstants.HEADERS_FROM,
         EventConstants.TICKET_COUNT,
-        EventConstants.HEADERS_TRANSFER
+        TicketConstants.HEADERS_TRANSFER
     );
 
     try (Connection con = DBManager.getConnection()) {
@@ -296,17 +333,21 @@ public class TicketController {
       ResultSet results = DBTicket.getPurchasedTicket(con, userId);
 
       while(results.next()) {
+        TicketTransferal ticketTransferal = new TicketTransferal();
+        ticketTransferal.setTicketId(results.getInt(TicketConstants.TICKET_ID));
         int eventId = results.getInt(EventConstants.EVENT_ID);
+        ticketTransferal.setEventId(eventId);
         String eventName = EventSelectQuery.getEventName(con, eventId);
         if (eventName == null) {
           logger.warn("Event doesn't exist");
           return "redirect:/error-400";
         }
+        ticketTransferal.setEventName(eventName);
         int organizerId = EventSelectQuery.getUserIdByEventId(con, eventId);
-        String organizer = DBUser.getUserName(con, organizerId);
+        ticketTransferal.setOrganizer(DBUser.getUserName(con, organizerId));
         int ticketCount = DBTicket.countTickets(con, userId, eventId);
-        UserTicket ticket = new UserTicket(eventId, eventName, ticketCount, organizer);
-        ticketList.add(ticket);
+        ticketTransferal.setTicketCount(ticketCount);
+        ticketList.add(ticketTransferal);
       }
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());

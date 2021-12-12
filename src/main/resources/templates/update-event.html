@@ -29,8 +29,7 @@
     <input type="datetime-local" id="event_start" name="event_start" th:value="${event_start}" th:min="${event_start}" required="required"><br><br>
     <label for="event_end" max="#event_start">End:</label><br>
     <input type="datetime-local" id="event_end" name="event_end" th:value="${event_end}" th:min="${event_end}" required="required"><br><br>
-    <label for="num_ticket">Available seats:</label><br>
-    <input type="number" id="num_ticket" name="num_ticket" th:value="${num_ticket}" min="1" required="required" readonly><br><br>
+    <input type="hidden" id="num_ticket" name="num_ticket" th:value="${num_ticket}" min="1" required="required" readonly>
     <input type="submit" value="Submit">
   </form>
 </body>

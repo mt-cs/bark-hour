@@ -1,6 +1,7 @@
 package cs601.project4.database;
 
 import cs601.project4.constant.EventConstants;
+import cs601.project4.constant.TicketConstants;
 import cs601.project4.model.Ticket;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -94,7 +95,7 @@ public class DBTicket {
         logger.warn("Ticket does not exists");
         return -1;
       } else {
-        ticketCount = result.getInt(EventConstants.TICKETS);
+        ticketCount = result.getInt(TicketConstants.TICKETS);
       }
       logger.info("Number of Tickets count: " + ticketCount);
       return ticketCount;
@@ -205,7 +206,7 @@ public class DBTicket {
         logger.warn("Ticket does not exists");
         return -1;
       } else {
-        ticketCount = result.getInt(EventConstants.TICKETS);
+        ticketCount = result.getInt(TicketConstants.TICKETS);
       }
       logger.info("Number of Tickets: " + ticketCount);
       return ticketCount;
