@@ -1,14 +1,12 @@
 package cs601.project4.web.controller;
 
 import cs601.project4.constant.EventConstants;
-import cs601.project4.constant.UserConstants;
 import cs601.project4.database.DBEvent;
 import cs601.project4.database.DBManager;
 import cs601.project4.database.DBSessionId;
 import cs601.project4.database.DBTicket;
 import cs601.project4.model.Event;
 import cs601.project4.model.Ticket;
-import cs601.project4.web.Util;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -230,21 +228,21 @@ public class EventController {
     return "event";
   }
 
-  @GetMapping("/event-update") // TODO: update if failed or successful
-  public String getEventUpdateForm(HttpServletRequest request) {
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
-    }
-    return "event-update";
-  }
+//  @GetMapping("/event-update") // TODO: update if failed or successful
+//  public String getEventUpdateForm(HttpServletRequest request) {
+//    HttpSession session = request.getSession(false);
+//    if (session == null) {
+//      return "redirect:/error-login";
+//    }
+//    return "event-update-status";
+//  }
 
   /**
    * Handles update event form
    *
    * @return event-status
    */
-  @PostMapping(value = {"/event-update"})
+  @PostMapping(value = {"/event-update-status"})
   public String updateEvent(
       @RequestParam(EventConstants.EVENT_NAME) String eventName,
       @RequestParam(EventConstants.ABOUT) String about,
@@ -257,6 +255,7 @@ public class EventController {
       @RequestParam(EventConstants.EVENT_START) String start,
       @RequestParam(EventConstants.EVENT_END) String end,
       @RequestParam(EventConstants.NUM_TICKET) int numTickets,
+      Model model,
       HttpServletRequest request) {
 
     HttpSession session = request.getSession(false);
@@ -265,25 +264,36 @@ public class EventController {
     }
     String sessionId = session.getId();
     //TODO: only can update your own event
+
+
     if (numTickets < 1) {
       logger.warn("Number of tickets has to be at least 1");
       return "redirect:/error-400";
     }
 
     try (Connection con = DBManager.getConnection()) {
+      int organizerId = DBEvent.getUserIdByEventId(con, 1);
+
       int userId = DBSessionId.getUserId(con, sessionId);
 
-      DBEvent.updateEvent(
-          con, 1, userId, eventName, venue, address, city, state,
-          country, zip, about, start, end, numTickets);
+      if (organizerId == userId) {
+
+        DBEvent.updateEvent(
+            con, 1, userId, eventName, venue, address, city, state,
+            country, zip, about, start, end, numTickets);
 
 //      if(!DBTicket.insertTickets(con, new Ticket(userId, eventId), numTickets)) {
 //        return "redirect:/error";
 //      }
+        model.addAttribute("msg", "Your event is updated");
+      } else {
+        model.addAttribute("msg", "You are not the organizer of this event");
+      }
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
-    return "event-update";
+
+    return "event-update-status";
   }
 
   /**

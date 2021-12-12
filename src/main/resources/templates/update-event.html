@@ -8,7 +8,7 @@
 </head>
 <body>
   <h2>Update Event</h2>
-  <form action="/event_update" method="post">
+  <form action="/event-update-status" method="post">
     <label for="event_name">Event name:</label><br>
     <input type="text" id="event_name" name="event_name" th:value="${event_name}" required="required"><br><br>
     <label for="about">About:</label><br>
@@ -24,7 +24,7 @@
     <label for="state">Country:</label><br>
     <input type="text" id="country" name="country" th:value="${country}" required="required"><br><br>
     <label for="state">Zip/ Postal Code:</label><br>
-    <input type="number" id="zip" name="zip" th:value="${zip}" required="required" min="5" max="10"><br><br>
+    <input type="text" id="zip" name="zip" th:value="${zip}" required="required" pattern="[0-9]*"><br><br>
     <label for="event_start">Start:</label><br>
     <input type="datetime-local" id="event_start" name="event_start" th:value="${event_start}" th:min="${event_start}" required="required"><br><br>
     <label for="event_end" max="#event_start">End:</label><br>
