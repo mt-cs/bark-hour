@@ -198,6 +198,7 @@ public class TicketController {
         logger.warn("Ticket transfer failed.");
         return "redirect:/error-400";
       }
+      DBTransaction.insertTransaction(con, eventId, userId, recipientId, numTickets);
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
@@ -262,7 +263,4 @@ public class TicketController {
     model.addAttribute("tickets", ticketList);
     return "tickets";
   }
-
-
-
 }

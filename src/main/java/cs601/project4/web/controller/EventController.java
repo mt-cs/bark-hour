@@ -172,7 +172,11 @@ public class EventController {
     if (session == null) {
       return "redirect:/error-login";
     }
-    model.addAttribute("event_start", LocalDateTime.now());
+    model.addAttribute(EventConstants.EVENT_START, LocalDateTime.now());
+    model.addAttribute(EventConstants.EVENT_END, LocalDateTime.now());
+    model.addAttribute(EventConstants.CITY, EventConstants.SF);
+    model.addAttribute(EventConstants.STATE, EventConstants.CA);
+    model.addAttribute(EventConstants.COUNTRY, EventConstants.USA);
     return "new-event";
   }
 

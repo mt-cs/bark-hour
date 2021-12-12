@@ -32,4 +32,8 @@ public class EventConstants {
   public static final String TICKET_COUNT = "Ticket Count";
   public static final String HEADERS_EVENT_ID = "Event ID";
   public static final String HEADERS_UPDATE = "Update";
+  public static final String HEADERS_TRANSFER = "Transfer";
+  public static final String SF = "San Francisco";
+  public static final String USA = "United States";
+  public static final String CA = "California";
 }
