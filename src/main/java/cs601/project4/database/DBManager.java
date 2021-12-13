@@ -32,7 +32,7 @@ public class DBManager {
 
   static {
     /* Source: https://www.geeksforgeeks.org/static-blocks-in-java/ */
-    // TODO: Get url from application property
+    // TODO: GET RID OF URL
 //    ds.setUrl(url);
 //    ds.setUsername(username);
 //    ds.setPassword(password);
