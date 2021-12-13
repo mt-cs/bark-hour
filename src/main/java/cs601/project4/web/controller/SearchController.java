@@ -241,23 +241,10 @@ public class SearchController {
   }
 
 
-
-
-
-
   private void addEventToList(List<Event> events, int userId, ResultSet results)
       throws SQLException {
     while (results.next()) {
-      Event event = new Event();
-      event.setEventId(results.getInt(EventConstants.EVENT_ID));
-      event.setEventName(results.getString(EventConstants.EVENT_NAME));
-      event.setAbout(results.getString(EventConstants.ABOUT));
-      event.setVenue(results.getString(EventConstants.VENUE));
-      event.setCity(results.getString(EventConstants.CITY));
-      event.setEventStart(results.getTimestamp(EventConstants.EVENT_START));
-      event.setEventEnd(results.getTimestamp(EventConstants.EVENT_END));
-      event.setUserId(userId);
-      event.setNumTickets(results.getInt(EventConstants.NUM_TICKET));
+      Event event = EventController.createNewEvent(userId, results);
       event.setNumTicketAvail(results.getInt(EventConstants.NUM_TICKET));
       event.setNumTicketPurchased(results.getInt(EventConstants.NUM_TICKET_PURCHASED));
       events.add(event);

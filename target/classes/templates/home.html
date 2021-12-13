@@ -51,8 +51,8 @@
     </div><!-- End Logo -->
 
     <div class="search-bar">
-      <form class="search-form d-flex align-items-center" method="POST" action="/results">
-        <input type="text" name="query" placeholder="Search" title="Enter search keyword">
+      <form class="search-form d-flex align-items-center" th:action="@{/results-name}" method="get">
+        <input type="text" name="query" placeholder="Search by name..." title="Enter search keyword">
         <button type="submit" title="Search"><i class="bi bi-search"></i></button>
       </form>
     </div><!-- End Search Bar -->
@@ -102,9 +102,9 @@
             </li>
 
             <li>
-              <a class="dropdown-item d-flex align-items-center" href="/tickets">
+              <a class="dropdown-item d-flex align-items-center" href="/tickets-transferal">
                 <i class="bi bi-ticket"></i>
-                <span>Tickets</span>
+                <span>My Tickets</span>
               </a>
             </li>
             <li>
@@ -182,7 +182,7 @@
           <span>Tickets</span>
         </a>
       </li><!-- End Tickets Nav -->
-      
+
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="/transactions">
           <i class="bi bi-menu-button-wide"></i><span>Transactions</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -237,10 +237,10 @@
                 <li class="dropdown-header text-start">
                   <h6>Filter</h6>
                 </li>
-
-                <li><a class="dropdown-item" href="/results-name">Today</a></li>
-                <li><a class="dropdown-item" href="/results-date">This Month</a></li>
-                <li><a class="dropdown-item" href="/results-location">This Year</a></li>
+<!--                <li><a class="dropdown-item" href="/results-location">Location</a></li>-->
+                <li><a class="dropdown-item" href="/results-today">Today</a></li>
+                <li><a class="dropdown-item" href="/results-month">This Month</a></li>
+                <li><a class="dropdown-item" href="/results-year">This Year</a></li>
               </ul>
             </div>
 

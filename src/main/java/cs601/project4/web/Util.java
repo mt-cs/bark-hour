@@ -1,39 +1,53 @@
 package cs601.project4.web;
 
 import cs601.project4.constant.NotificationConstants;
-import cs601.project4.web.controller.TransactionController;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ui.Model;
 
+/**
+ * A helper class for various web classes
+ */
 public class Util {
   private static final Logger logger = LoggerFactory.getLogger(Util.class);
+
+  /**
+   * A helper class to get Timestamp from String
+   *
+   * @param timestamp timestamp
+   * @return newTimestamp
+   */
   public static String getTimestampString(Timestamp timestamp) {
     String timestampStr = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(timestamp);
     StringBuilder newTimestampSb = new StringBuilder(timestampStr);
     return newTimestampSb.toString();
   }
 
-  public static Timestamp formatTimestamp (String dateTime) {
-    StringBuilder newTimestampSb = new StringBuilder(dateTime);
-    newTimestampSb.setCharAt(10, 'T');
-    newTimestampSb.append(":00");
-
-    Date parsedDate = null;
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-    try {
-      parsedDate = dateFormat.parse(newTimestampSb.toString());
-    } catch (ParseException e) {
-      logger.error(e.getMessage());
+  /**
+   * A helper class to validate Login
+   *
+   * @param request HttpServletRequest request
+   * @return sessionId
+   */
+  public static String validateLogin(HttpServletRequest request) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return null;
     }
-    Timestamp timestamp = new Timestamp(parsedDate.getTime());
-    return timestamp;
+    return session.getId();
   }
 
+
+  /**
+   * A helper class to notify failed transaction
+   *
+   * @param model Model
+   * @param msg   String notification message
+   */
   public static void notifyFailedQuery(Model model, String msg) {
     logger.warn(msg);
     model.addAttribute(NotificationConstants.MSG, msg);;

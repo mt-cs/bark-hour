@@ -28,8 +28,6 @@ public class DBManager {
 
   private static final BasicDataSource ds = new BasicDataSource();
 
-  private static final Logger logger = LoggerFactory.getLogger(DBManager.class);
-
   static {
     /* Source: https://www.geeksforgeeks.org/static-blocks-in-java/ */
     // TODO: GET RID OF URL

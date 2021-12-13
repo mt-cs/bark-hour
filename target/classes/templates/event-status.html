@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>Event Created</title>
 </head>
 <body>
-<h3>Your event has been created.</h3>
-<a href="/home"><button>Home</button></a>
+<h3 th:text="${msg}"></h3>
+<a href="/users-events"><button>Manage Events</button></a>
+<a href="/new-event"><button>Create Event</button></a>
 </body>
 </html>

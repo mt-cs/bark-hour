@@ -1,6 +1,7 @@
 package cs601.project4.web.controller;
 
 import static cs601.project4.web.Util.notifyFailedQuery;
+import static cs601.project4.web.Util.validateLogin;
 
 import cs601.project4.constant.EventConstants;
 import cs601.project4.constant.NotificationConstants;
@@ -53,11 +54,7 @@ public class EventController {
    */
   @GetMapping(value = {"/events"})
   public String displayEvents(Model model, HttpServletRequest request) {
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
-    }
-
+    validateLogin(request);
     getAllEvents(model, request);
     return "home";
   }
@@ -91,30 +88,88 @@ public class EventController {
   }
 
   /**
-   * A helper method to add event object to list
+   * Handles create event get method
    *
-   * @param events  List of events
-   * @param userId  User ID
-   * @param results query results
-   * @throws SQLException
+   * @return new-event
    */
-  private static void setEvent(List<Event> events, int userId, ResultSet results)
-      throws SQLException {
-    while (results.next()) {
-      Event event = new Event();
-      event.setEventId(results.getInt(EventConstants.EVENT_ID));
-      event.setEventName(results.getString(EventConstants.EVENT_NAME));
-      event.setAbout(results.getString(EventConstants.ABOUT));
-      event.setVenue(results.getString(EventConstants.VENUE));
-      event.setCity(results.getString(EventConstants.CITY));
-      event.setEventStart(results.getTimestamp(EventConstants.EVENT_START));
-      event.setEventEnd(results.getTimestamp(EventConstants.EVENT_END));
-      event.setUserId(userId);
-      event.setNumTickets(results.getInt(EventConstants.NUM_TICKET));
-      event.setNumTicketAvail(results.getInt(EventConstants.NUM_TICKET_AVAIL));
-      event.setNumTicketPurchased(results.getInt(EventConstants.NUM_TICKET_PURCHASED));
-      events.add(event);
+  @GetMapping(value = {"/new-event"})
+  public String createEventForm(Model model, HttpServletRequest request) {
+    validateLogin(request);
+    model.addAttribute(EventConstants.EVENT_START, LocalDateTime.now());
+    model.addAttribute(EventConstants.EVENT_END, LocalDateTime.now());
+    model.addAttribute(EventConstants.CITY, EventConstants.SF);
+    model.addAttribute(EventConstants.STATE, EventConstants.CA);
+    model.addAttribute(EventConstants.COUNTRY, EventConstants.USA);
+    return "new-event";
+  }
+
+  /**
+   * Handles update event form
+   *
+   * @return event-status
+   */
+  @GetMapping(value = {"/update-event/{eventId}"})
+  public String getUpdateEventForm(Model model, @PathVariable int eventId,
+      HttpServletRequest request) {
+
+    validateLogin(request);
+    try (Connection con = DBManager.getConnection()) {
+      ResultSet results = EventSelectQuery.selectEvent(con, eventId);
+      while (results.next()) {
+        model.addAttribute(EventConstants.EVENT_ID, results.getString(EventConstants.EVENT_ID));
+        model.addAttribute(EventConstants.EVENT_NAME, results.getString(EventConstants.EVENT_NAME));
+        model.addAttribute(EventConstants.ABOUT, results.getString(EventConstants.ABOUT));
+        model.addAttribute(EventConstants.VENUE, results.getString(EventConstants.VENUE));
+        model.addAttribute(EventConstants.ADDRESS, results.getString(EventConstants.ADDRESS));
+        model.addAttribute(EventConstants.CITY, results.getString(EventConstants.CITY));
+        model.addAttribute(EventConstants.STATE, results.getString(EventConstants.STATE));
+        model.addAttribute(EventConstants.COUNTRY, results.getString(EventConstants.COUNTRY));
+        model.addAttribute(EventConstants.ZIP, results.getString(EventConstants.ZIP));
+        model.addAttribute(EventConstants.EVENT_START, results.getString(EventConstants.EVENT_START));
+        model.addAttribute(EventConstants.EVENT_END, results.getString(EventConstants.EVENT_END));
+        model.addAttribute(EventConstants.NUM_TICKET, results.getString(EventConstants.NUM_TICKET));
+      }
+    } catch (SQLException sqlException) {
+      logger.error(sqlException.getMessage());
     }
+    return "update-event";
+  }
+
+  /**
+   * Get detail on one event
+   *
+   * @param model Model model
+   * @return events.html
+   */
+  @GetMapping(value = {"/users-events"})
+  public String getMyEvents(Model model, HttpServletRequest request) {
+
+    String sessionId = validateLogin(request);
+    List<Event> events = new ArrayList<>();
+    List<String> headers = Arrays.asList(
+        EventConstants.HEADERS_EVENT_ID,
+        EventConstants.HEADERS_NAME,
+        EventConstants.HEADERS_ABOUT,
+        EventConstants.HEADERS_LOCATION,
+        EventConstants.HEADERS_CITY,
+        EventConstants.HEADERS_START,
+        EventConstants.HEADERS_END,
+        EventConstants.HEADERS_CAPACITY,
+        EventConstants.AVAIL,
+        EventConstants.SOLD,
+        EventConstants.HEADERS_UPDATE);
+
+    try (Connection con = DBManager.getConnection()) {
+      int userId = DBSessionId.getUserId(con, sessionId);
+      ResultSet results = EventSelectQuery.getMyEvents(con, userId);
+
+      setEvent(events, userId, results);
+    } catch (SQLException sqlException) {
+      logger.error(sqlException.getMessage());
+    }
+    model.addAttribute("headers", headers);
+    model.addAttribute("events", events);
+    return "users-events";
   }
 
   /**
@@ -138,11 +193,7 @@ public class EventController {
       HttpServletRequest request,
       Model model) {
 
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "event-status";
-    }
-    String sessionId = session.getId();
+    String sessionId = validateLogin(request);
 
     if (numTickets < 1) {
       notifyFailedQuery(model, NotificationConstants.NOTIFY_MIN_TICKET);
@@ -173,25 +224,6 @@ public class EventController {
     }
     model.addAttribute(NotificationConstants.MSG, NotificationConstants.NOTIFY_EVENT_SUCCESS);
     return "event-status";
-  }
-
-  /**
-   * Handles create event get method
-   *
-   * @return new-event
-   */
-  @GetMapping(value = {"/new-event"})
-  public String createEventForm(Model model, HttpServletRequest request) {
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
-    }
-    model.addAttribute(EventConstants.EVENT_START, LocalDateTime.now());
-    model.addAttribute(EventConstants.EVENT_END, LocalDateTime.now());
-    model.addAttribute(EventConstants.CITY, EventConstants.SF);
-    model.addAttribute(EventConstants.STATE, EventConstants.CA);
-    model.addAttribute(EventConstants.COUNTRY, EventConstants.USA);
-    return "new-event";
   }
 
   /**
@@ -265,11 +297,10 @@ public class EventController {
       Model model,
       HttpServletRequest request) {
 
-    HttpSession session = request.getSession(false);
-    if (session == null) {
+    String sessionId = validateLogin(request);
+    if (sessionId == null) {
       return "redirect:/error-login";
     }
-    String sessionId = session.getId();
 
     if (numTickets < 1) {
       notifyFailedQuery(model, NotificationConstants.NOTIFY_MIN_TICKET);
@@ -334,79 +365,42 @@ public class EventController {
   }
 
   /**
-   * Handles update event form
+   * A helper method to create a new event
    *
-   * @return event-status
+   * @param userId  user ID
+   * @param results ResultSet
+   * @return event
+   * @throws SQLException database errors
    */
-  @GetMapping(value = {"/update-event/{eventId}"})
-  public String getUpdateEventForm(Model model, @PathVariable int eventId,
-      HttpServletRequest request) {
-
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
-    }
-
-    try (Connection con = DBManager.getConnection()) {
-      ResultSet results = EventSelectQuery.selectEvent(con, eventId);
-      while (results.next()) {
-        model.addAttribute(EventConstants.EVENT_ID, results.getString(EventConstants.EVENT_ID));
-        model.addAttribute(EventConstants.EVENT_NAME, results.getString(EventConstants.EVENT_NAME));
-        model.addAttribute(EventConstants.ABOUT, results.getString(EventConstants.ABOUT));
-        model.addAttribute(EventConstants.VENUE, results.getString(EventConstants.VENUE));
-        model.addAttribute(EventConstants.ADDRESS, results.getString(EventConstants.ADDRESS));
-        model.addAttribute(EventConstants.CITY, results.getString(EventConstants.CITY));
-        model.addAttribute(EventConstants.STATE, results.getString(EventConstants.STATE));
-        model.addAttribute(EventConstants.COUNTRY, results.getString(EventConstants.COUNTRY));
-        model.addAttribute(EventConstants.ZIP, results.getString(EventConstants.ZIP));
-        model.addAttribute(EventConstants.EVENT_START, results.getString(EventConstants.EVENT_START));
-        model.addAttribute(EventConstants.EVENT_END, results.getString(EventConstants.EVENT_END));
-        model.addAttribute(EventConstants.NUM_TICKET, results.getString(EventConstants.NUM_TICKET));
-      }
-    } catch (SQLException sqlException) {
-      logger.error(sqlException.getMessage());
-    }
-    return "update-event";
+  public static Event createNewEvent(int userId, ResultSet results) throws SQLException {
+    Event event = new Event();
+    event.setEventId(results.getInt(EventConstants.EVENT_ID));
+    event.setEventName(results.getString(EventConstants.EVENT_NAME));
+    event.setAbout(results.getString(EventConstants.ABOUT));
+    event.setVenue(results.getString(EventConstants.VENUE));
+    event.setCity(results.getString(EventConstants.CITY));
+    event.setEventStart(results.getTimestamp(EventConstants.EVENT_START));
+    event.setEventEnd(results.getTimestamp(EventConstants.EVENT_END));
+    event.setUserId(userId);
+    event.setNumTickets(results.getInt(EventConstants.NUM_TICKET));
+    return event;
   }
 
   /**
-   * Get detail on one event
+   * A helper method to add event object to list
    *
-   * @param model Model model
-   * @return events.html
+   * @param events  List of events
+   * @param userId  User ID
+   * @param results query results
+   * @throws SQLException on database errors
    */
-  @GetMapping(value = {"/users-events"})
-  public String getMyEvents(Model model, HttpServletRequest request) {
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
+  private static void setEvent(List<Event> events, int userId, ResultSet results)
+      throws SQLException {
+    while (results.next()) {
+      Event event = createNewEvent(userId, results);
+      event.setNumTicketAvail(results.getInt(EventConstants.NUM_TICKET_AVAIL));
+      event.setNumTicketPurchased(results.getInt(EventConstants.NUM_TICKET_PURCHASED));
+      events.add(event);
     }
-
-    String sessionId = session.getId();
-    List<Event> events = new ArrayList<>();
-    List<String> headers = Arrays.asList(
-        EventConstants.HEADERS_EVENT_ID,
-        EventConstants.HEADERS_NAME,
-        EventConstants.HEADERS_ABOUT,
-        EventConstants.HEADERS_LOCATION,
-        EventConstants.HEADERS_CITY,
-        EventConstants.HEADERS_START,
-        EventConstants.HEADERS_END,
-        EventConstants.HEADERS_CAPACITY,
-        EventConstants.AVAIL,
-        EventConstants.SOLD,
-        EventConstants.HEADERS_UPDATE);
-
-    try (Connection con = DBManager.getConnection()) {
-      int userId = DBSessionId.getUserId(con, sessionId);
-      ResultSet results = EventSelectQuery.getMyEvents(con, userId);
-
-      setEvent(events, userId, results);
-    } catch (SQLException sqlException) {
-      logger.error(sqlException.getMessage());
-    }
-    model.addAttribute("headers", headers);
-    model.addAttribute("events", events);
-    return "users-events";
   }
 }

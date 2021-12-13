@@ -39,16 +39,31 @@ public class BarkourErrorController implements ErrorController {
     return "error";
   }
 
+  /**
+   * Handles 404 error
+   *
+   * @return error-404
+   */
   @RequestMapping("/error-404")
   public String handle404Error() {
     return "error-404";
   }
 
+  /**
+   * Handles 400 error
+   *
+   * @return error-400
+   */
   @RequestMapping("/error-400")
   public String handle400Error() {
     return "error-400";
   }
 
+  /**
+   * Handles 500 error
+   *
+   * @return error-500
+   */
   @RequestMapping("/error-500")
   public String handle500Error() {
     return "error-500";
