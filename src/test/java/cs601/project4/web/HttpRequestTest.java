@@ -62,4 +62,5 @@ public class HttpRequestTest {
     assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/login",
         String.class)).contains("We know each other?");
   }
+
 }

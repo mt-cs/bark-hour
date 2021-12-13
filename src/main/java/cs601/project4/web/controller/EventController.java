@@ -169,7 +169,7 @@ public class EventController {
     }
     model.addAttribute("headers", headers);
     model.addAttribute("events", events);
-    return "users-events";
+    return "users-events2";
   }
 
   /**

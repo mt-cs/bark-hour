@@ -1,4 +1,4 @@
-package cs601.project4.unit_test;
+package cs601.project4;
 
 import static org.junit.jupiter.api.Assertions.*;
 
