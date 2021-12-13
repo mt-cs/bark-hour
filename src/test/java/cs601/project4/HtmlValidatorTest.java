@@ -133,4 +133,22 @@ public class HtmlValidatorTest {
     assertTrue(HTMLValidator.isValid(response));
   }
 
+  /**
+   * Validate Xhtml tickets.html
+   */
+  @Test
+  public void validateTicketsXhtml() {
+    String response = HTTPFetcher.doGet("https://0f6a-2601-646-202-27d0-8d2f-58a1-98c8-987f.ngrok.io/tickets");
+    assertTrue(HTMLValidator.isValid(response));
+  }
+
+  /**
+   * Validate Xhtml logout.html
+   */
+  @Test
+  public void validateTicketsTransferXhtml() {
+    String response = HTTPFetcher.doGet("https://0f6a-2601-646-202-27d0-8d2f-58a1-98c8-987f.ngrok.io/tickets-transferal");
+    assertTrue(HTMLValidator.isValid(response));
+  }
+
 }
