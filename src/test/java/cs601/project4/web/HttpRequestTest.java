@@ -45,8 +45,21 @@ public class HttpRequestTest {
   }
 
   @Test
-  public void loginErrorReturnMessage() throws Exception {
+  public void loginErrorReturnBody() throws Exception {
     assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/error-login",
         String.class)).contains("Please login to your account");
+  }
+
+  /* Login */
+  @Test
+  public void loginReturnHeader() throws Exception {
+    assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/login",
+        String.class)).contains("Login to Your Account");
+  }
+
+  @Test
+  public void loginReturnBody() throws Exception {
+    assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/login",
+        String.class)).contains("We know each other?");
   }
 }

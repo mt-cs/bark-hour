@@ -21,8 +21,49 @@ public class BarkourAppTest {
   private MockMvc mockMvc;
 
   @Test
-  public void shouldReturnDefaultMessage() throws Exception {
+  public void shouldReturnDefaultAppName() throws Exception {
     this.mockMvc.perform(get("/")).andDo(print()).andExpect(status().isOk())
         .andExpect(content().string(containsString("Barkour")));
   }
+
+  @Test
+  public void shouldReturnDefaultMessage() throws Exception {
+    this.mockMvc.perform(get("/")).andDo(print()).andExpect(status().isOk())
+        .andExpect(content().string(containsString("Ready for a puppy date?")));
+  }
+
+  @Test
+  public void shouldReturnDefaultNav() throws Exception {
+    this.mockMvc.perform(get("/")).andDo(print()).andExpect(status().isOk())
+        .andExpect(content().string(containsString("Get started")));
+  }
+
+  /* Login */
+
+  @Test
+  public void loginReturnDefaultAppName() throws Exception {
+    this.mockMvc.perform(get("/login")).andDo(print()).andExpect(status().isOk())
+        .andExpect(content().string(containsString("Login to Your Account")));
+  }
+
+  @Test
+  public void loginReturnDefaultMessage() throws Exception {
+    this.mockMvc.perform(get("/login")).andDo(print()).andExpect(status().isOk())
+        .andExpect(content().string(containsString("We know each other?")));
+  }
+
+  /* Login Error */
+
+  @Test
+  public void loginErrorReturnDefaultAppName() throws Exception {
+    this.mockMvc.perform(get("/error-login")).andDo(print()).andExpect(status().isOk())
+        .andExpect(content().string(containsString("Oops...")));
+  }
+
+  @Test
+  public void loginErrorReturnDefaultMessage() throws Exception {
+    this.mockMvc.perform(get("/error-login")).andDo(print()).andExpect(status().isOk())
+        .andExpect(content().string(containsString("Please login to your account")));
+  }
+
 }

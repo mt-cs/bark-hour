@@ -53,6 +53,11 @@ class WebControllerTest {
   }
 
   @Test
+  void eventLoads() {
+    assertThat(eventController).isNotNull();
+  }
+
+  @Test
   void errorLoads() {
     assertThat(errorController).isNotNull();
   }
@@ -75,10 +80,5 @@ class WebControllerTest {
   @Test
   void userLoads() {
     assertThat(userController).isNotNull();
-  }
-
-  @Test
-  void eventLoads() {
-    assertThat(errorController).isNotNull();
   }
 }
