@@ -81,7 +81,4 @@ class WebControllerTest {
   void eventLoads() {
     assertThat(errorController).isNotNull();
   }
-
-
-
 }
