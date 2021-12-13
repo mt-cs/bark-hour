@@ -210,8 +210,8 @@
   <div class="pagetitle">
     <nav>
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/home">Manage Events</a></li>
-        <li class="breadcrumb-item active">List of all events that you organize.</li>
+        <li class="breadcrumb-item"><a href="/home">Tickets List</a></li>
+        <li class="breadcrumb-item active">List of all tickets under your name.</li>
       </ol>
     </nav>
   </div><!-- End Page Title -->
@@ -220,18 +220,14 @@
     <div class="row">
 
       <div class="col-lg-12">
-        <img src="assets/img/barkour.png" class="img-fluid" alt="events"/>
-      </div>
-
-      <div class="col-lg-12">
         <div class="row">
 
-          <!-- My Events -->
+          <!-- Manage Events -->
           <div class="col-12">
             <div class="card top-selling">
 
               <div class="card-body pb-0">
-                <h5 class="card-title">Events <span>| User</span></h5>
+                <h5 class="card-title">Tickets <span>| All</span></h5>
 
                 <table class="table datatable table-borderless ">
                   <thead>
@@ -240,24 +236,17 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr scope="row" th:each="event: ${events}">
-                    <td th:text="${event.eventId}"></td>
-                    <td th:text="${event.eventName}"></td>
-                    <td th:text="${event.about}"></td>
-                    <td th:text="${event.venue}"></td>
-                    <td th:text="${event.city}"></td>
-                    <td th:text="${event.eventStart}"></td>
-                    <td th:text="${event.eventEnd}"></td>
-                    <td th:text="${event.numTicket}"></td>
-                    <td th:text="${event.numTicketAvail}"></td>
-                    <td th:text="${event.numTicketPurchased}"></td>
-                    <td><a class="fw-bold" th:href="@{/update-event/{eventId}(eventId=${event.eventId})}"><button class="btn btn-primary">Update</button></a> </td>
+                  <tr scope="row" th:each="ticket: ${tickets}">
+                    <td th:text="${ticket.eventName}"></td>
+                    <td th:text="${ticket.eventId}"></td>
+                    <td th:text="${ticket.organizer}"></td>
+                    <td th:text="${ticket.ticketCount}"></td>
                   </tr>
                   </tbody>
                 </table>
               </div>
             </div>
-          </div><!-- End Events -->
+          </div><!-- End All Tickets-->
         </div>
       </div>
     </div>
