@@ -92,7 +92,7 @@ public class EventController {
    *
    * @return new-event
    */
-  @GetMapping(value = {"/new-event"})
+  @GetMapping(value = {"/events-form"})
   public String createEventForm(Model model, HttpServletRequest request) {
     validateLogin(request);
     model.addAttribute(EventConstants.EVENT_START, LocalDateTime.now());
@@ -100,7 +100,7 @@ public class EventController {
     model.addAttribute(EventConstants.CITY, EventConstants.SF);
     model.addAttribute(EventConstants.STATE, EventConstants.CA);
     model.addAttribute(EventConstants.COUNTRY, EventConstants.USA);
-    return "new-event";
+    return "events-form";
   }
 
   /**

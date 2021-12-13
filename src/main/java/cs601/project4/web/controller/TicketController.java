@@ -68,7 +68,7 @@ public class TicketController {
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
-    return "tickets-cart";
+    return "ticket";
   }
 
   /**

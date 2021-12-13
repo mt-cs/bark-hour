@@ -98,11 +98,38 @@ public class HtmlValidatorTest {
   }
 
   /**
-   * Validate Xhtml error-login.html
+   * Validate Xhtml users-events.html
    */
   @Test
-  public void validateUsersEventsLoginXhtml() {
+  public void validateUsersEventsXhtml() {
     String response = HTTPFetcher.doGet("https://0f6a-2601-646-202-27d0-8d2f-58a1-98c8-987f.ngrok.io/users-events");
+    assertTrue(HTMLValidator.isValid(response));
+  }
+
+  /**
+   * Validate Xhtml events-form.html
+   */
+  @Test
+  public void validateNewEventsXhtml() {
+    String response = HTTPFetcher.doGet("https://0f6a-2601-646-202-27d0-8d2f-58a1-98c8-987f.ngrok.io/events-form");
+    assertTrue(HTMLValidator.isValid(response));
+  }
+
+  /**
+   * Validate Xhtml event-status.html
+   */
+  @Test
+  public void validateEventStatusXhtml() {
+    String response = HTTPFetcher.doGet("https://0f6a-2601-646-202-27d0-8d2f-58a1-98c8-987f.ngrok.io/event-status");
+    assertTrue(HTMLValidator.isValid(response));
+  }
+
+  /**
+   * Validate Xhtml logout.html
+   */
+  @Test
+  public void validateResultsXhtml() {
+    String response = HTTPFetcher.doGet("https://0f6a-2601-646-202-27d0-8d2f-58a1-98c8-987f.ngrok.io/results");
     assertTrue(HTMLValidator.isValid(response));
   }
 
