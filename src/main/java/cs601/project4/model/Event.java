@@ -9,8 +9,7 @@ import java.sql.Timestamp;
  * @author marisatania
  */
 public class Event {
-  // TODO : add image
-  // TODO : add foreign key
+
   private int eventId;
   private String eventName;
   private String about;
@@ -64,6 +63,7 @@ public class Event {
     this.eventId = eventId;
     this.eventName = eventName;
     this.about = about;
+    this.venue = venue;
     this.address = address;
     this.city = city;
     this.state = state;
@@ -82,6 +82,11 @@ public class Event {
    */
   public Event() {}
 
+  /**
+   * Getter for about description
+   *
+   * @return about
+   */
   public String getAbout() {
     return about;
   }
@@ -90,22 +95,42 @@ public class Event {
     this.about = about;
   }
 
+  /**
+   * Getter for event ID
+   *
+   * @return eventId
+   */
   public int getEventId() {
     return eventId;
   }
+
 
   public void setEventId(int eventId) {
     this.eventId = eventId;
   }
 
+  /**
+   * Getter for event name
+   *
+   * @return eventName
+   */
   public String getEventName() {
     return eventName;
   }
 
+  /**
+   *
+   * @param eventName
+   */
   public void setEventName(String eventName) {
     this.eventName = eventName;
   }
 
+  /**
+   * Getter for user ID
+   *
+   * @return userId
+   */
   public int getUserId() {
     return userId;
   }
@@ -114,102 +139,218 @@ public class Event {
     this.userId = userId;
   }
 
+  /**
+   * Getter for number of tickets
+   *
+   * @return numTicket
+   */
   public int getNumTickets() {
     return numTicket;
   }
 
+  /**
+   * Set number of tickets
+   *
+   * @param numTickets number of tickets
+   */
   public void setNumTickets(int numTickets) {
     this.numTicket = numTickets;
   }
 
-  public int getNumTicketAvail() {
-    return numTicketAvail;
-  }
-
+  /**
+   * Set ticket availability
+   *
+   * @param numTicketAvail number of slot left
+   */
   public void setNumTicketAvail(int numTicketAvail) {
     this.numTicketAvail = numTicketAvail;
   }
 
+  /**
+   * Getter for num ticket purchased
+   *
+   * @return numTicketPurchased
+   */
   public int getNumTicketPurchased() {
     return numTicketPurchased;
   }
 
+  /**
+   * Set number of ticket sold
+   *
+   * @param numTicketPurchased int number of purchased ticker
+   */
   public void setNumTicketPurchased(int numTicketPurchased) {
     this.numTicketPurchased = numTicketPurchased;
   }
 
+  /**
+   * Getter for location
+   *
+   * @return location
+   */
   public String getLocation() {
     return address + ", " + city + ", " + state + ", " + country;
   }
 
+  /**
+   * Getter for address
+   *
+   * @return address
+   */
   public String getAddress() {
     return address;
   }
 
+  /**
+   * Set event address
+   *
+   * @param address String address input
+   */
   public void setAddress(String address) {
     this.address = address;
   }
 
+  /**
+   * Getter for city
+   *
+   * @return city
+   */
   public String getCity() {
     return city;
   }
 
+  /**
+   * Setter for city
+   *
+   * @param city input city
+   */
   public void setCity(String city) {
     this.city = city;
   }
 
+  /**
+   * Getter for state
+   *
+   * @return state
+   */
   public String getState() {
     return state;
   }
 
+  /**
+   * Setter for state
+   *
+   * @param state input state
+   */
   public void setState(String state) {
     this.state = state;
   }
 
+  /**
+   * Getter for country
+   *
+   * @return country
+   */
   public String getCountry() {
     return country;
   }
 
+  /**
+   * Setter for country
+   *
+   * @param country input country
+   */
   public void setCountry(String country) {
     this.country = country;
   }
 
+  /**
+   * Getter for zip
+   *
+   * @return zip
+   */
   public int getZip() {
     return zip;
   }
 
+  /**
+   * Setter for zip
+   *
+   * @param zip input zip
+   */
   public void setZip(int zip) {
     this.zip = zip;
   }
 
+  /**
+   * Getter for ticket number
+   *
+   * @return numTicket
+   */
   public int getNumTicket() {
     return numTicket;
   }
 
+  /**
+   * Setter for number of tickets
+   *
+   * @param numTicket input capacity
+   */
   public void setNumTicket(int numTicket) {
     this.numTicket = numTicket;
   }
 
+  /**
+   * Getter for venue
+   *
+   * @return venue
+   */
   public String getVenue() {
     return venue;
   }
 
+  /**
+   * Setter for venue
+   *
+   * @param venue input venue
+   */
   public void setVenue(String venue) {
     this.venue = venue;
   }
 
+  /**
+   * Getter for start date
+   *
+   * @return event start
+   */
   public Timestamp getEventStart() {
     return eventStart;
   }
 
+  /**
+   * Set end date
+   *
+   * @param eventStart Timestamp start date
+   */
   public void setEventStart(Timestamp eventStart) {
     this.eventStart = eventStart;
   }
 
+  /**
+   * Getter for end date
+   *
+   * @return event end
+   */
   public Timestamp getEventEnd() {
     return eventEnd;
   }
 
+  /**
+   * Set end date
+   *
+   * @param eventEnd Timestamp end date
+   */
   public void setEventEnd(Timestamp eventEnd) {
     this.eventEnd = eventEnd;
   }

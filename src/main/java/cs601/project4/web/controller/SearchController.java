@@ -1,6 +1,6 @@
 package cs601.project4.web.controller;
 
-import static cs601.project4.web.Util.validateLogin;
+import static cs601.project4.web.WebUtilities.validateLogin;
 
 import cs601.project4.constant.EventConstants;
 import cs601.project4.database.DBEvent.EventSearchQuery;

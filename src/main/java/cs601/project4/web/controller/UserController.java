@@ -1,7 +1,7 @@
 package cs601.project4.web.controller;
 
-import static cs601.project4.web.Util.notifyFailedQuery;
-import static cs601.project4.web.Util.validateLogin;
+import static cs601.project4.web.WebUtilities.notifyFailedQuery;
+import static cs601.project4.web.WebUtilities.validateLogin;
 
 import cs601.project4.constant.NotificationConstants;
 import cs601.project4.constant.UserConstants;

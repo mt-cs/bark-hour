@@ -1,6 +1,6 @@
 package cs601.project4.web.controller;
 
-import static cs601.project4.web.Util.validateLogin;
+import static cs601.project4.web.WebUtilities.validateLogin;
 
 import cs601.project4.constant.TransactionConstants;
 import cs601.project4.database.DBEvent.EventSelectQuery;
@@ -9,7 +9,7 @@ import cs601.project4.database.DBSessionId;
 import cs601.project4.database.DBTransaction;
 import cs601.project4.database.DBUser;
 import cs601.project4.model.Transaction;
-import cs601.project4.web.Util;
+import cs601.project4.web.WebUtilities;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -82,7 +82,7 @@ public class TransactionController {
         transaction.setOwnerId(results.getInt
             (TransactionConstants.OWNER_ID));
         transaction.setTimestamp
-            (Util.getTimestampString
+            (WebUtilities.getTimestampString
             (results.getTimestamp
             (TransactionConstants.TIMESTAMP)));
 
@@ -154,7 +154,7 @@ public class TransactionController {
             (DBUser.getUserName
             (con, results.getInt(TransactionConstants.OWNER_ID)));
         transaction.setTimestamp
-            (Util.getTimestampString
+            (WebUtilities.getTimestampString
             (results.getTimestamp(TransactionConstants.TIMESTAMP)));
 
         transactionList.add(transaction);

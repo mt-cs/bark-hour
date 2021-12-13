@@ -12,8 +12,8 @@ import org.springframework.ui.Model;
 /**
  * A helper class for various web classes
  */
-public class Util {
-  private static final Logger logger = LoggerFactory.getLogger(Util.class);
+public class WebUtilities {
+  private static final Logger logger = LoggerFactory.getLogger(WebUtilities.class);
 
   /**
    * A helper class to get Timestamp from String
