@@ -1,5 +1,11 @@
 package cs601.project4.constant;
 
+
+/**
+ * A helper class to maintain constants used for transaction tables.
+ *
+ * @author marisatania
+ */
 public class TransactionConstants {
 
   public static final String TRANSACTION_ID = "order_id";

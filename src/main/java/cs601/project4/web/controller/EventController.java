@@ -250,6 +250,7 @@ public class EventController {
    */
   @PostMapping(value = {"/event-update-status"})
   public String updateEvent(
+      @RequestParam(EventConstants.EVENT_ID) int eventId,
       @RequestParam(EventConstants.EVENT_NAME) String eventName,
       @RequestParam(EventConstants.ABOUT) String about,
       @RequestParam(EventConstants.VENUE) String venue,
@@ -281,19 +282,14 @@ public class EventController {
 
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
-      int evenId = EventSelectQuery.getEventId(con, eventName, userId);
-      int organizerId = EventSelectQuery.getUserIdByEventId(con, evenId);
-      if (evenId == -1) {
-        notifyFailedQuery(model, NotificationConstants.NOTIFY_EVENT_NOTFOUND);
-        return "event-update-status";
-      }
+      int organizerId = EventSelectQuery.getUserIdByEventId(con, eventId);
 
       if (organizerId != userId) {
         notifyFailedQuery(model, NotificationConstants.NOTIFY_NOT_ORGANIZER);
         return "event-update-status";
       }
       EventUpdateQuery.updateEvent(
-          con, evenId, userId, eventName, venue, address, city, state,
+          con, eventId, userId, eventName, venue, address, city, state,
           country, zip, about, start, end, numTickets);
 
     } catch (SQLException sqlException) {

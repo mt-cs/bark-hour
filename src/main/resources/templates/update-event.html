@@ -30,6 +30,7 @@
     <label for="event_end" max="#event_start">End:</label><br>
     <input type="datetime-local" id="event_end" name="event_end" th:value="${event_end}" th:min="${event_end}" required="required"><br><br>
     <input type="hidden" id="num_ticket" name="num_ticket" th:value="${num_ticket}" min="1" required="required" readonly>
+    <input type="hidden" id="event_id" name="event_id" th:value="${event_id}" min="1" required="required" readonly>
     <input type="submit" value="Submit">
   </form>
 </body>
