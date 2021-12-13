@@ -84,7 +84,7 @@ public class HomeController {
       if (DBUser.checkUserExist(con, clientInfo.getEmail())) {
         logger.info("User already exists in database.");
       } else {
-        DBUser.insertUser(con, clientInfo.getName(), clientInfo.getEmail());
+        DBUser.insertUser(con, clientInfo.getUsername(), clientInfo.getEmail());
       }
 
       int userID = DBUser.getUserId(con, clientInfo.getEmail());
@@ -97,7 +97,7 @@ public class HomeController {
     request.getSession().setAttribute(LoginServerConstants.CLIENT_INFO_KEY, new Gson().toJson(clientInfo));
 
     EventController.getAllEvents(model, request);
-    model.addAttribute("name", clientInfo.getName());
+    model.addAttribute("name", clientInfo.getUsername());
     return "home";
   }
 }
