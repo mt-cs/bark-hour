@@ -1,5 +1,7 @@
 package cs601.project4.web.controller;
 
+import static cs601.project4.web.Util.validateLogin;
+
 import cs601.project4.constant.EventConstants;
 import cs601.project4.database.DBEvent.EventSearchQuery;
 import cs601.project4.database.DBManager;
@@ -12,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -43,10 +44,7 @@ public class SearchController {
       HttpServletRequest request,
       @RequestParam(value="query",required=false) String query) {
 
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
-    }
+    validateLogin(request);
 
     List<Event> events = new ArrayList<>();
     List<String> headers = Arrays.asList(
@@ -85,10 +83,7 @@ public class SearchController {
       HttpServletRequest request,
       @RequestParam(value="query",required=false) String query) {
 
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
-    }
+    validateLogin(request);
 
     List<Event> events = new ArrayList<>();
     List<String> headers = Arrays.asList(
@@ -127,10 +122,7 @@ public class SearchController {
       HttpServletRequest request,
       @RequestParam(value="query",required=false) String query) {
 
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
-    }
+    validateLogin(request);
 
     List<Event> events = new ArrayList<>();
     List<String> headers = Arrays.asList(
@@ -170,10 +162,7 @@ public class SearchController {
       HttpServletRequest request,
       @RequestParam(value="query",required=false) String query) {
 
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
-    }
+    validateLogin(request);
 
     List<Event> events = new ArrayList<>();
     List<String> headers = Arrays.asList(
@@ -212,10 +201,7 @@ public class SearchController {
       HttpServletRequest request,
       @RequestParam(value="query",required=false) String query) {
 
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
-    }
+    validateLogin(request);
 
     List<Event> events = new ArrayList<>();
     List<String> headers = Arrays.asList(
@@ -240,7 +226,14 @@ public class SearchController {
     return "results";
   }
 
-
+  /**
+   * A helper method to add event to events list
+   *
+   * @param events  event list
+   * @param userId  user ID
+   * @param results ResultSet
+   * @throws SQLException error database
+   */
   private void addEventToList(List<Event> events, int userId, ResultSet results)
       throws SQLException {
     while (results.next()) {
