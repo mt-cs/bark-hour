@@ -46,20 +46,20 @@ public class Event {
    * @param numTicketPurchased int ticket purchased count
    */
   public Event(int eventId,
-               String eventName,
-               String about,
-               String venue,
-               String address,
-               String city,
-               String state,
-               String country,
-               int zip,
-               Timestamp eventStart,
-               Timestamp eventEnd,
-               int userId,
-               int numTicket,
-               int numTicketAvail,
-               int numTicketPurchased) {
+      String eventName,
+      String about,
+      String venue,
+      String address,
+      String city,
+      String state,
+      String country,
+      int zip,
+      Timestamp eventStart,
+      Timestamp eventEnd,
+      int userId,
+      int numTicket,
+      int numTicketAvail,
+      int numTicketPurchased) {
     this.eventId = eventId;
     this.eventName = eventName;
     this.about = about;
@@ -164,6 +164,15 @@ public class Event {
    */
   public void setNumTicketAvail(int numTicketAvail) {
     this.numTicketAvail = numTicketAvail;
+  }
+
+  /**
+   * Getter for numTicketAvail
+   *
+   * @return numTicketAvail
+   */
+  public int getNumTicketAvail() {
+    return numTicketAvail;
   }
 
   /**
