@@ -48,7 +48,7 @@ public class TicketController {
    *
    * @return ticket
    */
-  @GetMapping(value={"/ticket/{eventId}"})
+  @GetMapping(value={"/tickets-cart/{eventId}"})
   public String getPurchaseTicketForm(
       Model model,
       HttpServletRequest request,
@@ -68,7 +68,7 @@ public class TicketController {
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
-    return "ticket";
+    return "tickets-cart";
   }
 
   /**
