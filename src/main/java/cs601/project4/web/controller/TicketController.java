@@ -1,6 +1,7 @@
 package cs601.project4.web.controller;
 
 import static cs601.project4.web.Util.notifyFailedQuery;
+import static cs601.project4.web.Util.validateLogin;
 
 import cs601.project4.constant.EventConstants;
 import cs601.project4.constant.NotificationConstants;
@@ -83,11 +84,7 @@ public class TicketController {
       HttpServletRequest request,
       Model model) {
 
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
-    }
-    String sessionId = session.getId();
+    String sessionId = validateLogin(request);
 
     if (numTickets < 1) {
       notifyFailedQuery(model, NotificationConstants.NOTIFY_MIN_TICKET);
@@ -165,11 +162,7 @@ public class TicketController {
       HttpServletRequest request,
       @PathVariable int eventId) {
 
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
-    }
-    String sessionId = session.getId();
+    String sessionId = validateLogin(request);
 
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
@@ -197,12 +190,7 @@ public class TicketController {
       HttpServletRequest request,
       Model model) {
 
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
-    }
-    String sessionId = session.getId();
-    String msg;
+    String sessionId = validateLogin(request);
 
     if (numTickets < 1) {
       notifyFailedQuery(model, NotificationConstants.NOTIFY_MIN_TICKET);
@@ -252,11 +240,8 @@ public class TicketController {
    */
   @GetMapping(value={"/tickets"})
   public String displayTickets(Model model, HttpServletRequest request) {
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
-    }
-    String sessionId = session.getId();
+
+    String sessionId = validateLogin(request);
 
     List<UserTicket> ticketList = new ArrayList<>();
     List<String> headers = Arrays.asList(
@@ -309,11 +294,8 @@ public class TicketController {
    */
   @GetMapping(value={"/tickets-transferal"})
   public String getPurchasedTickets(Model model, HttpServletRequest request) {
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
-    }
-    String sessionId = session.getId();
+
+    String sessionId = validateLogin(request);
 
     List<TicketTransferal> ticketList = new ArrayList<>();
     List<String> headers = Arrays.asList(

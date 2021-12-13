@@ -1,6 +1,7 @@
 package cs601.project4.web.controller;
 
 import static cs601.project4.web.Util.notifyFailedQuery;
+import static cs601.project4.web.Util.validateLogin;
 
 import cs601.project4.constant.NotificationConstants;
 import cs601.project4.constant.UserConstants;
@@ -68,21 +69,31 @@ public class UserController {
    */
   @GetMapping(value={"/users-profile-form"})
   public String updateProfile(Model model, HttpServletRequest request) {
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
-    }
-    String sessionId = session.getId();
+
+    String sessionId = validateLogin(request);
 
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
       ResultSet results = DBUser.selectUser(con, sessionId, userId);
+
       if(results.next()) {
-        model.addAttribute(UserConstants.USERNAME, results.getString(UserConstants.USERNAME));
-        model.addAttribute(UserConstants.EMAIL, results.getString(UserConstants.EMAIL));
-        model.addAttribute(UserConstants.LOCATION, results.getString(UserConstants.LOCATION));
-        model.addAttribute(UserConstants.REG_DATE, results.getString(UserConstants.REG_DATE));
+        model.addAttribute(
+            UserConstants.USERNAME,
+            results.getString(UserConstants.USERNAME));
+
+        model.addAttribute(
+            UserConstants.EMAIL,
+            results.getString(UserConstants.EMAIL));
+
+        model.addAttribute(
+            UserConstants.LOCATION,
+            results.getString(UserConstants.LOCATION));
+
+        model.addAttribute(
+            UserConstants.REG_DATE,
+            results.getString(UserConstants.REG_DATE));
       }
+
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
@@ -105,15 +116,12 @@ public class UserController {
       HttpServletRequest request,
       Model model) {
 
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
-    }
-
-    String sessionId = session.getId();
+    String sessionId = validateLogin(request);
 
     try (Connection con = DBManager.getConnection()) {
+
       int userId = DBSessionId.getUserId(con, sessionId);
+
       if (!DBUser.updateUser(con, userName, email, location, userId)) {
         notifyFailedQuery(model, NotificationConstants.NOTIFY_USER_UPDATE_FAIL);
         return "users-profile-confirmation";

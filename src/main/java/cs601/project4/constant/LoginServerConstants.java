@@ -19,11 +19,8 @@ public class LoginServerConstants {
   public static final String NONCE_KEY = "nonce";
   public static final String REDIRECT_URI_KEY = "redirect_uri";
   public static final String OK_KEY = "ok";
-
-  public static final String CONFIG_KEY = "config_key";
   public static final String CLIENT_INFO_KEY = "client_info_key";
-
-  public static final String IS_AUTHED_KEY = "is_authed";
   public static final String NAME_KEY = "name";
   public static final String EMAIL_KEY = "email";
+
 }

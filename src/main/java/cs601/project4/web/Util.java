@@ -41,7 +41,6 @@ public class Util {
     return session.getId();
   }
 
-
   /**
    * A helper class to notify failed transaction
    *
@@ -52,6 +51,5 @@ public class Util {
     logger.warn(msg);
     model.addAttribute(NotificationConstants.MSG, msg);;
   }
-
 
 }

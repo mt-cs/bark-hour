@@ -1,5 +1,7 @@
 package cs601.project4.web.controller;
 
+import static cs601.project4.web.Util.validateLogin;
+
 import cs601.project4.constant.TransactionConstants;
 import cs601.project4.database.DBEvent.EventSelectQuery;
 import cs601.project4.database.DBManager;
@@ -15,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -39,11 +40,8 @@ public class TransactionController {
    */
   @GetMapping(value={"/transactions"})
   public String getTransactions(Model model, HttpServletRequest request) {
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
-    }
-    String sessionId = session.getId();
+
+    String sessionId = validateLogin(request);
 
     List<Transaction> transactionList = new ArrayList<>();
     List<String> headers = Arrays.asList(
@@ -60,22 +58,34 @@ public class TransactionController {
       int userId = DBSessionId.getUserId(con, sessionId);
       ResultSet results = DBTransaction.getPurchase(con, userId);
       while(results.next()) {
-        Transaction transaction = new Transaction();
-        transaction.setTransactionId(results.getInt(TransactionConstants.TRANSACTION_ID));
+
         int eventId = results.getInt(TransactionConstants.EVENT_ID);
-        transaction.setEventId(eventId);
+
         String eventName = EventSelectQuery.getEventName(con, eventId);
         if (eventName == null) {
           logger.warn("Event doesn't exist");
         }
-        transaction.setEventName(eventName);
-        transaction.setTransactionCount(results.getInt(TransactionConstants.COUNT));
+        String ownerName = DBUser.getUserName(con,
+            results.getInt(TransactionConstants.OWNER_ID));
+
+        Transaction transaction = new Transaction();
+        transaction.setEventId(eventId);
         transaction.setBuyerId(userId);
-        String ownerName = DBUser.getUserName(con, results.getInt(TransactionConstants.OWNER_ID));
         transaction.setOwnerName(ownerName);
-        transaction.setOwnerId(results.getInt(TransactionConstants.OWNER_ID));
-        transaction.setTimestamp(Util.getTimestampString(results.getTimestamp(TransactionConstants.TIMESTAMP)));
+        transaction.setEventName(eventName);
         transactionList.add(transaction);
+
+        transaction.setTransactionId(results.getInt
+            (TransactionConstants.TRANSACTION_ID));
+        transaction.setTransactionCount(results.getInt
+            (TransactionConstants.COUNT));
+        transaction.setOwnerId(results.getInt
+            (TransactionConstants.OWNER_ID));
+        transaction.setTimestamp
+            (Util.getTimestampString
+            (results.getTimestamp
+            (TransactionConstants.TIMESTAMP)));
+
       }
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
@@ -93,11 +103,8 @@ public class TransactionController {
    */
   @GetMapping(value={"/transfer-history"})
   public String getTransfers(Model model, HttpServletRequest request) {
-    HttpSession session = request.getSession(false);
-    if (session == null) {
-      return "redirect:/error-login";
-    }
-    String sessionId = session.getId();
+
+    String sessionId = validateLogin(request);
 
     List<Transaction> transactionList = new ArrayList<>();
     List<String> headers = Arrays.asList(
@@ -113,27 +120,43 @@ public class TransactionController {
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
       ResultSet results = DBTransaction.getTransfers(con, userId);
+
       while(results.next()) {
         int eventId = results.getInt(TransactionConstants.EVENT_ID);
         int organizerId = EventSelectQuery.getUserIdByEventId(con, eventId);
         if (organizerId == userId) {
           continue;
         }
-        Transaction transaction = new Transaction();
-        transaction.setTransactionId(results.getInt(TransactionConstants.TRANSACTION_ID));
 
-        transaction.setEventId(eventId);
         String eventName = EventSelectQuery.getEventName(con, eventId);
         if (eventName == null) {
           logger.warn("Event doesn't exist");
         }
+
+        Transaction transaction = new Transaction();
+
+        transaction.setEventId(eventId);
         transaction.setEventName(eventName);
-        transaction.setTransactionCount(results.getInt(TransactionConstants.COUNT));
-        transaction.setBuyerId(results.getInt(TransactionConstants.BUYER_ID));
-        transaction.setBuyerName(DBUser.getUserName(con, results.getInt(TransactionConstants.BUYER_ID)));
-        transaction.setOwnerId(results.getInt(TransactionConstants.OWNER_ID));
-        transaction.setOwnerName(DBUser.getUserName(con, results.getInt(TransactionConstants.OWNER_ID)));
-        transaction.setTimestamp(Util.getTimestampString(results.getTimestamp(TransactionConstants.TIMESTAMP)));
+
+        transaction.setTransactionId
+            (results.getInt(TransactionConstants.TRANSACTION_ID));
+        transaction.setTransactionCount
+            (results.getInt(TransactionConstants.COUNT));
+        transaction.setBuyerId
+            (results.getInt(TransactionConstants.BUYER_ID));
+
+        transaction.setOwnerId
+            (results.getInt(TransactionConstants.OWNER_ID));
+        transaction.setBuyerName
+            (DBUser.getUserName
+            (con, results.getInt(TransactionConstants.BUYER_ID)));
+        transaction.setOwnerName
+            (DBUser.getUserName
+            (con, results.getInt(TransactionConstants.OWNER_ID)));
+        transaction.setTimestamp
+            (Util.getTimestampString
+            (results.getTimestamp(TransactionConstants.TIMESTAMP)));
+
         transactionList.add(transaction);
       }
     } catch (SQLException sqlException) {
@@ -143,9 +166,6 @@ public class TransactionController {
     model.addAttribute("transactions", transactionList);
     return "transfers";
   }
-
-
-
 }
 
 

@@ -25,7 +25,6 @@ public class NotificationConstants {
   public static final String NOTIFY_TRANSFER_SUCCESS = "Transfer successful, woof!";
 
   /* Event Notification */
-  public static final String NOTIFY_EVENT_NOTFOUND = "Event not found. Please try again.";
   public static final String NOTIFY_NOT_ORGANIZER = "You are not the organizer of this event. Please try again.";
   public static final String NOTIFY_EVENT_UPDATE_SUCCESS = "Event update successful, woof!";
 
