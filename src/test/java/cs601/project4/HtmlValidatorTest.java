@@ -116,11 +116,11 @@ public class HtmlValidatorTest {
   }
 
   /**
-   * Validate Xhtml event-status.html
+   * Validate Xhtml events-status.html
    */
   @Test
   public void validateEventStatusXhtml() {
-    String response = HTTPFetcher.doGet("https://0f6a-2601-646-202-27d0-8d2f-58a1-98c8-987f.ngrok.io/event-status");
+    String response = HTTPFetcher.doGet("https://0f6a-2601-646-202-27d0-8d2f-58a1-98c8-987f.ngrok.io/event-update-status");
     assertTrue(HTMLValidator.isValid(response));
   }
 

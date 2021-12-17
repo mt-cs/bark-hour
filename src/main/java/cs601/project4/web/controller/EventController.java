@@ -132,7 +132,7 @@ public class EventController {
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
-    return "update-event";
+    return "events-modification";
   }
 
   /**
@@ -197,18 +197,18 @@ public class EventController {
 
     if (numTickets < 1) {
       notifyFailedQuery(model, NotificationConstants.NOTIFY_MIN_TICKET);
-      return "event-status";
+      return "events-status";
     }
 
     if (validateInputDate(start, end, model)) {
-      return "event-status";
+      return "events-status";
     }
 
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
       if (EventSelectQuery.checkEventExist(con, eventName)) {
         notifyFailedQuery(model, NotificationConstants.NOTIFY_EVENT_EXIST);
-        return "event-status";
+        return "events-status";
       } else {
         int eventId = EventInsertQuery.createEvent(
             con, userId, eventName, venue, address, city, state,
@@ -216,14 +216,14 @@ public class EventController {
 
         if (!DBTicket.insertTickets(con, new Ticket(userId, eventId), numTickets)) {
           notifyFailedQuery(model, NotificationConstants.NOTIFY_EVENT_FAIL);
-          return "event-status";
+          return "events-status";
         }
       }
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
     model.addAttribute(NotificationConstants.MSG, NotificationConstants.NOTIFY_EVENT_SUCCESS);
-    return "event-status";
+    return "events-status";
   }
 
   /**
@@ -235,7 +235,7 @@ public class EventController {
     if (session == null) {
       return "redirect:/error-login";
     }
-    return "event-status";
+    return "events-status";
   }
 
   /**
@@ -272,7 +272,7 @@ public class EventController {
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
-    return "event";
+    return "events";
   }
 
   /**
@@ -308,7 +308,7 @@ public class EventController {
     }
 
     if (validateInputDate(start, end, model)) {
-      return "event-status";
+      return "events-status";
     }
 
     try (Connection con = DBManager.getConnection()) {
@@ -317,7 +317,7 @@ public class EventController {
 
       if (organizerId != userId) {
         notifyFailedQuery(model, NotificationConstants.NOTIFY_NOT_ORGANIZER);
-        return "event-update-status";
+        return "events-status";
       }
       EventUpdateQuery.updateEvent(
           con, eventId, userId, eventName, venue, address, city, state,
@@ -327,7 +327,7 @@ public class EventController {
       logger.error(sqlException.getMessage());
     }
     model.addAttribute(NotificationConstants.MSG, NotificationConstants.NOTIFY_EVENT_UPDATE_SUCCESS);
-    return "event-update-status";
+    return "events-status";
   }
 
   /**

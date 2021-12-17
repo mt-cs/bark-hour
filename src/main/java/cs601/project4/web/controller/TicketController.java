@@ -68,7 +68,7 @@ public class TicketController {
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
-    return "ticket";
+    return "tickets-cart";
   }
 
   /**
@@ -88,34 +88,34 @@ public class TicketController {
 
     if (numTickets < 1) {
       notifyFailedQuery(model, NotificationConstants.NOTIFY_MIN_TICKET);
-      return "ticket-purchase";
+      return "tickets-status";
     }
 
     try (Connection con = DBManager.getConnection()) {
       int eventUserId = EventSelectQuery.getUserIdByEventId(con, eventId);
       int availTicket = DBTicket.getTicketAvail(con, eventId);
       if (checkAvailTicket(numTickets, model, availTicket)) {
-        return "ticket-purchase";
+        return "tickets-status";
       }
       int userId = DBSessionId.getUserId(con, sessionId);
       if (eventUserId == userId) {
         notifyFailedQuery(model, NotificationConstants.NOTIFY_OWNER);
-        return "ticket-purchase";
+        return "tickets-status";
       }
       if (!DBTicket.buyTickets(con, userId, eventId, eventUserId, numTickets)){
         notifyFailedQuery(model, NotificationConstants.NOTIFY_FAIL);
-        return "ticket-purchase";
+        return "tickets-status";
       } else {
         int curAvailTicket = DBTicket.countTickets(con, eventUserId, eventId);
         if (curAvailTicket == availTicket || curAvailTicket == -1) {
           notifyFailedQuery(model, NotificationConstants.NOTIFY_FAIL);
-          return "ticket-purchase";
+          return "tickets-status";
         } else {
           DBTicket.updateTicketAvail(con, availTicket - numTickets, eventId);
           int purchasedSoFar = DBTicket.getTicketPurchased(con, eventId);
           if (purchasedSoFar == -1) {
             notifyFailedQuery(model, NotificationConstants.NOTIFY_FAIL);
-            return "ticket-purchase";
+            return "tickets-status";
           }
           DBTicket.updateTicketPurchased(con,purchasedSoFar + numTickets, eventId);
           DBTransaction.insertTransaction(con, eventId, eventUserId, userId, numTickets);
@@ -125,7 +125,7 @@ public class TicketController {
       logger.error(sqlException.getMessage());
     }
     model.addAttribute(NotificationConstants.MSG, NotificationConstants.NOTIFY_SUCCESS);
-    return "ticket-purchase";
+    return "tickets-status";
   }
 
   /**
@@ -173,7 +173,7 @@ public class TicketController {
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
-    return "ticket-transfer";
+    return "tickets-transferal-form";
   }
 
   /**
@@ -194,7 +194,7 @@ public class TicketController {
 
     if (numTickets < 1) {
       notifyFailedQuery(model, NotificationConstants.NOTIFY_MIN_TICKET);
-      return "ticket-transfer-status";
+      return "tickets-status";
     }
 
     try (Connection con = DBManager.getConnection()) {
@@ -204,32 +204,34 @@ public class TicketController {
       int organizerId = EventSelectQuery.getUserIdByEventId(con, eventId);
       if (recipientId <= 0) {
         notifyFailedQuery(model, NotificationConstants.NOTIFY_EMAIL);
-        return "ticket-transfer-status";
+        return "tickets-status";
       }
       if (userId == recipientId) {
         notifyFailedQuery(model, NotificationConstants.NOTIFY_OTHER);
-        return "ticket-transfer-status";
+        return "tickets-status";
       }
       if (userId == organizerId) {
         notifyFailedQuery(model, NotificationConstants.NOTIFY_ORGANIZER);
-        return "ticket-transfer-status";
+        return "tickets-status";
       }
+
       int availTicket = DBTicket.getTicketAvail(con, eventId);
 
       if (checkAvailTicket(numTickets, model, availTicket)) {
-        return "ticket-purchase";
+        notifyFailedQuery(model, NotificationConstants.NOTIFY_SPACE);
+        return "tickets-status";
       }
 
       if (!DBTicket.transferTickets(con, userId, recipientId, eventId, numTickets)){
         notifyFailedQuery(model, NotificationConstants.NOTIFY_TRANSFER_FAIL);
-        return "ticket-transfer-status";
+        return "tickets-status";
       }
       DBTransaction.insertTransaction(con, eventId, userId, recipientId, numTickets);
     } catch (SQLException sqlException) {
       logger.error(sqlException.getMessage());
     }
     model.addAttribute(NotificationConstants.MSG,NotificationConstants.NOTIFY_TRANSFER_SUCCESS);
-    return "ticket-transfer-status";
+    return "tickets-status";
   }
 
   /**
@@ -253,29 +255,23 @@ public class TicketController {
 
     try (Connection con = DBManager.getConnection()) {
       int userId = DBSessionId.getUserId(con, sessionId);
-      int ticketCount = 0;
       ResultSet results = DBTicket.getTicketsById(con, userId);
 
       int temp = 0;
-      if(results.next()) {
-        temp = results.getInt(EventConstants.EVENT_ID);
-      }
       while(results.next()) {
         int eventId = results.getInt(EventConstants.EVENT_ID);
-        ticketCount++;
-
         if (temp != eventId) {
-          String eventName = EventSelectQuery.getEventName(con, temp);
+          int ticketCount = DBTicket.countTickets(con, userId, eventId);
+          String eventName = EventSelectQuery.getEventName(con, eventId);
           if (eventName == null) {
             logger.warn("Event doesn't exist");
             return "redirect:/error-400";
           }
-          int organizerId = EventSelectQuery.getUserIdByEventId(con, temp);
+          int organizerId = EventSelectQuery.getUserIdByEventId(con, eventId);
           String organizer = DBUser.getUserName(con, organizerId);
-          UserTicket ticket = new UserTicket(temp, eventName, ticketCount, organizer);
+          UserTicket ticket = new UserTicket(eventId, eventName, ticketCount, organizer);
           ticketList.add(ticket);
           temp = eventId;
-          ticketCount = 0;
         }
       }
     } catch (SQLException sqlException) {

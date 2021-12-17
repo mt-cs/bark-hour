@@ -30,9 +30,10 @@ public class DBManager {
 
   static {
     /* Source: https://www.geeksforgeeks.org/static-blocks-in-java/ */
-    ds.setUrl(url);
-    ds.setUsername(username);
-    ds.setPassword(password);
+
+    ds.setUrl("jdbc:mysql://localhost:3306/user026");
+    ds.setUsername("user026");
+    ds.setPassword("user026");
     ds.setMinIdle(MIN_IDLE);
     ds.setMaxIdle(MAX_IDLE);
   }

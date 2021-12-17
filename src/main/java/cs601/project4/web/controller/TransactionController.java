@@ -101,7 +101,7 @@ public class TransactionController {
    * @param model Model
    * @return ticket
    */
-  @GetMapping(value={"/transfer-history"})
+  @GetMapping(value={"/transactions-transferal"})
   public String getTransfers(Model model, HttpServletRequest request) {
 
     String sessionId = validateLogin(request);
@@ -164,7 +164,7 @@ public class TransactionController {
     }
     model.addAttribute("headers", headers);
     model.addAttribute("transactions", transactionList);
-    return "transfers";
+    return "transactions-transferal";
   }
 }
 

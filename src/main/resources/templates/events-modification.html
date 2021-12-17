@@ -10,24 +10,24 @@
   <meta content="" name="keywords"/>
 
   <!-- Favicons -->
-  <link href="assets/img/favicon.png" rel="icon"/>
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon"/>
+  <link href="../assets/img/favicon.png" th:href="@{/assets/img/favicon.png}" rel="icon"/>
+  <link href="../assets/img/apple-touch-icon.png" th:href="@{/assets/img/apple-touch-icon.png}" rel="apple-touch-icon"/>
 
   <!-- Google Fonts -->
   <link href="https://fonts.gstatic.com" rel="preconnect"/>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet"/>
 
   <!-- Vendor CSS Files -->
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
-  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet"/>
-  <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet"/>
-  <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet"/>
-  <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet"/>
-  <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet"/>
-  <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet"/>
+  <link href="../assets/vendor/bootstrap/css/bootstrap.min.css" th:href="@{/assets/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+  <link href="../assets/vendor/bootstrap-icons/bootstrap-icons.css" th:href="@{/assets/vendor/bootstrap-icons/bootstrap-icons.css}" rel="stylesheet"/>
+  <link href="../assets/vendor/boxicons/css/boxicons.min.css" th:href="@{/assets/vendor/boxicons/css/boxicons.min.css}" rel="stylesheet"/>
+  <link href="../assets/vendor/quill/quill.snow.css" th:href="@{/assets/vendor/quill/quill.snow.css}" rel="stylesheet"/>
+  <link href="../assets/vendor/quill/quill.bubble.css" th:href="@{/assets/vendor/quill/quill.bubble.css}" rel="stylesheet"/>
+  <link href="../assets/vendor/remixicon/remixicon.css" th:href="@{/assets/vendor/remixicon/remixicon.css}" rel="stylesheet"/>
+  <link href="../assets/vendor/simple-datatables/style.css" th:href="@{/assets/vendor/simple-datatables/style.css}" rel="stylesheet"/>
 
   <!-- Template Main CSS File -->
-  <link href="assets/css/style.css" rel="stylesheet"/>
+  <link href="../assets/css/style.css" rel="stylesheet" th:href="@{/assets/css/style.css}" />
 
   <!-- =======================================================
   * Template Name: NiceAdmin - v2.2.0
@@ -44,7 +44,7 @@
 
   <div class="d-flex align-items-center justify-content-between">
     <a href="/home" class="logo d-flex align-items-center">
-      <img src="assets/img/logo.png" alt=""/>
+      <img src="../assets/img/logo.png" th:href="@{/assets/img/logo.png}" alt=""/>
       <span class="d-none d-lg-block">Barkour</span>
     </a>
     <i class="bi bi-list toggle-sidebar-btn"></i>
@@ -69,7 +69,7 @@
       <li class="nav-item dropdown pe-3">
 
         <a class="nav-link nav-profile d-flex align-items-center pe-0" href="/users-profile" data-bs-toggle="dropdown">
-          <img src="assets/img/profile-mt.png" alt="Profile" class="rounded-circle"/>
+          <img src="../assets/img/profile-mt.png " th:href="@{/assets/img/profile-mt.png}" alt="Profile" class="rounded-circle"/>
           <span class="d-none d-md-block dropdown-toggle ps-2" th:text="${name}"></span>
         </a><!-- End Profile Image Icon -->
 
@@ -210,46 +210,101 @@
   <div class="pagetitle">
     <nav>
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/home">Transfer Tickets</a></li>
-        <li class="breadcrumb-item active">List of purchased ticket.</li>
+        <li class="breadcrumb-item">Update Event</li>
       </ol>
     </nav>
   </div><!-- End Page Title -->
 
   <section class="section dashboard">
     <div class="row">
-
       <div class="col-lg-12">
-        <div class="row">
 
-          <!-- Transfer Ticket -->
-          <div class="col-12">
-            <div class="card top-selling">
+        <!--Event Edit Form-->
+        <form action="/event-update-status" method="post">
 
-              <div class="card-body pb-0">
-                <h5 class="card-title">Tickets <span>| All</span></h5>
-
-                <table class="table datatable table-borderless ">
-                  <thead>
-                  <tr class="headings">
-                    <th th:each="header: ${headers}" class="column-title" th:text="${header}" />
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr scope="row" th:each="ticket: ${tickets}">
-                    <td th:text="${ticket.ticketId}"></td>
-                    <td th:text="${ticket.eventName}"></td>
-                    <td th:text="${ticket.eventId}"></td>
-                    <td th:text="${ticket.organizer}"></td>
-                    <td th:text="${ticket.ticketCount}"></td>
-                    <td><a th:href="@{/ticket-transfer/{event_id}(event_id=${ticket.eventId})}"><button class="btn btn-primary">Transfer</button></a> </td>
-                  </tr>
-                  </tbody>
-                </table>
-              </div>
+          <div class="row mb-3">
+            <label for="event_name" class="col-md-4 col-lg-3 col-form-label">Event name:</label>
+            <div class="col-md-8 col-lg-9">
+              <input type="text" id="event_name" name="event_name" class="form-control" maxlength="150" th:value="${event_name}" required="required">
             </div>
-          </div><!-- End All Tickets-->
-        </div>
+          </div>
+
+          <div class="row mb-3">
+            <label for="about" class="col-md-4 col-lg-3 col-form-label">About:</label>
+            <div class="col-md-8 col-lg-9">
+              <textarea id="about" name="about" rows="4" cols="50" maxlength="300" class="form-control" th:text="${about}"></textarea>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label for="venue" class="col-md-4 col-lg-3 col-form-label">Venue:</label><br>
+            <div class="col-md-8 col-lg-9">
+              <input type="text" id="venue" name="venue" th:value="${venue}" maxlength="100" required="required" class="form-control">
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label for="address" class="col-md-4 col-lg-3 col-form-label">Address:</label>
+            <div class="col-md-8 col-lg-9">
+              <input type="text" id="address" name="address" th:value="${address}" required="required" class="form-control">
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label for="city" class="col-md-4 col-lg-3 col-form-label">City:</label>
+            <div class="col-md-8 col-lg-9">
+              <input type="text" id="city" name="city" th:value="${city}" required="required" class="form-control">
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label for="state" class="col-md-4 col-lg-3 col-form-label">State:</label>
+            <div class="col-md-8 col-lg-9">
+              <input type="text" id="state" name="state" th:value="${state}" required="required" class="form-control">
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label for="country" class="col-md-4 col-lg-3 col-form-label">Country:</label>
+            <div class="col-md-8 col-lg-9">
+              <input type="text" id="country" name="country" th:value="${country}" required="required" class="form-control">
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label for="zip" class="col-md-4 col-lg-3 col-form-label">Zip/ Postal Code:</label><br>
+            <div class="col-md-8 col-lg-9">
+              <input type="text" id="zip" name="zip" th:value="${zip}" required="required" pattern="[0-9]*" class="form-control">
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label for="event_start" class="col-md-4 col-lg-3 col-form-label">Start:</label><br>
+            <div class="col-md-8 col-lg-9">
+              <input type="datetime-local" id="event_start" name="event_start" th:min="${event_start}" th:value="${event_start}" required="required" class="form-control">
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <label for="event_end" class="col-md-4 col-lg-3 col-form-label">End:</label>
+            <div class="col-md-8 col-lg-9">
+              <input type="datetime-local" id="event_end" name="event_end" th:min="${event_end}"th:value="${event_end}" required="required"  class="form-control">
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-8 col-lg-9">
+              <input type="hidden" id="num_ticket" name="num_ticket" th:value="${num_ticket}" min="1" required="required" class="form-control">
+            </div>
+          </div>
+
+          <input type="hidden" id="event_id" name="event_id" th:value="${event_id}" min="1" required="required" readonly>
+
+          <div class="text-center">
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </form><!-- End Event Edit Form -->
+
       </div>
     </div>
   </section>
@@ -265,24 +320,24 @@
     <!-- You can delete the links only if you purchased the pro version. -->
     <!-- Licensing information: https://bootstrapmade.com/license/ -->
     <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/ -->
-    <!--Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> -->
+    <!-- Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a> -->
   </div>
 </footer><!-- End Footer -->
 
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
 <!-- Vendor JS Files -->
-<script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
-<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="assets/vendor/chart.js/chart.min.js"></script>
-<script src="assets/vendor/echarts/echarts.min.js"></script>
-<script src="assets/vendor/quill/quill.min.js"></script>
-<script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
-<script src="assets/vendor/tinymce/tinymce.min.js"></script>
-<script src="assets/vendor/php-email-form/validate.js"></script>
+<script src="../assets/vendor/apexcharts/apexcharts.min.js" th:src="@{/assets/vendor/apexcharts/apexcharts.min.js}"></script>
+<script src="../assets/vendor/bootstrap/js/bootstrap.bundle.min.js" th:src="@{/assets/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script src="../assets/vendor/chart.js/chart.min.js" th:src="@{/assets/vendor/chart.js/chart.min.js}"></script>
+<script src="../assets/vendor/echarts/echarts.min.js" th:src="@{/assets/vendor/echarts/echarts.min.js}"></script>
+<script src="../assets/vendor/quill/quill.min.js" th:src="@{/assets/vendor/quill/quill.min.js}"></script>
+<script src="../assets/vendor/simple-datatables/simple-datatables.js" th:src="@{/assets/vendor/simple-datatables/simple-datatables.js}"></script>
+<script src="../assets/vendor/tinymce/tinymce.min.js" th:src="@{/assets/vendor/tinymce/tinymce.min.js}"></script>
+<script src="../assets/vendor/php-email-form/validate.js" th:src="@{/assets/vendor/php-email-form/validate.js}"></script>
 
 <!-- Template Main JS File -->
-<script src="assets/js/main.js"></script>
+<script src="../assets/js/main.js" th:src="@{/assets/js/main.js}"></script>
 
 </body>
 
