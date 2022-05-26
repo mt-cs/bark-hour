@@ -30,6 +30,12 @@ Run `BarkourApp.java` as SpringBoot application.
 | Transaction History | Keep track and displays transaction history |
 | SQL DB | A roobust relational database to store *user account*, *event*, and *transaction* data.|
 
+## Dependencies
+- MySql
+- Spring Boot
+- Thymeleaf
+- Gson
+
 ## Configuration
 
 To modify the SQL database source, we can update:
@@ -58,6 +64,6 @@ slack.config.redirect_uri=https://0f6a-2601-646-202-27d0-8d2f-58a1-98c8-987g.ngr
 slack.config.client_id=2464212157.2674770528781
 slack.config.client_secret=5897aac8047ec1610f7290ca16103b8e
 ```
-For this project, we set up the redirect URI as a public URI using [ngrok](https://ngrok.com/download).
+We can set up the Slack redirect URI as a public URI using [ngrok](https://ngrok.com/download).
 
 
