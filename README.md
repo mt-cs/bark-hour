@@ -1,9 +1,16 @@
-BarkHour Ticket Purchase Web Application
+BarkHour 
 ===========================================
+*Ticket Purchase Web Application*
 
 <img width="1359" alt="barkoursc" src="https://user-images.githubusercontent.com/60201466/170530690-ee45683d-9118-4af5-b803-962f2dbc3a57.png">
 
-Looking for dog-friendly events and things to do with your dog? BarkHour is an EventBrite web application for dog people in San Francisco. This project implements a two-tier ticket purchase web application with a Java (Jetty/Servlets) front end and an SQL backend. BarkHour uses [Thymeleaf](https://www.thymeleaf.org/) to generate HTML. It's also supported with Javascript, CSS, and Bootstrap templates.
+Looking for dog-friendly events and things to do with your dog? 
+
+BarkHour is an EventBrite web application for dog people in San Francisco. This project implements a two-tier ticket purchase web application with a Java (Jetty/Servlets) front end and an SQL backend. BarkHour uses [Thymeleaf](https://www.thymeleaf.org/) to generate HTML. It's also supported with Javascript, CSS, and Bootstrap templates.
+
+### Running Application
+
+Run `BarkourApp.java` as SpringBoot application.
 
 ### Features
 
@@ -22,3 +29,35 @@ Looking for dog-friendly events and things to do with your dog? BarkHour is an E
 | Transfer tickets | Allow the user to transfer tickets to another user. |
 | Transaction History | Keep track and displays transaction history |
 | SQL DB | A roobust relational database to store *user account*, *event*, and *transaction* data.|
+
+### Configuration
+
+To modify the SQL database source, we can update:
+1. `DBManager.java`
+```
+  static {
+    ds.setUrl("jdbc:mysql://localhost:3306/user026");
+    ds.setUsername("user026");
+    ds.setPassword("user026");
+    ds.setMinIdle(MIN_IDLE);
+    ds.setMaxIdle(MAX_IDLE);
+  }
+
+```
+2. `application.properties`
+```
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:mysql://localhost:3306/user026
+spring.datasource.username=user026
+spring.datasource.password=user026
+```
+
+To modify the Slack configuration, we can update `application.properties`:
+```
+slack.config.redirect_uri=https://0f6a-2601-646-202-27d0-8d2f-58a1-98c8-987g.ngrok.io/home
+slack.config.client_id=2464212157.2674770528781
+slack.config.client_secret=5897aac8047ec1610f7290ca16103b8e
+```
+For this project, we set up the redirect URI as a public URI using [ngrok](https://ngrok.com/download).
+
+
