@@ -4,15 +4,15 @@ BarkHour
 
 <img width="1359" alt="barkoursc" src="https://user-images.githubusercontent.com/60201466/170530690-ee45683d-9118-4af5-b803-962f2dbc3a57.png">
 
-Looking for dog-friendly events and things to do with your dog? 
+**Looking for dog-friendly events and things to do with your dog?**
 
 BarkHour is an EventBrite web application for dog people in San Francisco. This project implements a two-tier ticket purchase web application with a Java (Jetty/Servlets) front end and an SQL backend. BarkHour uses [Thymeleaf](https://www.thymeleaf.org/) to generate HTML. It's also supported with Javascript, CSS, and Bootstrap templates.
 
-### Running Application
+## Running Application
 
 Run `BarkourApp.java` as SpringBoot application.
 
-### Features
+## Features
 
 | Feature         | Description |
 | :-------------:| :-----|
@@ -30,7 +30,7 @@ Run `BarkourApp.java` as SpringBoot application.
 | Transaction History | Keep track and displays transaction history |
 | SQL DB | A roobust relational database to store *user account*, *event*, and *transaction* data.|
 
-### Configuration
+## Configuration
 
 To modify the SQL database source, we can update:
 1. `DBManager.java`
